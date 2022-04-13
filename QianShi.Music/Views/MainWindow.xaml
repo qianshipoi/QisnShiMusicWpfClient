@@ -1,0 +1,131 @@
+﻿<Window x:Class="QianShi.Music.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        xmlns:ext="clr-namespace:QianShi.Music.Extensions"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        AllowsTransparency="True"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="微软雅黑"
+        TextElement.FontSize="13"
+        TextElement.FontWeight="Regular"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        Title="{Binding Title}" Height="720" Width="1080" >
+
+    <materialDesign:DialogHost
+        DialogTheme="Inherit"  x:Name="DialogHost"
+        Identifier="Root" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="84" />
+                <RowDefinition />
+                <!--<RowDefinition Height="64" />-->
+            </Grid.RowDefinitions>
+            <materialDesign:ColorZone
+                    x:Name="ColorZone"
+                    Padding="16"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth2"
+                    DockPanel.Dock="Top"
+                    Mode="PrimaryMid">
+                <Grid MaxWidth="1280">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <Button materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                                Command="{Binding GoBackCommand}"
+                                Content="{materialDesign:PackIcon Kind=ArrowLeft,Size=24}"
+                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                                Style="{DynamicResource MaterialDesignToolButton}"
+                                ToolTip="Previous Item" />
+
+                        <Button Margin="16,0,0,0"
+                                materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                                Command="{Binding GoForwardCommand}"
+                                Content="{materialDesign:PackIcon Kind=ArrowRight,Size=24}"
+                                Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
+                                Style="{DynamicResource MaterialDesignToolButton}"
+                                ToolTip="Next Item" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <ListBox
+                        x:Name="menuBar"
+                        ItemsSource="{Binding MenuBars}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding NavigateCommand}" 
+                                                       CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Cursor="Hand" Background="Transparent" Orientation="Horizontal" Margin="10,0">
+                                        <materialDesign:PackIcon Kind="{Binding Icon}" Foreground="White"  />
+                                        <TextBlock Foreground="White" Text="{Binding Title}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <!--<Button Content="首页" />
+                    <Button Content="发现" Margin="10,0" />
+                    <Button Content="音乐库" />-->
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                             MinWidth="160" Padding="10,4" Margin="0,0,10,0" materialDesign:HintAssist.Hint="搜索" />
+                        <materialDesign:PopupBox DockPanel.Dock="Right">
+                            <materialDesign:PopupBox.ToggleContent>
+                                <Image
+                                Width="25"
+                                Height="25"
+                                Source="https://oss.kuriyama.top/static/background.png">
+                                    <Image.Clip>
+                                        <EllipseGeometry
+                                        Center="12.5,12.5"
+                                        RadiusX="12.5"
+                                        RadiusY="12.5" />
+                                    </Image.Clip>
+                                </Image>
+                            </materialDesign:PopupBox.ToggleContent>
+                            <StackPanel>
+                                <!--<Button Command="{Binding AppCenterCommand}" Content="个人中心"/>-->
+                                <Button Command="{Binding LogoutComand}" Content="注销当前账户"/>
+                            </StackPanel>
+                        </materialDesign:PopupBox>
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                x:Name="btnMin"
+                                Content="—"
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                            <Button
+                                x:Name="btnMax"
+                                Content="☐"
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                            <Button
+                                x:Name="btnClose"
+                                Content="✕"
+                                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </materialDesign:ColorZone>
+            <ContentControl   Grid.Row="1" prism:RegionManager.RegionName="{x:Static ext:PrismManager.MainViewRegionName}" Margin="0,0,0,20" />
+
+            <!--<ContentControl Grid.Row="2" prism:RegionManager.RegionName="{x:Static ext:PrismManager.ControlsRegionName}" />-->
+        </Grid>
+    </materialDesign:DialogHost>
+</Window>

@@ -1,0 +1,145 @@
+﻿<UserControl x:Class="QianShi.Music.Views.FoundView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:QianShi.Music.Views"
+             xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+             xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <uc:ItemsControlsDataTemplateSelector x:Key="ItemsControlsDataTemplateSelector" />
+            <ItemsPanelTemplate x:Key="WrapPanel">
+                <WrapPanel />
+            </ItemsPanelTemplate>
+            <ItemsPanelTemplate x:Key="StackPanel">
+                <StackPanel />
+            </ItemsPanelTemplate>
+            <Style TargetType="Button" x:Key="SelectionCatButton" BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Setter Property="Opacity" Value=".65" />
+                <Setter Property="Margin" Value="6, 4" />
+                <Setter Property="FontWeight" Value="Bold" />
+                <Setter Property="IsEnabled" Value="{Binding DataContext.Loading, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertBooleanConverter}}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsActivation}" Value="True" >
+                        <Setter Property='Opacity' Value="1" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <DataTemplate x:Key="SelectItemTemplate">
+                <Button Content="{Binding DisplayName}" Style="{StaticResource SelectionCatButton}"
+                        Command="{Binding DataContext.SelectedCatCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding}"/>
+            </DataTemplate>
+            <DataTemplate x:Key="MoreItemTemplate">
+                <Button Content="···" Style="{StaticResource SelectionCatButton}"
+                        Command="{Binding DataContext.SwitchMoreCatCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"  
+                        CommandParameter="{Binding}" />
+            </DataTemplate>
+            <Style TargetType="Button" 
+                   x:Key="SelectedCatBtn"
+                   BasedOn="{StaticResource MaterialDesignRaisedButton}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelected}" Value="True" >
+                        <Setter Property="Opacity" Value=".45" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <conver:Bool2VisibilityConverter x:Key="Bool2VisibilityConverter" />
+            <conver:Bool2ReVisibilityConverter x:Key="Bool2ReVisibilityConverter" />
+            <ItemsPanelTemplate x:Key="UniformGridC5">
+                <UniformGrid Columns="5" />
+            </ItemsPanelTemplate>
+            <DataTemplate x:Key="PlaylistItemTemplate">
+                <uc:PlaylistCard MaxWidth="240" MinWidth="160" Margin="20" Title="{Binding Name}"
+                                 HorizontalAlignment="Stretch"
+                                 Playlist="{Binding}"
+                                 OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType=local:FoundView}, Path=DataContext.OpenPlaylistCommand}"
+                                 Cover="{Binding CoverImgUrl}" AmountOfPlay="{Binding PlayCount}" />
+            </DataTemplate>
+            <DataTemplate x:Key="PersonalizedPlaylistItemTemplate">
+                <uc:PlaylistCard MaxWidth="240" MinWidth="160" Margin="20" Title="{Binding Name}"
+                                 HorizontalAlignment="Stretch"
+                                 OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType=local:FoundView}, Path=DataContext.OpenPlaylistCommand}"
+                                 Cover="{Binding CoverImgUrl}" AmountOfPlay="{Binding PlayCount}"
+                                 Playlist="{Binding}"
+                                 Description="{Binding Copywriter}" />
+            </DataTemplate>
+            <DataTemplate x:Key="ToplistItemTemplate">
+                <uc:PlaylistCard MaxWidth="240" MinWidth="160" Margin="20" Title="{Binding Name}"
+                                 Cover="{Binding CoverImgUrl}" 
+                                 HorizontalAlignment="Stretch"
+                                 Playlist="{Binding}"
+                                 OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType=local:FoundView}, Path=DataContext.OpenPlaylistCommand}"
+                                 Description="{Binding UpdateFrequency}"/>
+            </DataTemplate>
+            <uc:PlaylistDataTemplateSelector x:Key="PlaylistDataTemplateSelector" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <materialDesign:DialogHost IsOpen="{Binding Loading}">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                    HorizontalAlignment="Center" Margin="16"
+                                    IsIndeterminate="True"
+                                    Value="0" />
+                <TextBlock Text="Loading..." HorizontalAlignment="Center"  
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
+            </StackPanel>
+        </materialDesign:DialogHost.DialogContent>
+        <uc:ScrollViewerAnimation>
+            <StackPanel Background="#FFFFFF" MaxWidth="1280">
+                <TextBlock Text="发现" FontSize="60" FontWeight="Bold" Margin="20,10" />
+                <ItemsControl Margin="10" ItemsSource="{Binding Cats}" 
+                      ItemTemplateSelector="{StaticResource ItemsControlsDataTemplateSelector}"
+                      ItemsPanel="{StaticResource WrapPanel}">
+                </ItemsControl>
+                <Border CornerRadius="10" Background="#F5F5F7" Margin="10" Visibility="{Binding MoreCat}">
+                    <ItemsControl ItemsSource="{Binding CatOptions}" ItemsPanel="{StaticResource StackPanel}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0, 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Name}" FontSize="22" FontWeight="Bold" 
+                                   VerticalAlignment="Top" HorizontalAlignment="Center" />
+                                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Cats}"
+                                          ItemsPanel="{StaticResource WrapPanel}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Content="{Binding Name}" Margin="6" 
+                                                Command="{Binding DataContext.AddCatCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{DynamicResource SelectedCatBtn}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding Playlists}" 
+                          HorizontalAlignment="Center" 
+                          HorizontalContentAlignment="Center"
+                          x:Name="PlaylistControl"
+                          ItemsPanel="{StaticResource UniformGridC5}"
+                          ItemTemplateSelector="{StaticResource PlaylistDataTemplateSelector}"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                          VirtualizingPanel.VirtualizationMode="Recycling"
+                          ScrollViewer.IsDeferredScrollingEnabled="True" >
+                </ItemsControl>
+                <Button Visibility="{Binding More,Converter={StaticResource Bool2VisibilityConverter}}"
+                        Command="{Binding MorePlaylistCommand}"
+                        CommandParameter="{Binding ElementName=PlaylistControl}"
+                        Content="加载更多" Margin="0, 20" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </uc:ScrollViewerAnimation>
+    </materialDesign:DialogHost>
+</UserControl>
