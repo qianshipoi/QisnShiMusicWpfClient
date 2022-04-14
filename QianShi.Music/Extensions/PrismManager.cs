@@ -13,5 +13,7 @@
         /// 设置页区域
         /// </summary>
         public static readonly string SettingsViewRegionName = "SettingsViewRegion";
+
+        public static readonly string FullScreenRegionName = "FullScreenRegion";
     }
 }

@@ -123,8 +123,10 @@
                     </StackPanel>
                 </Grid>
             </materialDesign:ColorZone>
-            <ContentControl   Grid.Row="1" prism:RegionManager.RegionName="{x:Static ext:PrismManager.MainViewRegionName}" Margin="0,0,0,20" />
-
+            <ContentControl Grid.Row="1" Margin="0,0,0,20"
+                            prism:RegionManager.RegionName="{x:Static ext:PrismManager.MainViewRegionName}" />
+            <ContentControl Grid.RowSpan="2" Visibility="Visible"
+                            prism:RegionManager.RegionName="{x:Static ext:PrismManager.FullScreenRegionName}" />
             <!--<ContentControl Grid.Row="2" prism:RegionManager.RegionName="{x:Static ext:PrismManager.ControlsRegionName}" />-->
         </Grid>
     </materialDesign:DialogHost>

@@ -86,6 +86,7 @@ namespace QianShi.Music.ViewModels
         {
             CreateMenuBar();
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("IndexView");
+            _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
         }
     }
 }
