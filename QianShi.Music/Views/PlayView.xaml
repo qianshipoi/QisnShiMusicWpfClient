@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:QianShi.Music.Views"
+             xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="1280">
@@ -43,9 +44,9 @@
                                          VerticalAlignment="Center" x:Name="LikeControl"
                                          Opacity=".58" Width="20" Height="20" />
                 <DockPanel Margin="0,28,0,0" Grid.Row="2" Grid.ColumnSpan="2" LastChildFill="True">
-                    <TextBlock DockPanel.Dock="Left" Text="0:32" Opacity=".58" />
-                    <TextBlock DockPanel.Dock="Right" Text="4:02"  Opacity=".58" />
-                    <Slider Margin="8,0" />
+                    <TextBlock x:Name="CurrentTimeControl" DockPanel.Dock="Left" Text="0:32" Opacity=".58" />
+                    <TextBlock x:Name="TotalTimeControl" DockPanel.Dock="Right" Text="4:02"  Opacity=".58" />
+                    <Slider x:Name="PlayProgressControl" Margin="8,0" />
                 </DockPanel>
                 <StackPanel Margin="0,18,0,0" Grid.Row="3" Grid.ColumnSpan="2" 
                             Orientation="Horizontal" HorizontalAlignment="Center">
@@ -58,7 +59,7 @@
                         <materialDesign:PackIcon Kind="SkipPrevious" Width="26" Height="26" />
                     </Button>
                     <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="MaterialDesignIconButton"
-                            Width="48" Height="48">
+                            Width="48" Height="48" Click="Button_Click">
                         <materialDesign:PackIcon Kind="Pause" Width="36" Height="36" />
                         <!--<materialDesign:PackIcon Kind="Play" Width="28" Height="28" />-->
                     </Button>
@@ -71,11 +72,14 @@
                         <materialDesign:PackIcon Kind="ShuffleVariant" Width="16" Height="16" />
                     </Button>
                 </StackPanel>
+                <MediaElement Name="me"  Visibility="Collapsed"/>
             </Grid>
         </StackPanel>
-        <ListBox Grid.RowSpan="2" Grid.Column="1" Background="Wheat"
+        <uc:LrcView x:Name="LrcView" Grid.RowSpan="2" Grid.Column="1" />
+        <!--<ListBox Grid.RowSpan="2" Grid.Column="1" Background="Wheat"
                       ItemsSource="{Binding Lyrics}">
-        </ListBox>
+            
+        </ListBox>-->
         <Rectangle HorizontalAlignment="Stretch" Grid.ColumnSpan="2" VerticalAlignment="Stretch" 
                    Fill="Transparent" MouseMove="PlayView_MouseMove" />
     </Grid>
