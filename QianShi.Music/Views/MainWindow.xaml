@@ -22,112 +22,178 @@
         DialogTheme="Inherit"  x:Name="DialogHost"
         Identifier="Root" >
         <Grid>
-            <Grid.RowDefinitions>
+            <DockPanel LastChildFill="True">
+                <!--<Grid.RowDefinitions>
                 <RowDefinition Height="84" />
                 <RowDefinition />
-                <!--<RowDefinition Height="64" />-->
-            </Grid.RowDefinitions>
-            <materialDesign:ColorZone
+                <RowDefinition Height="64" />
+            </Grid.RowDefinitions>-->
+                <materialDesign:ColorZone 
                     x:Name="ColorZone"
                     Padding="16"
                     materialDesign:ShadowAssist.ShadowDepth="Depth2"
                     DockPanel.Dock="Top"
                     Mode="PrimaryMid">
-                <Grid MaxWidth="1280">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Button materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
+                    <Grid MaxWidth="1280">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                            <Button materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
                                 Command="{Binding GoBackCommand}"
                                 Content="{materialDesign:PackIcon Kind=ArrowLeft,Size=24}"
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{DynamicResource MaterialDesignToolButton}"
                                 ToolTip="Previous Item" />
 
-                        <Button Margin="16,0,0,0"
+                            <Button Margin="16,0,0,0"
                                 materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}"
                                 Command="{Binding GoForwardCommand}"
                                 Content="{materialDesign:PackIcon Kind=ArrowRight,Size=24}"
                                 Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}"
                                 Style="{DynamicResource MaterialDesignToolButton}"
                                 ToolTip="Next Item" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <ListBox
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <ListBox
                         x:Name="menuBar"
                         ItemsSource="{Binding MenuBars}">
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <i:InvokeCommandAction Command="{Binding NavigateCommand}" 
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding NavigateCommand}" 
                                                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ListBox}}" />
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Cursor="Hand" Background="Transparent" Orientation="Horizontal" Margin="10,0">
-                                        <materialDesign:PackIcon Kind="{Binding Icon}" Foreground="White"  />
-                                        <TextBlock Foreground="White" Text="{Binding Title}" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Cursor="Hand" Background="Transparent" Orientation="Horizontal" Margin="10,0">
+                                            <materialDesign:PackIcon Kind="{Binding Icon}" Foreground="White"  />
+                                            <TextBlock Foreground="White" Text="{Binding Title}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                        <!--<Button Content="首页" />
+                            <!--<Button Content="首页" />
                     <Button Content="发现" Margin="10,0" />
                     <Button Content="音乐库" />-->
-                    </StackPanel>
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}" 
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}" 
                              MinWidth="160" Padding="10,4" Margin="0,0,10,0" materialDesign:HintAssist.Hint="搜索" />
-                        <materialDesign:PopupBox DockPanel.Dock="Right">
-                            <materialDesign:PopupBox.ToggleContent>
-                                <Image
+                            <materialDesign:PopupBox DockPanel.Dock="Right">
+                                <materialDesign:PopupBox.ToggleContent>
+                                    <Image
                                 Width="25"
                                 Height="25"
                                 Source="https://oss.kuriyama.top/static/background.png">
-                                    <Image.Clip>
-                                        <EllipseGeometry
+                                        <Image.Clip>
+                                            <EllipseGeometry
                                         Center="12.5,12.5"
                                         RadiusX="12.5"
                                         RadiusY="12.5" />
-                                    </Image.Clip>
-                                </Image>
-                            </materialDesign:PopupBox.ToggleContent>
-                            <StackPanel>
-                                <!--<Button Command="{Binding AppCenterCommand}" Content="个人中心"/>-->
-                                <Button Command="{Binding LogoutComand}" Content="注销当前账户"/>
-                            </StackPanel>
-                        </materialDesign:PopupBox>
-                        <StackPanel Orientation="Horizontal">
-                            <Button
+                                        </Image.Clip>
+                                    </Image>
+                                </materialDesign:PopupBox.ToggleContent>
+                                <StackPanel>
+                                    <!--<Button Command="{Binding AppCenterCommand}" Content="个人中心"/>-->
+                                    <Button Command="{Binding LogoutComand}" Content="注销当前账户"/>
+                                </StackPanel>
+                            </materialDesign:PopupBox>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
                                 x:Name="btnMin"
                                 Content="—"
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}" />
-                            <Button
+                                <Button
                                 x:Name="btnMax"
                                 Content="☐"
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}" />
-                            <Button
+                                <Button
                                 x:Name="btnClose"
                                 Content="✕"
                                 Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Grid>
-            </materialDesign:ColorZone>
-            <ContentControl Grid.Row="1" Margin="0,0,0,20"
+                    </Grid>
+                </materialDesign:ColorZone>
+                <materialDesign:Card Padding="16,8" Height="64" DockPanel.Dock="Bottom" 
+                        materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                        materialDesign:ShadowAssist.ShadowEdges="Top">
+                    <UniformGrid Columns="3" Rows="1"  MaxWidth="1280" >
+                        <UniformGrid.Resources>
+                            <ResourceDictionary>
+                                <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}"
+                                       x:Key="ControlButton">
+                                    <Setter Property="Width" Value="38" />
+                                    <Setter Property="Height" Value="38" />
+                                </Style>
+                                <Style TargetType="materialDesign:PackIcon"
+                                       x:Key="ControlIcon">
+                                    <Setter Property="Width" Value="26" />
+                                    <Setter Property="Height" Value="26" />
+                                </Style>
+                            </ResourceDictionary>
+                        </UniformGrid.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="https://p2.music.126.net/UcMffoyG9Bt71ebi5QhqKg==/109951167283675260.jpg?param=224y224" />
+                            <UniformGrid Columns="1" Margin="10,0">
+                                <TextBlock Text="blah blah blah" VerticalAlignment="Center" Opacity=".88" FontSize="16" />
+                                <TextBlock Text="Reiley" VerticalAlignment="Center"  Opacity=".58" FontSize="12" />
+                            </UniformGrid>
+                            <Button Style="{StaticResource ControlButton}" >
+                                <materialDesign:PackIcon Kind="CardsHeartOutline" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Style="{StaticResource ControlButton}" >
+                                <materialDesign:PackIcon Kind="SkipPrevious" Width="26" Height="26" />
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignIconButton}" 
+                            Width="48" Height="48">
+                                <materialDesign:PackIcon Kind="Pause" Width="36" Height="36" />
+                                <!--<materialDesign:PackIcon Kind="Play" Width="28" Height="28" />-->
+                            </Button>
+                            <Button Style="{StaticResource ControlButton}"  Cursor="Hand">
+                                <materialDesign:PackIcon Kind="SkipNext" Width="26" Height="26" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Style="{StaticResource ControlButton}">
+                                <materialDesign:PackIcon Kind="PlaylistMusic" Style="{StaticResource ControlIcon}" />
+                            </Button>
+                            <Button Style="{StaticResource ControlButton}">
+                                <materialDesign:PackIcon Kind="RepeatVariant"  Style="{StaticResource ControlIcon}"/>
+                            </Button>
+                            <Button Style="{StaticResource ControlButton}">
+                                <materialDesign:PackIcon Kind="ShuffleVariant" Style="{StaticResource ControlIcon}"/>
+                            </Button>
+                            <Button Style="{StaticResource ControlButton}">
+                                <materialDesign:PackIcon Kind="VolumeHigh"  Style="{StaticResource ControlIcon}" />
+                            </Button>
+                            <Slider Minimum="0" Maximum="50" Value="35" Width="80" VerticalAlignment="Center" />
+                            <Button Style="{StaticResource ControlButton}"
+                                    Command="{Binding OpenPlayViewCommand}"
+                                    CommandParameter="{Binding ElementName=FullScreenRegionControl}">
+                                <materialDesign:PackIcon Kind="ChevronUp" Style="{StaticResource ControlIcon}"  />
+                            </Button>
+                        </StackPanel>
+                    </UniformGrid>
+                </materialDesign:Card>
+                <ContentControl Grid.Row="1" 
                             prism:RegionManager.RegionName="{x:Static ext:PrismManager.MainViewRegionName}" />
-            <ContentControl Grid.RowSpan="2" Visibility="Visible"
+
+                <!--<ContentControl Grid.Row="2" prism:RegionManager.RegionName="{x:Static ext:PrismManager.ControlsRegionName}" />-->
+            </DockPanel>
+            <ContentControl Visibility="Visible" x:Name="FullScreenRegionControl"
                             prism:RegionManager.RegionName="{x:Static ext:PrismManager.FullScreenRegionName}" />
-            <!--<ContentControl Grid.Row="2" prism:RegionManager.RegionName="{x:Static ext:PrismManager.ControlsRegionName}" />-->
         </Grid>
     </materialDesign:DialogHost>
 </Window>

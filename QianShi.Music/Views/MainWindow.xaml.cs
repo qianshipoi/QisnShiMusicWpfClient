@@ -1,9 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Regions;
-
-using QianShi.Music.Common.Models;
-using QianShi.Music.Extensions;
-
+﻿using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 
@@ -14,55 +9,30 @@ namespace QianShi.Music.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _isFullsScreen = false;
-        private double _width;
-        private double _height;
-        private double _top;
-        private double _left;
-
-
         public MainWindow()
         {
             InitializeComponent();
-            this.Loaded += (s, e) =>
-            {
-                _width = this.Width;
-                _height = this.Height;
-                _top = this.Top;
-                _left = this.Left;
-            };
+
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
+            this.MaxWidth = SystemParameters.MaximizedPrimaryScreenWidth;
+
             btnMin.Click += (s, e) => { this.WindowState = WindowState.Minimized; };
             btnMax.Click += (s, e) =>
             {
-                if (_isFullsScreen)
-                {
-                    this.Left = _left;
-                    this.Top = _top;
-                    this.Width = _width;
-                    this.Height = _height;
-                }
+                if (this.WindowState == WindowState.Maximized)
+                    this.WindowState = WindowState.Normal;
                 else
                 {
-                    this.Left = 0.0;
-                    this.Top = 0.0;
-                    this.Height = SystemParameters.WorkArea.Height;
-                    this.Width = SystemParameters.WorkArea.Width;
+                    this.WindowState = WindowState.Maximized;
                 }
-                _isFullsScreen = !_isFullsScreen;
-
-                //if (this.WindowState == WindowState.Maximized)
-                //    this.WindowState = WindowState.Normal;
-                //else
-                //{
-                //    this.WindowState = WindowState.Maximized;
-                //}
             };
             btnClose.Click += (s, e) =>
            {
-                //var dialogResult = await dialogHostService.Question("温馨提示", "确认退出系统?");
-                //if (dialogResult.Result != Prism.Services.Dialogs.ButtonResult.OK) return;
-                this.Close();
+               //var dialogResult = await dialogHostService.Question("温馨提示", "确认退出系统?");
+               //if (dialogResult.Result != Prism.Services.Dialogs.ButtonResult.OK) return;
+               this.Close();
            };
+
             ColorZone.MouseMove += (s, e) =>
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
@@ -70,7 +40,6 @@ namespace QianShi.Music.Views
                     this.DragMove();
                 }
             };
-
             ColorZone.MouseDoubleClick += (s, e) =>
             {
                 if (this.WindowState == WindowState.Normal)
@@ -79,5 +48,22 @@ namespace QianShi.Music.Views
                     this.WindowState = WindowState.Normal;
             };
         }
+
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+            public POINT(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+            public override string ToString() => "{" + X + "," + Y + "}";
+        }
+
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
     }
+
+
 }

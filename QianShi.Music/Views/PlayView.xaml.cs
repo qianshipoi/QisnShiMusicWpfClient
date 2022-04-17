@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -76,12 +77,13 @@ namespace QianShi.Music.Views
             LrcView.LrcRoll(me.Position.TotalMilliseconds);
         }
 
-        private void PlayView_Loaded(object sender, RoutedEventArgs e)
+        void PlayView_Loaded(object sender, RoutedEventArgs e)
         {
             _targetWindow = Window.GetWindow(this);
+            Margin = new Thickness(0, _targetWindow.Height, 0, 0);
         }
 
-        private void PlayView_MouseMove(object sender, MouseEventArgs e)
+        void PlayView_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -89,7 +91,7 @@ namespace QianShi.Music.Views
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        void Button_Click(object sender, RoutedEventArgs e)
         {
             if (_playing)
             {

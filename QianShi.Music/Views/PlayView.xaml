@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:QianShi.Music.Views"
              xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" 
+             mc:Ignorable="d" Visibility="{Binding Display,Converter={StaticResource BooleanToVisibilityConverter}}"
              d:DesignHeight="720" d:DesignWidth="1280">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="SkyBlue">
         <Grid.RowDefinitions>
@@ -50,24 +50,24 @@
                 </DockPanel>
                 <StackPanel Margin="0,18,0,0" Grid.Row="3" Grid.ColumnSpan="2" 
                             Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="MaterialDesignIconButton"
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
                             Width="30" Height="30">
                         <materialDesign:PackIcon Kind="RepeatVariant" Width="18" Height="18" />
                     </Button>
-                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="MaterialDesignIconButton"
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
                             Margin="16,0,8,0" Width="38" Height="38">
                         <materialDesign:PackIcon Kind="SkipPrevious" Width="26" Height="26" />
                     </Button>
-                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="MaterialDesignIconButton"
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
                             Width="48" Height="48" Click="Button_Click">
                         <materialDesign:PackIcon Kind="Pause" Width="36" Height="36" />
                         <!--<materialDesign:PackIcon Kind="Play" Width="28" Height="28" />-->
                     </Button>
-                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="MaterialDesignIconButton"
+                    <Button Style="{StaticResource MaterialDesignIconButton}" 
                             Margin="8,0,16,0" Width="38" Height="38" Cursor="Hand">
                         <materialDesign:PackIcon Kind="SkipNext" Width="26" Height="26" />
                     </Button>
-                    <Button Style="{StaticResource MaterialDesignIconButton}" ToolTip="MaterialDesignIconButton"
+                    <Button Style="{StaticResource MaterialDesignIconButton}"
                             Width="30" Height="30">
                         <materialDesign:PackIcon Kind="ShuffleVariant" Width="16" Height="16" />
                     </Button>
@@ -76,11 +76,14 @@
             </Grid>
         </StackPanel>
         <uc:LrcView x:Name="LrcView" Grid.RowSpan="2" Grid.Column="1" />
-        <!--<ListBox Grid.RowSpan="2" Grid.Column="1" Background="Wheat"
-                      ItemsSource="{Binding Lyrics}">
-            
-        </ListBox>-->
         <Rectangle HorizontalAlignment="Stretch" Grid.ColumnSpan="2" VerticalAlignment="Stretch" 
                    Fill="Transparent" MouseMove="PlayView_MouseMove" />
+        <Button Grid.Column="1" Grid.Row="1" Style="{StaticResource MaterialDesignIconButton}" 
+                ToolTip="MaterialDesignIconButton" Width="40" Height="40"
+                VerticalAlignment="Top" HorizontalAlignment="Right"
+                Margin="0,0,40,0" 
+                Command="{Binding CloseCommand}">
+            <materialDesign:PackIcon Kind="ChevronDown" FontWeight="Bold"  />
+        </Button>
     </Grid>
 </UserControl>

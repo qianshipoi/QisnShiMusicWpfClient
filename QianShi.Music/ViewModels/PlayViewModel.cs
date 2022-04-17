@@ -1,4 +1,5 @@
-﻿using Prism.Ioc;
+﻿using Prism.Commands;
+using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 
@@ -6,9 +7,8 @@ using QianShi.Music.Extensions;
 using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Windows.Threading;
+using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace QianShi.Music.ViewModels
 {
@@ -18,12 +18,44 @@ namespace QianShi.Music.ViewModels
         private readonly IRegionManager _regionManager;
         private ObservableCollection<Lyric> _lyrics;
         private PlayView? _playView = null;
+        private bool _display = false;
 
-        private DispatcherTimer _dt;
-        private bool _playing = false;
-        private bool _canChangProgressControlValue = true;
+        public bool Display
+        {
+            get => _display;
+            set
+            {
+                if (_playView != null && _display != value)
+                {
+                    var marginAnimation = new ThicknessAnimation();
+                    var window = Window.GetWindow(_playView);
+                    if (value)
+                    {
+                        SetProperty(ref _display, value);
+                        marginAnimation.From = new Thickness(0, window.Height, 0, 0);
+                        marginAnimation.To = new Thickness(0);
+                    }
+                    else
+                    {
+                        marginAnimation.From = new Thickness(0);
+                        marginAnimation.To = new Thickness(0, window.Height, 0, 0);
+                        marginAnimation.Completed += (s, e) => SetProperty(ref _display, value);
+                    }
+
+                    marginAnimation.Duration = TimeSpan.FromSeconds(0.5);
+
+                    _playView.BeginAnimation(FrameworkElement.MarginProperty, marginAnimation);
+                }
+                else
+                {
+                    SetProperty(ref _display, value);
+                }
+            }
+        }
 
         public ObservableCollection<Lyric> Lyrics { get => _lyrics; set => SetProperty(ref _lyrics, value); }
+
+        public DelegateCommand CloseCommand { get; private set; }
 
         public PlayViewModel(IContainerProvider provider,
             IRegionManager regionManager) : base(provider)
@@ -31,7 +63,7 @@ namespace QianShi.Music.ViewModels
             _lyrics = new ObservableCollection<Lyric>();
             _containerProvider = provider;
             _regionManager = regionManager;
-
+            CloseCommand = new DelegateCommand(() => Display = false);
         }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)

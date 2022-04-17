@@ -6,9 +6,12 @@ using Prism.Regions;
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
+using QianShi.Music.Views;
 
 using System;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
 {
@@ -35,6 +38,7 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand GoBackCommand { get; private set; }
         public DelegateCommand GoForwardCommand { get; private set; }
         public DelegateCommand LogoutComand { get; private set; }
+        public DelegateCommand<ContentControl> OpenPlayViewCommand { get; private set; }
 
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager)
@@ -54,9 +58,18 @@ namespace QianShi.Music.ViewModels
                     _journal.GoForward();
             });
             LogoutComand = new DelegateCommand(Logout);
+            OpenPlayViewCommand = new DelegateCommand<ContentControl>(OpenPlayView);
         }
 
-        private void Logout()
+        void OpenPlayView(ContentControl obj)
+        {
+            if (obj.Content is PlayView playView)
+            {
+                ((PlayViewModel)playView.DataContext).Display = true;
+            }
+        }
+
+        void Logout()
         {
             throw new NotImplementedException();
         }
@@ -68,7 +81,7 @@ namespace QianShi.Music.ViewModels
             MenuBars.Add(new MenuBar() { Icon = "NotebookPlus", Title = "音乐库", NameSpace = "LibraryView" });
         }
 
-        private void Navigate(MenuBar obj)
+        void Navigate(MenuBar obj)
         {
             if (obj == null || string.IsNullOrWhiteSpace(obj.NameSpace))
                 return;

@@ -71,7 +71,7 @@ namespace QianShi.Music.Common.UserControls
                     textBlock.MouseLeftButtonUp += (s, e) =>
                     {
                         if (TimeChangedEvent != null)
-                        { 
+                        {
                             var args = new TimeChangedEventArgs(time);
                             TimeChangedEvent(this, args);
                             _dt.Stop();
@@ -95,7 +95,9 @@ namespace QianShi.Music.Common.UserControls
         private void ResetLrcviewScroll()
         {
             //获得焦点歌词位置
+            if (foucslrc == null) return;
             GeneralTransform gf = foucslrc.LrcTb.TransformToVisual(LrcItemsControl);
+            if (gf != null) return;
             Point p = gf.Transform(new Point(0, 0));
             //滚动条当前位置
             Debug.WriteLine(ScrollViewerControl.VerticalOffset + "/" + p.Y);
