@@ -77,5 +77,12 @@ namespace QianShi.Music.Services
             var request = new RestRequest("/album/newest");
             return await Get<AlbumNewestResponse>(request) ?? new AlbumNewestResponse();
         }
+
+        public async Task<PlaylistDetailResponse> GetPlaylistDetailAsync(long playlistId)
+        {
+            var request = new RestRequest("/playlist/detail");
+            request.AddParameter("id",playlistId);
+            return await Get<PlaylistDetailResponse>(request) ?? new PlaylistDetailResponse();
+        }
     }
 }

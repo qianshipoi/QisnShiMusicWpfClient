@@ -55,5 +55,11 @@ namespace QianShi.Music.Services
         /// </summary>
         /// <returns></returns>
         Task<AlbumNewestResponse> GetAlbumNewestAsync();
+
+        /// <summary>
+        /// 获取歌单详情
+        /// </summary>
+        /// <returns></returns>
+        Task<PlaylistDetailResponse> GetPlaylistDetailAsync(long playlistId);
     }
 }

@@ -104,6 +104,9 @@
         }
     }
 
+    /// <summary>
+    /// 艺术家（歌手）
+    /// </summary>
     public class Artist
     {
         public long Img1v1Id { get; set; }

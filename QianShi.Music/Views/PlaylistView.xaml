@@ -7,10 +7,12 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
+            <conver:IsNullConverter x:Key="IsNullConverter" />
             <Style TargetType="Border" x:Key="PlaylistItemBorderStyle">
                 <Setter Property="Padding" Value="8" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -30,6 +32,33 @@
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}" />
             </Style>
+            <Style TargetType="Border" x:Key="PlaylistPicBorder" 
+                   BasedOn="{StaticResource SquareImageBorderStyle}">
+                <Setter Property="Background" Value="Gray" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Detail.PicUrl, Converter={StaticResource IsNullConverter}}" Value="False">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <ImageBrush Stretch="Fill" ImageSource="{Binding Detail.PicUrl}" />
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="Border" x:Key="PlaylistItemPicBorder" 
+                   BasedOn="{StaticResource SquareImageBorderStyle}">
+                <Setter Property="Background" Value="Gray" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding PicUrl, Converter={StaticResource IsNullConverter}}" Value="False">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <ImageBrush Stretch="Fill" ImageSource="{Binding PicUrl}" />
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <DataTemplate x:Key="PlaylistItemsControlDataTemplate">
                 <ContentControl>
                     <i:Interaction.Triggers>
@@ -50,14 +79,10 @@
                                         <ColumnDefinition Width="60" />
                                     </Grid.ColumnDefinitions>
                                     <Border Margin="0,0,20,0" HorizontalAlignment="Left" Width="48"
-                                    Style="{StaticResource SquareImageBorderStyle}" Cursor="Hand">
-                                        <Border.Background>
-                                            <ImageBrush ImageSource="https://oss.kuriyama.top/static/background.png" />
-                                        </Border.Background>
-                                    </Border>
+                                            Style="{StaticResource PlaylistItemPicBorder}" Cursor="Hand" />
                                     <StackPanel Grid.Column="1">
-                                        <TextBlock Text="说散就散" FontSize="18" x:Name="NameControl"/>
-                                        <TextBlock Text="JC陈咏桐" FontSize="13" Opacity=".68"
+                                        <TextBlock Text="{Binding Name}" FontSize="18" x:Name="NameControl"/>
+                                        <TextBlock Text="{Binding ArtistName}" FontSize="13" Opacity=".68"
                                                    Foreground="{Binding ElementName=NameControl,Path=Foreground}"/>
                                     </StackPanel>
                                     <TextBlock Grid.Column="2" Text="{Binding AlbumName}" FontSize="16" 
@@ -87,47 +112,57 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <uc:ScrollViewerAnimation>
-        <Border Padding="20" Background="White" MaxWidth="1280" >
-            <StackPanel >
-                <Grid Margin="0,0,0,72">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="288" />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Border Style="{StaticResource SquareImageBorderStyle}" Cursor="Hand" Margin="0,0,0,10">
-                        <Border.Background>
-                            <ImageBrush ImageSource="https://oss.kuriyama.top/static/background.png" />
-                        </Border.Background>
-                    </Border>
-                    <StackPanel Grid.Column="1" Margin="56,0,0,0" VerticalAlignment="Center">
-                        <TextBlock FontSize="36" FontWeight="Bold"  TextWrapping="WrapWithOverflow" Text="[流行点唱机] 2010年代华语热播 每日30首" />
-                        <TextBlock FontSize="18" FontWeight="Bold" Opacity=".68" Margin="0,24,0,0" Text="Playlist by 云音乐官方歌单" />
-                        <TextBlock FontSize="14" Margin="0,2,0,0" Opacity=".68" Text="最后更新于 2020年12月16日 · 30 首歌" />
-                        <TextBlock FontSize="14" Margin="0,24,0,0" Opacity=".68" TextWrapping="WrapWithOverflow" Text="转眼2010年代 已经成为过去 记忆中的十年 热播的华语流行 你曾听过哪些 会唱哪些 让流行点唱机 带你一起重温" />
-                        <StackPanel Orientation="Horizontal" Margin="0,32,0,0">
-                            <Button Margin="0,0,16,0" Padding="16,8" Height="Auto"
-                                    Command="{Binding PlayCommand}" 
-                                    CommandParameter="{Binding Playlists[0]}">
-                                <Button.Content>
-                                    <StackPanel Orientation="Horizontal">
-                                        <materialDesign:PackIcon Kind="Play" VerticalAlignment="Center" Height="24" Width="24"/>
-                                        <TextBlock FontSize="18" Text="播放" Margin="4,0,0,0" />
-                                    </StackPanel>
-                                </Button.Content>
-                            </Button>
-                            <Button Margin="0,0,16,0" Padding="8" Height="Auto" >
-                                <materialDesign:PackIcon Kind="CardsHeartOutline"  Height="24" Width="24" />
-                            </Button>
-                            <Button Padding="8" Height="Auto" >
-                                <materialDesign:PackIcon Kind="DotsHorizontal"  Height="24" Width="24" />
-                            </Button>
-                        </StackPanel>
-                    </StackPanel>
-                </Grid>
-                <ItemsControl ItemsSource="{Binding Playlists}" 
-                              ItemTemplate="{StaticResource PlaylistItemsControlDataTemplate}" />
+    <materialDesign:DialogHost IsOpen="{Binding Loading}">
+        <materialDesign:DialogHost.DialogContent>
+            <StackPanel Margin="16">
+                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
+                                    HorizontalAlignment="Center" Margin="16"
+                                    IsIndeterminate="True"
+                                    Value="0" />
+                <TextBlock Text="Loading..." HorizontalAlignment="Center"  
+                           Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
             </StackPanel>
-        </Border>
-    </uc:ScrollViewerAnimation>
+        </materialDesign:DialogHost.DialogContent>
+        <uc:ScrollViewerAnimation>
+            <Border Padding="20" Background="White" MaxWidth="1280" >
+                <StackPanel >
+                    <Grid Margin="0,0,0,72">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="288" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Border Style="{StaticResource PlaylistPicBorder}" Cursor="Hand" Margin="0,0,0,10" />
+
+                        <StackPanel Grid.Column="1" Margin="56,0,0,0" VerticalAlignment="Center">
+                            <TextBlock FontSize="36" FontWeight="Bold"  TextWrapping="WrapWithOverflow" Text="{Binding Detail.Name}" />
+                            <TextBlock FontSize="18" FontWeight="Bold" Opacity=".68" Margin="0,24,0,0" Text="Playlist by 云音乐官方歌单" />
+                            <TextBlock FontSize="14" Margin="0,2,0,0" Opacity=".68" 
+                                   Text="{Binding Detail.LastUpdateTime,StringFormat=最后更新于 {0} · 30 首歌}" />
+                            <TextBlock FontSize="14" Margin="0,24,0,0" Opacity=".68" TextWrapping="WrapWithOverflow" 
+                                   Text="{Binding Detail.Description}" />
+                            <StackPanel Orientation="Horizontal" Margin="0,32,0,0">
+                                <Button Margin="0,0,16,0" Padding="16,8" Height="Auto"
+                                    Command="{Binding PlayCommand}" >
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Play" VerticalAlignment="Center" Height="24" Width="24"/>
+                                            <TextBlock FontSize="18" Text="播放" Margin="4,0,0,0" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button Margin="0,0,16,0" Padding="8" Height="Auto" >
+                                    <materialDesign:PackIcon Kind="CardsHeartOutline"  Height="24" Width="24" />
+                                </Button>
+                                <Button Padding="8" Height="Auto" >
+                                    <materialDesign:PackIcon Kind="DotsHorizontal"  Height="24" Width="24" />
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                    <ItemsControl ItemsSource="{Binding Playlists}" 
+                              ItemTemplate="{StaticResource PlaylistItemsControlDataTemplate}" />
+                </StackPanel>
+            </Border>
+        </uc:ScrollViewerAnimation>
+    </materialDesign:DialogHost>
 </UserControl>

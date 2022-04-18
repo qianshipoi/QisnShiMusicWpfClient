@@ -35,6 +35,7 @@ namespace QianShi.Music.Common.Models.Response
         public Creator? Creator { get; set; }
         public List<Creator>? Subscribers { get; set; }
         public Creator? Subscribed { get; set; }
+        public List<Track> Tracks { get; set; } = new List<Track>();
         public string? CommentThreadId { get; set; }
         public bool NewImported { get; set; }
         public int AdType { get; set; }
@@ -48,6 +49,34 @@ namespace QianShi.Music.Common.Models.Response
         public string? CoverImgId_str { get; set; }
         public string? Alg { get; set; }
         public long CommentCount { get; set; }
+
+        public class Track
+        {
+            public long Id { get; set; }
+            public string Name { get; set; } = null!;
+            [JsonPropertyName("ar")]
+            public List<Artist> Artists { get; set; } = new List<Artist>();
+            [JsonPropertyName("al")]
+            public Album Album { get; set; } = new Album();
+            [JsonPropertyName("dt")]
+            public long Size { get; set; }  // 毫秒
+            public long MV { get; set; }
+        }
+
+        public class Artist
+        {
+            public long Id { get; set; }
+            public string Name { get; set; } = null!;
+            public List<string> Alias { get;set; } = new List<string>();
+        }
+
+        public class Album
+        {
+            public long Id { get; set; }
+            public string Name { get; set; } = null!;
+            public string PicUrl { get; set; } = null!;
+        }
+
     }
     public class RecommendInfo
     {

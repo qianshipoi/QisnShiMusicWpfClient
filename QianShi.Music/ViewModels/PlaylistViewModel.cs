@@ -3,67 +3,129 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 
+using QianShi.Music.Services;
+
 using System.Collections.ObjectModel;
 
 namespace QianShi.Music.ViewModels
 {
-    public class Playlist1 : BindableBase
+    public class PlaylistItem : BindableBase
     {
-        public string AlbumName { get; set; }
+        public long Id { get; set; }
+        public string? PicUrl { get; set; } = "https://oss.kuriyama.top/static/background.png";
+        public string Name { get; set; } = null!;
+        public string ArtistName { get; set; } = null!;
+        public string AlbumName { get; set; } = null!;
         public long Size { get; set; }
         private bool _isPlaying = false;
         public bool IsPlaying { get => _isPlaying; set => SetProperty(ref _isPlaying, value); }
     }
 
+    public class PlaylistDetail : BindableBase
+    {
+        public long Id { get; set; }
+        private string? _picUrl = "https://oss.kuriyama.top/static/background.png";
+        public string? PicUrl { get => _picUrl; set => SetProperty(ref _picUrl, value); }
+        private string? _name;
+        public string? Name { get => _name; set => SetProperty(ref _name, value); }
+        private long _lastUpdateTime;
+        public long LastUpdateTime { get => _lastUpdateTime; set => SetProperty(ref _lastUpdateTime, value); }
+        private string? _description;
+        public string? Description { get => _description; set => SetProperty(ref _description, value); }
+        private int _count;
+        public int Count { get => _count; set => SetProperty(ref _count, value); }
+    }
+
     public class PlaylistViewModel : NavigationViewModel
     {
+        private IPlaylistService _playlistService;
         private string _title;
-        private ObservableCollection<Playlist1> _playlists;
+        private bool _loading;
+        private ObservableCollection<PlaylistItem> _playlists;
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
         }
-        public ObservableCollection<Playlist1> Playlists
+        public ObservableCollection<PlaylistItem> Playlists
         {
             get => _playlists;
             set => SetProperty(ref _playlists, value);
         }
+
+        private PlaylistDetail _detail = new PlaylistDetail();
+
+        public bool Loading { get => _loading; set => SetProperty(ref _loading, value); }
+
+        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
+
+
         /// <summary>
         /// 播放歌单
         /// </summary>
-        public DelegateCommand<Playlist1> PlayCommand { get; private set; }
+        public DelegateCommand<PlaylistItem?> PlayCommand { get; private set; }
         /// <summary>
         /// 立即播放
         /// </summary>
-        public DelegateCommand<Playlist1> PlayImmediatelyCommand { get; private set; }
+        public DelegateCommand<PlaylistItem?> PlayImmediatelyCommand { get; private set; }
 
-        public PlaylistViewModel(IContainerProvider containerProvider) : base(containerProvider)
+        public PlaylistViewModel(IContainerProvider containerProvider,
+            IPlaylistService playlistService) : base(containerProvider)
         {
             _title = string.Empty;
-            _playlists = new ObservableCollection<Playlist1>();
-            PlayCommand = new DelegateCommand<Playlist1>(Play);
-            PlayImmediatelyCommand = new DelegateCommand<Playlist1>(Play);
+            _playlists = new ObservableCollection<PlaylistItem>();
+            PlayCommand = new DelegateCommand<PlaylistItem?>(Play);
+            PlayImmediatelyCommand = new DelegateCommand<PlaylistItem?>(Play);
+            _playlistService = playlistService;
         }
 
-        void Play(Playlist1 palylist)
+        void Play(PlaylistItem? palylist)
         {
-            Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
-            palylist.IsPlaying = true;
-        }
-
-        public override void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            var PlaylistId = navigationContext.Parameters.GetValue<long>("PlaylistId");
-            Title = PlaylistId.ToString();
-
-            for (int i = 0; i < 10; i++)
+            if (palylist != null)
             {
-                Playlists.Add(new Playlist1
+                Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
+                palylist.IsPlaying = true;
+            }
+            else
+            {
+                Playlists.First().IsPlaying = false;
+            }
+        }
+
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            var playlistId = navigationContext.Parameters.GetValue<long>("PlaylistId");
+            Title = playlistId.ToString();
+            if (Detail.Id != playlistId)
+            {
+                Loading = true;
+                var response = await _playlistService.GetPlaylistDetailAsync(playlistId);
+                if (response.Code == 200)
                 {
-                    AlbumName = $"专辑{i}",
-                    Size = i * 1000,
-                });
+                    Detail.Id = response.PlaylistDetail.Id;
+                    Detail.Name = response.PlaylistDetail.Name;
+                    Detail.Description = response.PlaylistDetail.Description ?? String.Empty;
+                    Detail.LastUpdateTime = response.PlaylistDetail.UpdateTime;
+                    Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
+                    Detail.Count = response.PlaylistDetail.TrackCount;
+                    _playlists.Clear();
+
+                    foreach (var track in response.PlaylistDetail.Tracks)
+                    {
+                        _playlists.Add(new PlaylistItem
+                        {
+                            Id = track.Id,
+                            AlbumName = track.Album.Name,
+                            ArtistName = track.Artists[0].Name,
+                            Name = track.Name,
+                            IsPlaying = false,
+                            PicUrl = track.Album.PicUrl + "?param=48y48",
+                            Size = track.Size
+                        });
+                        await Task.Delay(20);
+                    }
+                }
+                Loading = false;
             }
 
             base.OnNavigatedTo(navigationContext);
