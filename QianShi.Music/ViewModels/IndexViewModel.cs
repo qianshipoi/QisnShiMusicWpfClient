@@ -1,10 +1,12 @@
 ﻿using Prism.Ioc;
 using Prism.Regions;
 
+using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace QianShi.Music.ViewModels
 {
@@ -12,18 +14,19 @@ namespace QianShi.Music.ViewModels
     public class IndexViewModel : NavigationViewModel
     {
         private readonly IMusicService _musicService;
+        private readonly IPlaylistService _playlistService;
         private ObservableCollection<PlayList> _applyMusic;
-        private ObservableCollection<PlayList> _recommendPlayList;
+        private ObservableCollection<IPlaylist> _recommendPlayList;
         private ObservableCollection<Singer> _recommendSingerList;
-        private ObservableCollection<Album> _newAlbumList;
-        private ObservableCollection<Ranking> _rankingList;
-        
+        private ObservableCollection<IPlaylist> _newAlbumList;
+        private ObservableCollection<IPlaylist> _rankingList;
+
         public ObservableCollection<PlayList> ApplyMusic
         {
             get => _applyMusic;
             set { _applyMusic = value; RaisePropertyChanged(); }
         }
-        public ObservableCollection<PlayList> RecommendPlayList
+        public ObservableCollection<IPlaylist> RecommendPlayList
         {
             get => _recommendPlayList;
             set { _recommendPlayList = value; RaisePropertyChanged(); }
@@ -33,26 +36,27 @@ namespace QianShi.Music.ViewModels
             get => _recommendSingerList;
             set { _recommendSingerList = value; RaisePropertyChanged(); }
         }
-        public ObservableCollection<Album> NewAlbumList
+        public ObservableCollection<IPlaylist> NewAlbumList
         {
             get => _newAlbumList;
             set { _newAlbumList = value; RaisePropertyChanged(); }
         }
-        public ObservableCollection<Ranking> RankingList
+        public ObservableCollection<IPlaylist> RankingList
         {
             get => _rankingList;
-            set { _rankingList = value; RaisePropertyChanged(); }   
+            set { _rankingList = value; RaisePropertyChanged(); }
         }
 
         public IndexViewModel(IContainerProvider provider,
-            IMusicService musicService) : base(provider)
+            IMusicService musicService, IPlaylistService playlistService) : base(provider)
         {
             _musicService = musicService;
             _applyMusic = new ObservableCollection<PlayList>();
-            _recommendPlayList = new ObservableCollection<PlayList>();
+            _recommendPlayList = new ObservableCollection<IPlaylist>();
             _recommendSingerList = new ObservableCollection<Singer>();
-            _newAlbumList = new ObservableCollection<Album>();
-            _rankingList = new ObservableCollection<Ranking>();
+            _newAlbumList = new ObservableCollection<IPlaylist>();
+            _rankingList = new ObservableCollection<IPlaylist>();
+            _playlistService = playlistService;
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
@@ -61,23 +65,68 @@ namespace QianShi.Music.ViewModels
             _applyMusic.Clear();
             _applyMusic.AddRange(music);
 
-            var recommendPlayList = await _musicService.GetRecommendMusic();
-            _recommendPlayList.Clear();
-            _recommendPlayList.AddRange(recommendPlayList);
+            var actions = new List<Action>();
+
+            if (_recommendPlayList.Count == 0)
+            {
+                actions.Add(async () =>
+                {
+                    var recommendPlaylistResponse = await _playlistService.GetPersonalizedAsync(10);
+                    if (recommendPlaylistResponse != null && recommendPlaylistResponse.Code == 200)
+                    {
+                        await UpdatePlaylist(_recommendPlayList, recommendPlaylistResponse.Result);
+                    }
+                });
+            }
 
             var recommendSingerList = await _musicService.GetRecommmendSinger();
-            _recommendSingerList.Clear();   
+            _recommendSingerList.Clear();
             _recommendSingerList.AddRange(recommendSingerList);
 
-            var newAlbumList = await _musicService.GetNewAlbum();
-            _newAlbumList.Clear();
-            _newAlbumList.AddRange(newAlbumList);
+            if (_newAlbumList.Count == 0)
+            {
+                actions.Add(async () =>
+                {
+                    var newAlbumsResponse = await _playlistService.GetAlbumNewestAsync();
+                    if (newAlbumsResponse.Code == 200)
+                    {
+                        await UpdatePlaylist(_newAlbumList, newAlbumsResponse.Albums.Take(10));
+                    }
+                });
+            }
 
-            var rankingList = await _musicService.GetRanking();
-            _rankingList.Clear();
-            _rankingList.AddRange(rankingList);
+            if (_rankingList.Count == 0)
+            {
+                actions.Add(async () =>
+                {
+                    var rankingResponse = await _playlistService.GetToplistAsync();
+                    if (rankingResponse.Code == 200)
+                    {
+                        await UpdatePlaylist(_rankingList, rankingResponse.List.Take(10));
+                    }
+                });
+            }
+
+            Parallel.For(0, actions.Count, i => actions[i].Invoke());
 
             base.OnNavigatedTo(navigationContext);
+        }
+
+        private async Task UpdatePlaylist(ObservableCollection<IPlaylist> source, IEnumerable<IPlaylist> target)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                source.Clear();
+                int i = 0;
+                foreach (var sourceItem in target.Where(x => !string.IsNullOrWhiteSpace(x.CoverImgUrl)))
+                {
+                    sourceItem.CoverImgUrl += "?param=200y200";
+                    source.Add(sourceItem);
+                    if (i % 5 == 0)
+                        await Task.Delay(20);
+                    i++;
+                }
+            });
         }
     }
 }

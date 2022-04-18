@@ -8,17 +8,22 @@ namespace QianShi.Music.Services
 {
     public class PlaylistService : IPlaylistService
     {
+        private static RestClient _client => new RestClient(new RestClientOptions("https://netease-cloud-music-api-qianshi.vercel.app")
+        {
+            Timeout = -1
+        });
+
         private static Task<T?> Get<T>(RestRequest request)
         {
-            var client = new RestClient(new RestClientOptions("https://netease-cloud-music-api-qianshi.vercel.app")
-            {
-                Timeout = -1
-            });
-            return client.GetAsync<T>(request);
+            //var client = new RestClient(new RestClientOptions("https://netease-cloud-music-api-qianshi.vercel.app")
+            //{
+            //    Timeout = -1
+            //});
+            return _client.GetAsync<T>(request);
         }
 
         public async Task<CatlistResponse> GetCatlistAsync()
-            => await Get<CatlistResponse>(new RestRequest("/playlist/catlist")) 
+            => await Get<CatlistResponse>(new RestRequest("/playlist/catlist"))
             ?? new CatlistResponse();
 
         public Task<PlaylistHighqualityTagsResponse> GetPlaylistHighqualityTagsAsync()
@@ -51,7 +56,8 @@ namespace QianShi.Music.Services
         public async Task<PersonalizedResponse> GetPersonalizedAsync(int? limit)
         {
             var request = new RestRequest("/personalized");
-            request.AddQueryParameters(new { limit });
+            if (limit != null)
+                request.AddQueryParameter<int>("limit", limit.Value);
             return await Get<PersonalizedResponse>(request) ?? new PersonalizedResponse();
         }
 
@@ -64,6 +70,12 @@ namespace QianShi.Music.Services
         public Task<PlaylistHotResponse> GetHotAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<AlbumNewestResponse> GetAlbumNewestAsync()
+        {
+            var request = new RestRequest("/album/newest");
+            return await Get<AlbumNewestResponse>(request) ?? new AlbumNewestResponse();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
 
+using System.ComponentModel;
+
 namespace QianShi.Music.Services
 {
     public interface IPlaylistService
@@ -48,5 +50,10 @@ namespace QianShi.Music.Services
         /// </summary>
         /// <returns></returns>
         Task<ToplistResponse> GetToplistAsync();
+        /// <summary>
+        /// 最新专辑
+        /// </summary>
+        /// <returns></returns>
+        Task<AlbumNewestResponse> GetAlbumNewestAsync();
     }
 }

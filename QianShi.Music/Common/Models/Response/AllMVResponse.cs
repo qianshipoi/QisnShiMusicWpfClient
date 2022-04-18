@@ -5,10 +5,11 @@
         public int Code { get; set; }
         public long Count { get; set; }
         public bool HasMore { get; set; }
-        public List<MV>? Data { get; set; }
+        public List<MV> Data { get; set; } = new List<MV>();
+
         public class MV
         {
-            public long Id{ get; set; }
+            public long Id { get; set; }
             public string? Cover { get; set; }
             public string? Name { get; set; }
             public long PlayCount { get; set; }
@@ -19,7 +20,7 @@
             public long Duration { get; set; }
             public long Mark { get; set; }
             public bool Subed { get; set; }
-            public List<Artist>? Artists { get; set; }
+            public List<Artist> Artists { get; set; } = new List<Artist>();
         }
 
         public class Artist
@@ -30,5 +31,4 @@
             public List<string>? TransNames { get; set; }
         }
     }
-
 }

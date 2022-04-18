@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <uc:ScrollViewerAnimation >
-        <StackPanel VerticalAlignment="Stretch" MaxWidth="1280">
+        <StackPanel VerticalAlignment="Stretch" MaxWidth="1280" Background="White">
             <TextBlock Margin="20,0" Text="by Apple Music" FontSize="28" FontWeight="Bold" />
             <ItemsControl ItemsSource="{Binding ApplyMusic}" Margin="0, 20">
                 <ItemsControl.ItemsPanel>
@@ -38,7 +38,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <uc:MusicCard Margin="20, 10" Cover="{Binding Cover}" Title="{Binding Title}" Description="{Binding Description}" />
+                            <uc:PlaylistCard Margin="20, 10" Cover="{Binding CoverImgUrl}" Playlist="{Binding}"
+                                          Title="{Binding Name}" Description="{Binding Copywriter}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -143,7 +144,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <uc:MusicCard Margin="20, 10" Cover="{Binding Cover}" Title="{Binding Name}" Description="{Binding Singer.Name}" />
+                            <uc:PlaylistCard Margin="20, 10" Cover="{Binding CoverImgUrl}" Playlist="{Binding}"
+                                             Title="{Binding Name}" Description="{Binding Artist.Name}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -161,7 +163,8 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <uc:MusicCard Margin="20, 10" Cover="{Binding Cover}" Title="{Binding Name}" Description="{Binding Description}" />
+                            <uc:PlaylistCard Margin="20, 10" Cover="{Binding CoverImgUrl}"  Playlist="{Binding}"
+                                          Title="{Binding Name}" Description="{Binding UpdateFrequency}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

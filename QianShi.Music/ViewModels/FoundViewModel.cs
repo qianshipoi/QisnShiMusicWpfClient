@@ -96,7 +96,6 @@ namespace QianShi.Music.ViewModels
         /// <summary>
         /// 更多歌单
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
         async void MorePlaylist(ItemsControl el)
         {
             if (_currentCat != null)
@@ -131,7 +130,7 @@ namespace QianShi.Music.ViewModels
             if (isClear)
                 Playlists.Clear();
             int i = 0;
-            foreach (var sourceItem in source)
+            foreach (var sourceItem in source.Where(x => !string.IsNullOrWhiteSpace(x.CoverImgUrl)))
             {
                 sourceItem.CoverImgUrl += "?param=200y200";
                 Playlists.Add(sourceItem);
@@ -170,6 +169,7 @@ namespace QianShi.Music.ViewModels
             var response = await _playlistService.GetPersonalizedAsync();
             if (response != null)
             {
+                More = false;
                 await UpdatePalylist(response.Result, true);
                 More = false;
             }
@@ -198,7 +198,7 @@ namespace QianShi.Music.ViewModels
             _currentCat = cat;
             _offset = 0;
             _before = 0;
-            _more = false;
+            More = false;
 
             await CallApi(cat, true);
 

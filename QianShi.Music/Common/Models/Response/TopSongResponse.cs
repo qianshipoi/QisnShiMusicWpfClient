@@ -102,22 +102,23 @@
             public long Size { get; set; }
             public string? PicId_str { get; set; }
         }
-        public class Artist
-        {
-            public long Img1v1Id { get; set; }
-            public long TopicPerson { get; set; }
-            public long PicId { get; set; }
-            public string? Trans { get; set; }
-            public long AlbumSize { get; set; }
-            public string? Img1v1Url { get; set; }
-            public string? PicUrl { get; set; }
-            public bool Followed { get; set; }
-            public string? BriefDesc { get; set; }
-            public List<string>? Alias { get; set; }
-            public long MusicSize { get; set; }
-            public string? Name { get; set; }
-            public long Id { get; set; }
-            public string? Img1v1Id_str { get; set; }
-        }
+    }
+
+    public class Artist
+    {
+        public long Img1v1Id { get; set; }
+        public long TopicPerson { get; set; }
+        public long PicId { get; set; }
+        public string? Trans { get; set; }
+        public long AlbumSize { get; set; }
+        public string? Img1v1Url { get; set; }
+        public string? PicUrl { get; set; }
+        public bool Followed { get; set; }
+        public string? BriefDesc { get; set; }
+        public List<string>? Alias { get; set; }
+        public long MusicSize { get; set; }
+        public string? Name { get; set; }
+        public long Id { get; set; }
+        public string? Img1v1Id_str { get; set; }
     }
 }

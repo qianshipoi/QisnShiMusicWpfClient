@@ -1,5 +1,4 @@
-﻿using Prism.DryIoc;
-using Prism.Ioc;
+﻿using Prism.Ioc;
 
 using QianShi.Music.Common;
 using QianShi.Music.Services;
