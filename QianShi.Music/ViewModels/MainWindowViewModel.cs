@@ -8,9 +8,7 @@ using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Views;
 
-using System;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
@@ -27,19 +25,16 @@ namespace QianShi.Music.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-
         public ObservableCollection<MenuBar> MenuBars
         {
             get { return menuBars; }
             set { menuBars = value; RaisePropertyChanged(); }
         }
-
         public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
         public DelegateCommand GoBackCommand { get; private set; }
         public DelegateCommand GoForwardCommand { get; private set; }
         public DelegateCommand LogoutComand { get; private set; }
         public DelegateCommand<ContentControl> OpenPlayViewCommand { get; private set; }
-
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager)
         {
@@ -86,10 +81,7 @@ namespace QianShi.Music.ViewModels
             if (obj == null || string.IsNullOrWhiteSpace(obj.NameSpace))
                 return;
 
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(obj.NameSpace, back =>
-            {
-                _journal = back.Context.NavigationService.Journal;
-            });
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(obj.NameSpace);
         }
 
         /// <summary>
@@ -98,7 +90,10 @@ namespace QianShi.Music.ViewModels
         public void Configure()
         {
             CreateMenuBar();
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("IndexView");
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(MenuBars[0].NameSpace, back =>
+            {
+                _journal = back.Context.NavigationService.Journal;
+            });
             _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
         }
     }

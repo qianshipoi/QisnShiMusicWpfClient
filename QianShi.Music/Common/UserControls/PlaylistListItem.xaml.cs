@@ -27,7 +27,10 @@ namespace QianShi.Music.Common.UserControls
         }
 
         public static readonly DependencyProperty PlaylistItemProperty =
-            DependencyProperty.Register(nameof(Item), typeof(PlaylistItem), typeof(PlaylistListItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Item), typeof(PlaylistItem), typeof(PlaylistListItem), new PropertyMetadata(new PlaylistItem
+            {
+                PicUrl = "https://oss.kuriyama.top/static/background.png"
+            }));
 
         public PlaylistListItem()
         {

@@ -1,7 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
-using Prism.Services.Dialogs;
 
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;

@@ -39,7 +39,8 @@
                     <DataTemplate>
                         <StackPanel>
                             <uc:PlaylistCard Margin="20, 10" Cover="{Binding CoverImgUrl}" Playlist="{Binding}"
-                                          Title="{Binding Name}" Description="{Binding Copywriter}" />
+                                             OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand,RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
+                                             Title="{Binding Name}" Description="{Binding Copywriter}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -145,6 +146,7 @@
                     <DataTemplate>
                         <StackPanel>
                             <uc:PlaylistCard Margin="20, 10" Cover="{Binding CoverImgUrl}" Playlist="{Binding}"
+                                             OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand,RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
                                              Title="{Binding Name}" Description="{Binding Artist.Name}" />
                         </StackPanel>
                     </DataTemplate>
@@ -164,7 +166,8 @@
                     <DataTemplate>
                         <StackPanel>
                             <uc:PlaylistCard Margin="20, 10" Cover="{Binding CoverImgUrl}"  Playlist="{Binding}"
-                                          Title="{Binding Name}" Description="{Binding UpdateFrequency}" />
+                                             OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand,RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
+                                             Title="{Binding Name}" Description="{Binding UpdateFrequency}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

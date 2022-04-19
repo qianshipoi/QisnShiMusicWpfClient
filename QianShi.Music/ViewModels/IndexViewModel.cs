@@ -1,8 +1,10 @@
-﻿using Prism.Ioc;
+﻿using Prism.Commands;
+using Prism.Ioc;
 using Prism.Regions;
 
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
@@ -14,6 +16,7 @@ namespace QianShi.Music.ViewModels
     public class IndexViewModel : NavigationViewModel
     {
         private readonly IMusicService _musicService;
+        private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
         private ObservableCollection<PlayList> _applyMusic;
         private ObservableCollection<IPlaylist> _recommendPlayList;
@@ -46,17 +49,28 @@ namespace QianShi.Music.ViewModels
             get => _rankingList;
             set { _rankingList = value; RaisePropertyChanged(); }
         }
+        public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
 
         public IndexViewModel(IContainerProvider provider,
-            IMusicService musicService, IPlaylistService playlistService) : base(provider)
+            IMusicService musicService, IPlaylistService playlistService, IRegionManager regionManager) : base(provider)
         {
             _musicService = musicService;
+            _playlistService = playlistService;
             _applyMusic = new ObservableCollection<PlayList>();
             _recommendPlayList = new ObservableCollection<IPlaylist>();
             _recommendSingerList = new ObservableCollection<Singer>();
             _newAlbumList = new ObservableCollection<IPlaylist>();
             _rankingList = new ObservableCollection<IPlaylist>();
-            _playlistService = playlistService;
+            OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
+            _regionManager = regionManager;
+        }
+
+        private void OpenPlaylist(IPlaylist obj)
+        {
+            var parameters = new NavigationParameters();
+            parameters.Add("PlaylistId", obj.Id);
+
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("PlaylistView", parameters);
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
