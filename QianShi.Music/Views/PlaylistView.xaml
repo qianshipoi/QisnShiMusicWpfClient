@@ -12,7 +12,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
-            <conver:IsNullConverter x:Key="IsNullConverter" />
             <Style TargetType="Border" x:Key="PlaylistItemBorderStyle">
                 <Setter Property="Padding" Value="8" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -27,89 +26,6 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-            <Style TargetType="Border" x:Key="SquareImageBorderStyle">
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Height" Value="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}" />
-            </Style>
-            <Style TargetType="Border" x:Key="PlaylistPicBorder" 
-                   BasedOn="{StaticResource SquareImageBorderStyle}">
-                <Setter Property="Background" Value="Gray" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Detail.PicUrl, Converter={StaticResource IsNullConverter}}" Value="False">
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <ImageBrush Stretch="Fill" ImageSource="{Binding Detail.PicUrl}" />
-                            </Setter.Value>
-                        </Setter>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-            <Style TargetType="Border" x:Key="PlaylistItemPicBorder" 
-                   BasedOn="{StaticResource SquareImageBorderStyle}">
-                <Setter Property="Background" Value="Gray" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding PicUrl, Converter={StaticResource IsNullConverter}}" Value="False">
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <ImageBrush Stretch="Fill" ImageSource="{Binding PicUrl}" />
-                            </Setter.Value>
-                        </Setter>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <DataTemplate x:Key="PlaylistItemsControlDataTemplate">
-                <ContentControl>
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseDoubleClick" >
-                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistView},Path=DataContext.PlayImmediatelyCommand}" 
-                                                   CommandParameter="{Binding}"/>
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                    <ContentControl.Template>
-                        <ControlTemplate>
-                            <Border Style="{StaticResource PlaylistItemBorderStyle}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="68" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="40" />
-                                        <ColumnDefinition Width="60" />
-                                    </Grid.ColumnDefinitions>
-                                    <Border Margin="0,0,20,0" HorizontalAlignment="Left" Width="48"
-                                            Style="{StaticResource PlaylistItemPicBorder}" Cursor="Hand" />
-                                    <StackPanel Grid.Column="1">
-                                        <TextBlock Text="{Binding Name}" FontSize="18" x:Name="NameControl"/>
-                                        <TextBlock Text="{Binding ArtistName}" FontSize="13" Opacity=".68"
-                                                   Foreground="{Binding ElementName=NameControl,Path=Foreground}"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="2" Text="{Binding AlbumName}" FontSize="16" 
-                                               Foreground="{Binding ElementName=NameControl,Path=Foreground}"
-                                               VerticalAlignment="Center" Opacity="0.88" />
-                                    <materialDesign:PackIcon Grid.Column="3" Kind="CardsHeartOutline" 
-                                                             x:Name="LikeControl" Visibility="Collapsed"
-                                                             Foreground="#335eea" Opacity=".88" Width="20" Height="20"
-                                                             VerticalAlignment="Center" HorizontalAlignment="Right" />
-                                    <TextBlock Grid.Column="4" Text="{Binding Size}" FontSize="16" 
-                                               VerticalAlignment="Center" HorizontalAlignment="Right" 
-                                               Foreground="{Binding ElementName=NameControl,Path=Foreground}"
-                                               Margin="0,0,10,0" Opacity="0.88" />
-                                </Grid>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Visibility"  Value="Visible" TargetName="LikeControl"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding IsPlaying}" Value="True">
-                                    <Setter Property="Foreground" Value="#335eea" TargetName="NameControl" />
-                                </DataTrigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </ContentControl.Template>
-                </ContentControl>
-            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <materialDesign:DialogHost IsOpen="{Binding Loading}">
@@ -131,7 +47,12 @@
                             <ColumnDefinition Width="288" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Border Style="{StaticResource PlaylistPicBorder}" Cursor="Hand" Margin="0,0,0,10" />
+                        <Border  Cursor="Hand" Margin="0,0,0,10" CornerRadius="10" BorderThickness="0"
+                            Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"  >
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding Path=Detail.PicUrl}" />
+                            </Border.Background>
+                        </Border>
 
                         <StackPanel Grid.Column="1" Margin="56,0,0,0" VerticalAlignment="Center">
                             <TextBlock FontSize="36" FontWeight="Bold"  TextWrapping="WrapWithOverflow" Text="{Binding Detail.Name}" />
@@ -159,8 +80,14 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-                    <ItemsControl ItemsSource="{Binding Playlists}" 
-                              ItemTemplate="{StaticResource PlaylistItemsControlDataTemplate}" />
+                    <ItemsControl ItemsSource="{Binding Playlists}" >
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <uc:PlaylistListItem Item="{Binding}"
+                                                     PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayImmediatelyCommand}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </Border>
         </uc:ScrollViewerAnimation>

@@ -6,6 +6,8 @@ using Prism.Regions;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace QianShi.Music.ViewModels
 {
@@ -13,6 +15,13 @@ namespace QianShi.Music.ViewModels
     {
         public long Id { get; set; }
         public string? PicUrl { get; set; } = "https://oss.kuriyama.top/static/background.png";
+
+        private ImageSource? _picImageSource;
+        public ImageSource? PicImageSource
+        {
+            get => _picImageSource;
+            set => SetProperty(ref _picImageSource, value);
+        }
         public string Name { get; set; } = null!;
         public string ArtistName { get; set; } = null!;
         public string AlbumName { get; set; } = null!;
@@ -58,8 +67,6 @@ namespace QianShi.Music.ViewModels
         public bool Loading { get => _loading; set => SetProperty(ref _loading, value); }
 
         public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
-
-
         /// <summary>
         /// 播放歌单
         /// </summary>
@@ -112,7 +119,7 @@ namespace QianShi.Music.ViewModels
 
                     foreach (var track in response.PlaylistDetail.Tracks)
                     {
-                        _playlists.Add(new PlaylistItem
+                        var playlistItem = new PlaylistItem
                         {
                             Id = track.Id,
                             AlbumName = track.Album.Name,
@@ -121,7 +128,12 @@ namespace QianShi.Music.ViewModels
                             IsPlaying = false,
                             PicUrl = track.Album.PicUrl + "?param=48y48",
                             Size = track.Size
-                        });
+                        };
+                        playlistItem.PicImageSource = BitmapFrame.Create(
+                            new Uri(playlistItem.PicUrl),
+                            BitmapCreateOptions.None, BitmapCacheOption.Default);
+
+                        _playlists.Add(playlistItem) ;
                         await Task.Delay(20);
                     }
                 }
