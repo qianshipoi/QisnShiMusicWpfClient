@@ -8,10 +8,14 @@
              xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
+             xmlns:ext="clr-namespace:QianShi.Music.Extensions"
+             xmlns:dialog="clr-namespace:QianShi.Music.Views.Dialogs"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
+            <conver:TimestampConverter  x:Key="TimestampConverter" />
+            <conver:NewlineFilterConverter  x:Key="NewlineFilterConverter" />
             <Style TargetType="Border" x:Key="PlaylistItemBorderStyle">
                 <Setter Property="Padding" Value="8" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -28,16 +32,9 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <materialDesign:DialogHost IsOpen="{Binding Loading}">
+    <materialDesign:DialogHost IsOpen="{Binding Loading}" Identifier="{x:Static ext:PrismManager.PlaylistDialogName}">
         <materialDesign:DialogHost.DialogContent>
-            <StackPanel Margin="16">
-                <ProgressBar Style="{StaticResource MaterialDesignCircularProgressBar}"
-                                    HorizontalAlignment="Center" Margin="16"
-                                    IsIndeterminate="True"
-                                    Value="0" />
-                <TextBlock Text="Loading..." HorizontalAlignment="Center"  
-                           Style="{StaticResource MaterialDesignHeadline6TextBlock}" />
-            </StackPanel>
+            <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
         <uc:ScrollViewerAnimation>
             <Border Padding="20" Background="White" MaxWidth="1280" >
@@ -56,11 +53,46 @@
 
                         <StackPanel Grid.Column="1" Margin="56,0,0,0" VerticalAlignment="Center">
                             <TextBlock FontSize="36" FontWeight="Bold"  TextWrapping="WrapWithOverflow" Text="{Binding Detail.Name}" />
-                            <TextBlock FontSize="18" FontWeight="Bold" Opacity=".68" Margin="0,24,0,0" Text="Playlist by 云音乐官方歌单" />
-                            <TextBlock FontSize="14" Margin="0,2,0,0" Opacity=".68" 
-                                   Text="{Binding Detail.LastUpdateTime,StringFormat=最后更新于 {0} · 30 首歌}" />
+                            <TextBlock FontSize="18" FontWeight="Bold" Opacity=".68" Margin="0,24,0,0" 
+                                       Text="{Binding Detail.Creator,StringFormat={}Playlist by {0}}" />
+                            <StackPanel Orientation="Horizontal" Opacity=".68"  Margin="0,2,0,0" >
+                                <TextBlock FontSize="14"
+                                   Text="{Binding Detail.LastUpdateTime, 
+                                    Converter={StaticResource TimestampConverter},
+                                    StringFormat=最后更新于 {0:yyyy年MM月dd日} · }" />
+                                <TextBlock FontSize="14"  Text="{Binding Detail.Count,StringFormat={} {0} 首歌}"/>
+                            </StackPanel>
+
                             <TextBlock FontSize="14" Margin="0,24,0,0" Opacity=".68" TextWrapping="WrapWithOverflow" 
-                                   Text="{Binding Detail.Description}" />
+                                       Height="60" Cursor="Hand"
+                                       TextTrimming="CharacterEllipsis"
+                                       Text="{Binding Detail.Description, Converter={StaticResource NewlineFilterConverter}}" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                        <i:InvokeCommandAction  Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                            <i:InvokeCommandAction.CommandParameter>
+                                                    <Grid Margin="16" MaxWidth="1000" MaxHeight="500">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition Height="46" />
+                                                        </Grid.RowDefinitions>
+                                                <uc:ScrollViewerAnimation>
+                                                    <TextBlock Text="{Binding Detail.Description}" TextWrapping="WrapWithOverflow"  />
+                                                </uc:ScrollViewerAnimation>
+                                                    <Button Grid.Row="1"
+                                                          Style="{StaticResource MaterialDesignFlatButton}"
+                                                          IsCancel="True"
+                                                          Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                          CommandParameter="Sample2Cancel"
+                                                          HorizontalAlignment="Center"
+                                                          Content="CANCEL" />
+                                                    </Grid>
+                                            </i:InvokeCommandAction.CommandParameter>
+                                        </i:InvokeCommandAction>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBlock>
+
                             <StackPanel Orientation="Horizontal" Margin="0,32,0,0">
                                 <Button Margin="0,0,16,0" Padding="16,8" Height="Auto"
                                     Command="{Binding PlayCommand}" >

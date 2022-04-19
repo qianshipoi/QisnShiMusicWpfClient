@@ -33,7 +33,7 @@ namespace QianShi.Music
             containerRegistry.Register<IPlaylistService, PlaylistService>();
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
-            containerRegistry.RegisterDialog<LoadingDialog>();
+            //containerRegistry.RegisterDialog<LoadingDialog>();
             containerRegistry.RegisterForNavigation<IndexView, IndexViewModel>();
             containerRegistry.RegisterForNavigation<FoundView, FoundViewModel>();
             containerRegistry.RegisterForNavigation<LibraryView, LibraryViewModel>();

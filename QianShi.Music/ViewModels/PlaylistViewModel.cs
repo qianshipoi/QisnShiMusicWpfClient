@@ -1,9 +1,13 @@
-﻿using Prism.Commands;
+﻿using MaterialDesignThemes.Wpf;
+
+using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 
 using QianShi.Music.Services;
+using QianShi.Music.Views;
+using QianShi.Music.Views.Dialogs;
 
 using System.Collections.ObjectModel;
 using System.Windows.Media;
@@ -43,11 +47,14 @@ namespace QianShi.Music.ViewModels
         public string? Description { get => _description; set => SetProperty(ref _description, value); }
         private int _count;
         public int Count { get => _count; set => SetProperty(ref _count, value); }
+        private string? _creator;
+        public string? Creator { get => _creator; set => SetProperty(ref _creator, value); }
     }
 
     public class PlaylistViewModel : NavigationViewModel
     {
-        private IPlaylistService _playlistService;
+        private readonly IPlaylistService _playlistService;
+        private readonly IContainerProvider _containerProvider;
         private string _title;
         private bool _loading;
         private ObservableCollection<PlaylistItem> _playlists;
@@ -84,6 +91,7 @@ namespace QianShi.Music.ViewModels
             PlayCommand = new DelegateCommand<PlaylistItem?>(Play);
             PlayImmediatelyCommand = new DelegateCommand<PlaylistItem?>(Play);
             _playlistService = playlistService;
+            _containerProvider = containerProvider;
         }
 
         void Play(PlaylistItem? palylist)
@@ -115,6 +123,7 @@ namespace QianShi.Music.ViewModels
                     Detail.LastUpdateTime = response.PlaylistDetail.UpdateTime;
                     Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
                     Detail.Count = response.PlaylistDetail.TrackCount;
+                    Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
                     _playlists.Clear();
 
                     foreach (var track in response.PlaylistDetail.Tracks)
@@ -133,7 +142,7 @@ namespace QianShi.Music.ViewModels
                             new Uri(playlistItem.PicUrl),
                             BitmapCreateOptions.None, BitmapCacheOption.Default);
 
-                        _playlists.Add(playlistItem) ;
+                        _playlists.Add(playlistItem);
                         await Task.Delay(20);
                     }
                 }
@@ -141,6 +150,18 @@ namespace QianShi.Music.ViewModels
             }
 
             base.OnNavigatedTo(navigationContext);
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            if (DialogHost.IsDialogOpen(Extensions.PrismManager.PlaylistDialogName))
+            {
+                var session = DialogHost.GetDialogSession(Extensions.PrismManager.PlaylistDialogName);
+                if (session != null)
+                    session.UpdateContent(new LoadingDialog());
+                DialogHost.Close(Extensions.PrismManager.PlaylistDialogName);
+            }
+            base.OnNavigatedFrom(navigationContext);
         }
 
     }

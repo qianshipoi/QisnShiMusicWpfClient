@@ -12,6 +12,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <conver:IsNullConverter x:Key="IsNullConverter" />
+            <conver:LongToTimeSpanConverter x:Key="LongToTimeSpanConverter" />
             <Style TargetType="Border" x:Key="PlaylistItemBorderStyle">
                 <Setter Property="Padding" Value="8" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -56,9 +57,11 @@
                         </Image>
 
                         <StackPanel Grid.Column="1">
-                            <TextBlock Text="{Binding Name}" FontSize="18" x:Name="NameControl"/>
+                            <TextBlock Text="{Binding Name}" FontSize="18" FontWeight="Bold" x:Name="NameControl" 
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,20,0"/>
                             <TextBlock Text="{Binding ArtistName}" FontSize="13" Opacity=".68"
-                                                   Foreground="{Binding ElementName=NameControl,Path=Foreground}"/>
+                                       TextTrimming="CharacterEllipsis" Margin="0,0,20,0"
+                                       Foreground="{Binding ElementName=NameControl,Path=Foreground}"/>
                         </StackPanel>
                         <TextBlock Grid.Column="2" Text="{Binding AlbumName}" FontSize="16" 
                                                Foreground="{Binding ElementName=NameControl,Path=Foreground}"
@@ -67,10 +70,11 @@
                                                              x:Name="LikeControl" Visibility="Collapsed"
                                                              Foreground="#335eea" Opacity=".88" Width="20" Height="20"
                                                              VerticalAlignment="Center" HorizontalAlignment="Right" />
-                        <TextBlock Grid.Column="4" Text="{Binding Size}" FontSize="16" 
-                                               VerticalAlignment="Center" HorizontalAlignment="Right" 
-                                               Foreground="{Binding ElementName=NameControl,Path=Foreground}"
-                                               Margin="0,0,10,0" Opacity="0.88" />
+                        <TextBlock Grid.Column="4" FontSize="16" 
+                                   Text="{Binding Size, Converter={StaticResource LongToTimeSpanConverter},StringFormat={}{0:mm\\:ss}}" 
+                                   VerticalAlignment="Center" HorizontalAlignment="Right" 
+                                   Foreground="{Binding ElementName=NameControl,Path=Foreground}"
+                                   Margin="0,0,10,0" Opacity="0.88" />
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>

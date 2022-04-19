@@ -23,7 +23,8 @@ namespace QianShi.Music.Views
                 eventArg.RoutedEvent = UIElement.MouseWheelEvent;
                 eventArg.Source = sender;
                 var parent = ((Control)sender).Parent as UIElement;
-                parent.RaiseEvent(eventArg);
+                if (parent != null)
+                    parent.RaiseEvent(eventArg);
             }
         }
     }

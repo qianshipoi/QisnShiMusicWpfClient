@@ -15,5 +15,7 @@
         public static readonly string SettingsViewRegionName = "SettingsViewRegion";
 
         public static readonly string FullScreenRegionName = "FullScreenRegion";
+
+        public static readonly string PlaylistDialogName = "PlaylistDialogName";
     }
 }
