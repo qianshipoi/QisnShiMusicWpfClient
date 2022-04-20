@@ -30,6 +30,19 @@ namespace QianShi.Music.ViewModels
             get { return menuBars; }
             set { menuBars = value; RaisePropertyChanged(); }
         }
+        private MenuBar? _navigateCurrentItem;
+        public MenuBar? NavigateCurrentItem
+        {
+            get => _navigateCurrentItem;
+            set
+            {
+                if (_navigateCurrentItem != value && null != value)
+                {
+                    NavigateCommand.Execute(value);
+                }
+                SetProperty(ref _navigateCurrentItem, value);
+            }
+        }
         public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
         public DelegateCommand GoBackCommand { get; private set; }
         public DelegateCommand GoForwardCommand { get; private set; }
@@ -84,12 +97,30 @@ namespace QianShi.Music.ViewModels
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(obj.NameSpace);
         }
 
+        private void NavigationService_Navigated(object? sender, RegionNavigationEventArgs e)
+        {
+            var viewName = e.Uri.OriginalString;
+            var menuBar = menuBars.FirstOrDefault(x => x.NameSpace == viewName);
+
+            if (menuBar != null && menuBar != NavigateCurrentItem)
+            {
+                _navigateCurrentItem = menuBar;
+                RaisePropertyChanged(nameof(NavigateCurrentItem));
+            }
+            else
+            {
+                _navigateCurrentItem = null;
+                RaisePropertyChanged(nameof(NavigateCurrentItem));
+            }
+        }
+
         /// <summary>
         /// 配置首页初始化参数
         /// </summary>
         public void Configure()
         {
             CreateMenuBar();
+            _regionManager.Regions[PrismManager.MainViewRegionName].NavigationService.Navigated += NavigationService_Navigated;
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(MenuBars[0].NameSpace, back =>
             {
                 _journal = back.Context.NavigationService.Journal;

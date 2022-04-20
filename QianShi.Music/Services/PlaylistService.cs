@@ -84,5 +84,12 @@ namespace QianShi.Music.Services
             request.AddParameter("id",playlistId);
             return await Get<PlaylistDetailResponse>(request) ?? new PlaylistDetailResponse();
         }
+
+        public async Task<AlbumNewResponse> GetAlbumNewAsync(AlbumNewRequest parameters)
+        {
+            var request = new RestRequest("/album/new");
+            request.AddQueryParameters(parameters);
+            return await Get<AlbumNewResponse>(request) ?? new AlbumNewResponse();
+        }
     }
 }

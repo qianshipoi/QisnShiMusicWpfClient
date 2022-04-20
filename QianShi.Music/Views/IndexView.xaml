@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:QianShi.Music.Views"
              xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
@@ -20,14 +21,24 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel>
-                            <uc:MusicCard Margin="20, 0" Cover="{Binding Cover}" Title="{Binding Title}" Description="{Binding Description}" />
+                            <uc:MusicCard Margin="20, 0" Cover="{Binding Cover}" 
+                                          Title="{Binding Title}" Description="{Binding Description}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <DockPanel Margin="20, 0" HorizontalAlignment="Stretch" LastChildFill="True">
                 <TextBlock DockPanel.Dock="Left" Text="推荐歌单" FontSize="28" FontWeight="Bold" />
-                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom"  Text="查看全部" Cursor="Hand" FontSize="13" FontWeight="Bold" Opacity=".65" />
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom"  
+                           Text="查看全部" Cursor="Hand" FontSize="13" FontWeight="Bold" Opacity=".65" >
+                      <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">  
+                            <i:InvokeCommandAction 
+                                Command="{Binding JumpFoundCommand}" 
+                                CommandParameter="推荐" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
             </DockPanel>
             <ItemsControl ItemsSource="{Binding RecommendPlayList}" Margin="0, 20">
                 <ItemsControl.ItemsPanel>
@@ -82,7 +93,8 @@
                                 <ImageBrush ImageSource="https://oss.kuriyama.top/static/background.png" />
                             </Border.Background>
                         </Border>
-                        <DockPanel Margin="20,0,0,0" Grid.Column="1" LastChildFill="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <DockPanel Margin="20,0,0,0" Grid.Column="1" LastChildFill="True" 
+                                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                             <TextBlock DockPanel.Dock="Top" FontWeight="Bold" FontSize="26" Text="坠落心空" />
                             <TextBlock DockPanel.Dock="Top" Text="小星星Aurora" FontSize="16" Opacity=".65" />
                             <Grid Height="60" VerticalAlignment="Bottom" >
@@ -103,7 +115,8 @@
                                         <materialDesign:PackIcon Kind="SkipNext" Height="40"  Width="40" />
                                     </Button>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right"  Opacity=".65">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" 
+                                            HorizontalAlignment="Right" Opacity=".65">
                                     <materialDesign:PackIcon Kind="Radio" Width="22" Height="22"  />
                                     <TextBlock Text="私人FM" FontWeight="Bold" FontSize="16" Margin="6,0"/>
                                 </StackPanel>
@@ -127,14 +140,24 @@
                                     <ImageBrush ImageSource="{Binding Cover}" />
                                 </Ellipse.Fill>
                             </Ellipse>
-                            <TextBlock Margin="0, 10, 0,0" Text="{Binding Name}" FontWeight="Bold" Opacity=".65" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" />
+                            <TextBlock Margin="0, 10, 0,0" Text="{Binding Name}" 
+                                       FontWeight="Bold" Opacity=".65" VerticalAlignment="Center" 
+                                       HorizontalAlignment="Center" FontSize="16" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <DockPanel Margin="20, 0" HorizontalAlignment="Stretch" LastChildFill="True">
                 <TextBlock DockPanel.Dock="Left" Text="新专速递" FontSize="28" FontWeight="Bold" />
-                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom"  Text="查看全部" Cursor="Hand" FontSize="13" FontWeight="Bold" Opacity=".65" />
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom"  Text="查看全部" 
+                           Cursor="Hand" FontSize="13" FontWeight="Bold" Opacity=".65" >
+                   <i:Interaction.Triggers>
+                       <i:EventTrigger EventName="MouseLeftButtonUp" >
+                           <i:InvokeCommandAction Command="{Binding JumpFoundCommand}"
+                                                  CommandParameter="新专速递"/>
+                       </i:EventTrigger>
+                   </i:Interaction.Triggers>
+                </TextBlock>
             </DockPanel>
             <ItemsControl ItemsSource="{Binding NewAlbumList}" Margin="0, 20">
                 <ItemsControl.ItemsPanel>
@@ -154,7 +177,16 @@
             </ItemsControl>
             <DockPanel Margin="20, 0" HorizontalAlignment="Stretch" LastChildFill="True">
                 <TextBlock DockPanel.Dock="Left" Text="排行榜" FontSize="28" FontWeight="Bold" />
-                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom"  Text="查看全部" Cursor="Hand" FontSize="13" FontWeight="Bold" Opacity=".65" />
+                <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                           Text="查看全部" Cursor="Hand" FontSize="13" FontWeight="Bold" Opacity=".65" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">  
+                            <i:InvokeCommandAction 
+                                Command="{Binding JumpFoundCommand}" 
+                                CommandParameter="排行榜" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
             </DockPanel>
             <ItemsControl ItemsSource="{Binding RankingList}" Margin="0, 20">
                 <ItemsControl.ItemsPanel>

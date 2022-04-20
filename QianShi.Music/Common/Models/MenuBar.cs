@@ -2,7 +2,7 @@
 
 namespace QianShi.Music.Common.Models
 {
-    public class MenuBar:BindableBase
+    public class MenuBar : BindableBase
     {
         private string icon;
 

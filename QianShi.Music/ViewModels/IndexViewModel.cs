@@ -6,6 +6,7 @@ using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
+using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -50,10 +51,15 @@ namespace QianShi.Music.ViewModels
             set { _rankingList = value; RaisePropertyChanged(); }
         }
         public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
+        public DelegateCommand<string> JumpFoundCommand { get; private set; }
 
-        public IndexViewModel(IContainerProvider provider,
-            IMusicService musicService, IPlaylistService playlistService, IRegionManager regionManager) : base(provider)
+        public IndexViewModel(
+            IContainerProvider provider,
+            IMusicService musicService,
+            IPlaylistService playlistService,
+            IRegionManager regionManager) : base(provider)
         {
+            _regionManager = regionManager;
             _musicService = musicService;
             _playlistService = playlistService;
             _applyMusic = new ObservableCollection<PlayList>();
@@ -62,7 +68,27 @@ namespace QianShi.Music.ViewModels
             _newAlbumList = new ObservableCollection<IPlaylist>();
             _rankingList = new ObservableCollection<IPlaylist>();
             OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
-            _regionManager = regionManager;
+            JumpFoundCommand = new DelegateCommand<string>(JumpFound);
+        }
+
+        /// <summary>
+        /// 跳转到发现对应类别
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void JumpFound(string obj)
+        {
+            if (obj == "新专速递")
+            {
+                _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(PlaylistCardView));
+            }
+            else
+            {
+                var parameters = new NavigationParameters();
+                parameters.Add("PlaylistType", obj);
+
+                _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(FoundView), parameters);
+            }
         }
 
         private void OpenPlaylist(IPlaylist obj)

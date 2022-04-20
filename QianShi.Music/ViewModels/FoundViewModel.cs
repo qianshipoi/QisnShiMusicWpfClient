@@ -266,9 +266,33 @@ namespace QianShi.Music.ViewModels
                 Cats.Add(new Cat { DisplayName = "官方", Name = "官方" });
                 Cats.Add(new Cat { DisplayName = "排行榜", Name = "排行榜" });
                 Cats.Add(new Cat { DisplayName = "...", IsLastOne = true });
+            }
 
-                SelectedCat(Cats[0]);
+            var parametes = navigationContext.Parameters;
+            var type = "全部";
+            if (parametes.ContainsKey("PlaylistType"))
+            {
+                var value = parametes.GetValue<string>("PlaylistType");
+                type = string.IsNullOrWhiteSpace(value) ? "全部" : value;
 
+                var first = Cats.FirstOrDefault(x => x.Name == type);
+                if (first == null)
+                    first = Cats[0];
+
+                if (_currentCat == null || _currentCat.Name != type)
+                {
+                    SelectedCat(first);
+                }
+            }
+            else
+            {
+                if (_currentCat == null)
+                    SelectedCat(Cats[0]);
+            }
+
+
+            if (_catOptions.Count == 0)
+            {
                 var catlistResponse = await _playlistService.GetCatlistAsync();
                 catlistResponse.Sub?.ForEach(x => x.DisplayName = x.Name);
                 foreach (var cat in catlistResponse.Categories)
@@ -284,6 +308,5 @@ namespace QianShi.Music.ViewModels
 
             base.OnNavigatedTo(navigationContext);
         }
-
     }
 }
