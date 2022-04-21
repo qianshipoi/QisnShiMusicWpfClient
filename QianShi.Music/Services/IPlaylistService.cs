@@ -67,5 +67,12 @@ namespace QianShi.Music.Services
         /// </summary>
         /// <returns></returns>
         Task<AlbumNewResponse> GetAlbumNewAsync(AlbumNewRequest parameters);
+
+        /// <summary>
+        /// 获取专辑内容
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        Task<AlbumResponse> GetAblumAsync(long id);
     }
 }

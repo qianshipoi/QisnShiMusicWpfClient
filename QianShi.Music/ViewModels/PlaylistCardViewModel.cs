@@ -87,7 +87,7 @@ namespace QianShi.Music.ViewModels
             var parameters = new NavigationParameters();
             parameters.Add("PlaylistId", obj.Id);
 
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("PlaylistView", parameters);
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("AlbumView", parameters);
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)

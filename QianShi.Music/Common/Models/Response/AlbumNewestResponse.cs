@@ -19,5 +19,6 @@ namespace QianShi.Music.Common.Models.Response
         public string Description { get; set; } = null!;
         public string Tags { get; set; } = null!;
         public Artist Artist { get; set; } = new Artist();
+        public long PublishTime { get; set; }
     }
 }

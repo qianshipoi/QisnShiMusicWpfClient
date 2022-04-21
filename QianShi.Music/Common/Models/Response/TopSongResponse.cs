@@ -120,7 +120,7 @@
         public string? BriefDesc { get; set; }
         public List<string>? Alias { get; set; }
         public long MusicSize { get; set; }
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
         public long Id { get; set; }
         public string? Img1v1Id_str { get; set; }
     }

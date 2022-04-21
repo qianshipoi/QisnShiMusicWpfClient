@@ -4,6 +4,7 @@ using Prism.Regions;
 
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
@@ -96,7 +97,15 @@ namespace QianShi.Music.ViewModels
             var parameters = new NavigationParameters();
             parameters.Add("PlaylistId", obj.Id);
 
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("PlaylistView", parameters);
+            if (obj is Common.Models.Response.Album)
+            {
+                _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("AlbumView", parameters);
+            }
+            else {
+
+                _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("PlaylistView", parameters);
+            }
+
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)

@@ -3,6 +3,7 @@
 using QianShi.Music.Common;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
+using QianShi.Music.ViewModels.Dialogs;
 using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 
@@ -34,12 +35,14 @@ namespace QianShi.Music
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
             //containerRegistry.RegisterDialog<LoadingDialog>();
+            containerRegistry.RegisterForNavigation<DescriptionDialog, DescriptionDialogViewModel>();
             containerRegistry.RegisterForNavigation<IndexView, IndexViewModel>();
             containerRegistry.RegisterForNavigation<FoundView, FoundViewModel>();
             containerRegistry.RegisterForNavigation<LibraryView, LibraryViewModel>();
             containerRegistry.RegisterForNavigation<PlaylistView, PlaylistViewModel>();
             containerRegistry.RegisterForNavigation<PlayView, PlayViewModel>();
             containerRegistry.RegisterForNavigation<PlaylistCardView, PlaylistCardViewModel>();
+            containerRegistry.RegisterForNavigation<AlbumView, AlbumViewModel>();
         }
     }
 }

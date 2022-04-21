@@ -91,5 +91,12 @@ namespace QianShi.Music.Services
             request.AddQueryParameters(parameters);
             return await Get<AlbumNewResponse>(request) ?? new AlbumNewResponse();
         }
+
+        public async Task<AlbumResponse> GetAblumAsync(long id)
+        {
+            var request = new RestRequest("/album");
+            request.AddQueryParameter("id", id);
+            return await Get<AlbumResponse>(request) ?? new AlbumResponse();
+        }
     }
 }
