@@ -1,45 +1,69 @@
-﻿<UserControl x:Class="QianShi.Music.Common.UserControls.PlaylistCard"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
-             xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d" 
-             d:DesignHeight="280" d:DesignWidth="210">
+﻿<UserControl
+    x:Class="QianShi.Music.Common.UserControls.PlaylistCard"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="280"
+    d:DesignWidth="210"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <conver:NumberConverter x:Key="NumberConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border CornerRadius="10" BorderThickness="0" ClipToBounds="True" Background="White">
-        <StackPanel>
-            <Border CornerRadius="10" BorderThickness="0"
-                    Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}" 
-                    Cursor="Hand" Margin="0,0,0,10">
+    <Border
+        Background="White"
+        BorderThickness="0"
+        ClipToBounds="True"
+        CornerRadius="10">
+        <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistCard}}}">
+            <local:FilletImage
+                Margin="0,0,0,10"
+                CornerRadius="10"
+                ImageClick="FilletImage_ImageClick"
+                ImageSource="{Binding Cover}" />
+            <!--<Border
+                Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
+                Margin="0,0,0,10"
+                BorderThickness="0"
+                CornerRadius="10"
+                Cursor="Hand">
                 <Border.Background>
                     <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Cover}" />
                 </Border.Background>
                 <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseUp" >
-                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard},Path=OpenPlaylistCommand}"
-                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Playlist}"/>
+                    <i:EventTrigger EventName="MouseUp">
+                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=OpenPlaylistCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Playlist}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-            </Border>
-            <WrapPanel Opacity="0.58" x:Name="PlayCountControl" Visibility="Collapsed">
+            </Border>-->
+            <WrapPanel
+                x:Name="PlayCountControl"
+                Opacity="0.58"
+                Visibility="Collapsed">
                 <materialDesign:PackIcon Kind="Play" />
-                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=AmountOfPlay, Converter={StaticResource NumberConverter}}" 
-                           FontSize="12" />
+                <TextBlock FontSize="12" Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=AmountOfPlay, Converter={StaticResource NumberConverter}}" />
             </WrapPanel>
-            <TextBlock Margin="2,0" FontSize="16" 
-                       Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Title}" 
-                       FontWeight="Bold" Cursor="Hand" TextWrapping="WrapWithOverflow" MaxHeight="40" />
-            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Description}" 
-                       x:Name="DescriptionControl" Margin="2,2,0,0" Visibility="Collapsed"
-                       Opacity=".68" FontSize="12px" />
+            <TextBlock
+                MaxHeight="40"
+                Margin="2,0"
+                Cursor="Hand"
+                FontSize="16"
+                FontWeight="Bold"
+                Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Title}"
+                TextWrapping="WrapWithOverflow" />
+            <TextBlock
+                x:Name="DescriptionControl"
+                Margin="2,2,0,0"
+                FontSize="12px"
+                Opacity=".68"
+                Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Description}"
+                Visibility="Collapsed" />
         </StackPanel>
     </Border>
 </UserControl>
