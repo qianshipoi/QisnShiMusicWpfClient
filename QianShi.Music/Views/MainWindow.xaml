@@ -110,6 +110,7 @@
                                 Margin="0,0,10,0"
                                 Padding="10,4"
                                 materialDesign:HintAssist.Hint="搜索"
+                                Cursor="Arrow"
                                 Style="{StaticResource MaterialDesignOutlinedTextBox}" />
                             <materialDesign:PopupBox DockPanel.Dock="Right">
                                 <materialDesign:PopupBox.ToggleContent>

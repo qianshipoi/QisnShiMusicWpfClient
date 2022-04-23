@@ -1,0 +1,74 @@
+﻿<UserControl
+    x:Class="QianShi.Music.Views.SearchView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:QianShi.Music.Common.Data"
+    xmlns:local="clr-namespace:QianShi.Music.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,
+                                     Type={x:Type data:DesignSearchViewModel}}"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
+    mc:Ignorable="d">
+    <uc:ScrollViewerAnimation>
+        <StackPanel Background="White">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="28" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="艺人" />
+                <TextBlock
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Opacity=".68"
+                    Text="查看全部" />
+                <TextBlock
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontWeight="Bold"
+                    Text="专辑" />
+                <TextBlock
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Opacity=".68"
+                    Text="查看全部" />
+                <ItemsControl Grid.Row="1" ItemsSource="{Binding Artists}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <uc:FilletImage CornerRadius="1000" ImageSource="{Binding CoverImgUrl}" />
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Text="{Binding Name}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    ItemsSource="{Binding Artists}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <uc:PlaylistCard Cover="{Binding CoverImgUrl}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </StackPanel>
+    </uc:ScrollViewerAnimation>
+</UserControl>

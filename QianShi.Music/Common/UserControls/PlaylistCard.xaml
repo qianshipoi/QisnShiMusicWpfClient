@@ -27,21 +27,6 @@
                 CornerRadius="10"
                 ImageClick="FilletImage_ImageClick"
                 ImageSource="{Binding Cover}" />
-            <!--<Border
-                Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
-                Margin="0,0,0,10"
-                BorderThickness="0"
-                CornerRadius="10"
-                Cursor="Hand">
-                <Border.Background>
-                    <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Cover}" />
-                </Border.Background>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseUp">
-                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=OpenPlaylistCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Playlist}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Border>-->
             <WrapPanel
                 x:Name="PlayCountControl"
                 Opacity="0.58"

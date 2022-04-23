@@ -39,6 +39,7 @@ namespace QianShi.Music.Views
                 {
                     this.DragMove();
                 }
+                e.Handled = true;
             };
             ColorZone.MouseDoubleClick += (s, e) =>
             {

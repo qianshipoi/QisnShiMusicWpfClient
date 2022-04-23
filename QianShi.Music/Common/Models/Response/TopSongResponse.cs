@@ -1,4 +1,6 @@
-﻿namespace QianShi.Music.Common.Models.Response
+﻿using System.Text.Json.Serialization;
+
+namespace QianShi.Music.Common.Models.Response
 {
     public class TopSongResponse
     {
@@ -107,7 +109,7 @@
     /// <summary>
     /// 艺术家（歌手）
     /// </summary>
-    public class Artist
+    public class Artist : IPlaylist
     {
         public long Img1v1Id { get; set; }
         public long TopicPerson { get; set; }
@@ -115,7 +117,9 @@
         public string? Trans { get; set; }
         public long AlbumSize { get; set; }
         public string? Img1v1Url { get; set; }
-        public string? PicUrl { get; set; }
+        //public string? PicUrl { get; set; }
+        [JsonPropertyName("picUrl")]
+        public string CoverImgUrl { get; set; } = null!;
         public bool Followed { get; set; }
         public string? BriefDesc { get; set; }
         public List<string>? Alias { get; set; }

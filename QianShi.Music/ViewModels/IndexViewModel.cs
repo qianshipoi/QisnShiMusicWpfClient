@@ -22,7 +22,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistService _playlistService;
         private ObservableCollection<PlayList> _applyMusic;
         private ObservableCollection<IPlaylist> _recommendPlayList;
-        private ObservableCollection<Singer> _recommendSingerList;
+        private ObservableCollection<IPlaylist> _recommendSingerList;
         private ObservableCollection<IPlaylist> _newAlbumList;
         private ObservableCollection<IPlaylist> _rankingList;
 
@@ -36,7 +36,7 @@ namespace QianShi.Music.ViewModels
             get => _recommendPlayList;
             set { _recommendPlayList = value; RaisePropertyChanged(); }
         }
-        public ObservableCollection<Singer> RecommendSingerList
+        public ObservableCollection<IPlaylist> RecommendSingerList
         {
             get => _recommendSingerList;
             set { _recommendSingerList = value; RaisePropertyChanged(); }
@@ -65,7 +65,7 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
             _applyMusic = new ObservableCollection<PlayList>();
             _recommendPlayList = new ObservableCollection<IPlaylist>();
-            _recommendSingerList = new ObservableCollection<Singer>();
+            _recommendSingerList = new ObservableCollection<IPlaylist>();
             _newAlbumList = new ObservableCollection<IPlaylist>();
             _rankingList = new ObservableCollection<IPlaylist>();
             OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
@@ -128,9 +128,17 @@ namespace QianShi.Music.ViewModels
                 });
             }
 
-            var recommendSingerList = await _musicService.GetRecommmendSinger();
-            _recommendSingerList.Clear();
-            _recommendSingerList.AddRange(recommendSingerList);
+            if (_recommendSingerList.Count == 0)
+            {
+                actions.Add(async () =>
+                {
+                    var response = await _playlistService.ToplistArtist();
+                    if (response != null && response.Code == 200)
+                    {
+                        await UpdatePlaylist(_recommendSingerList, response.List.Artists.Take(5));
+                    }
+                });
+            }
 
             if (_newAlbumList.Count == 0)
             {

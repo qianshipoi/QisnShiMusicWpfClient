@@ -81,7 +81,7 @@ namespace QianShi.Music.Services
         public async Task<PlaylistDetailResponse> GetPlaylistDetailAsync(long playlistId)
         {
             var request = new RestRequest("/playlist/detail");
-            request.AddParameter("id",playlistId);
+            request.AddParameter("id", playlistId);
             return await Get<PlaylistDetailResponse>(request) ?? new PlaylistDetailResponse();
         }
 
@@ -97,6 +97,14 @@ namespace QianShi.Music.Services
             var request = new RestRequest("/album");
             request.AddQueryParameter("id", id);
             return await Get<AlbumResponse>(request) ?? new AlbumResponse();
+        }
+
+        public async Task<ToplistArtistResponse> ToplistArtist(int? type = null)
+        {
+            var requset = new RestRequest("toplist/artist");
+            if (type != null)
+                requset.AddQueryParameter("type", type.ToString());
+            return await Get<ToplistArtistResponse>(requset) ?? new ToplistArtistResponse();
         }
     }
 }

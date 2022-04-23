@@ -213,7 +213,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="20,0" HorizontalAlignment="Stretch">
-                            <uc:FilletImage CornerRadius="100" ImageSource="{Binding Cover}" />
+                            <uc:FilletImage CornerRadius="100" ImageSource="{Binding CoverImgUrl}" />
                             <TextBlock
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Center"

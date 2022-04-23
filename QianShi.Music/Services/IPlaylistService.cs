@@ -74,5 +74,12 @@ namespace QianShi.Music.Services
         /// <param name="id"></param>
         /// <returns></returns>
         Task<AlbumResponse> GetAblumAsync(long id);
+
+        /// <summary>
+        /// 歌手榜
+        /// </summary>
+        /// <param name="type">地区 1: 华语 2: 欧美 3: 韩国 4: 日本</param>
+        /// <returns></returns>
+        Task<ToplistArtistResponse> ToplistArtist(int? type = null);
     }
 }
