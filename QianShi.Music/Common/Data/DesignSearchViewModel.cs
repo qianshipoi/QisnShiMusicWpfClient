@@ -41,6 +41,7 @@ namespace QianShi.Music.Common.Data
                 Albums.Add(new Album
                 {
                     Name = $"专辑{i + 1}",
+                    Description = $"描述{i + 1}",
                     CoverImgUrl = cover
                 });
             }

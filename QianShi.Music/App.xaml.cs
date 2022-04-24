@@ -1,6 +1,7 @@
 ﻿using Prism.Ioc;
 
 using QianShi.Music.Common;
+using QianShi.Music.Common.Data;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
 using QianShi.Music.ViewModels.Dialogs;
@@ -43,6 +44,8 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<PlayView, PlayViewModel>();
             containerRegistry.RegisterForNavigation<PlaylistCardView, PlaylistCardViewModel>();
             containerRegistry.RegisterForNavigation<AlbumView, AlbumViewModel>();
+            //containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
+            containerRegistry.RegisterForNavigation<SearchView, DesignSearchViewModel>();
         }
     }
 }

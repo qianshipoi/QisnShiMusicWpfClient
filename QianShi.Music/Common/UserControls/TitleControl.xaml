@@ -1,0 +1,47 @@
+﻿<UserControl
+    x:Class="QianShi.Music.Common.UserControls.TitleControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="40"
+    d:DesignWidth="300"
+    mc:Ignorable="d">
+    <DockPanel
+        d:Background="White"
+        DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:TitleControl}}}"
+        LastChildFill="False">
+        <TextBlock
+            VerticalAlignment="Center"
+            DockPanel.Dock="Left"
+            FontSize="22"
+            FontWeight="Bold"
+            Text="{Binding Title}" />
+        <TextBlock
+            VerticalAlignment="Center"
+            Cursor="Hand"
+            DockPanel.Dock="Right"
+            FontSize="13"
+            Opacity=".68"
+            Text="查看全部"
+            Visibility="{Binding ShowLookAll, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="TextDecorations" Value="Underline" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseLeftButtonUp">
+                    <i:InvokeCommandAction Command="{Binding LookAllCommandParameter}" CommandParameter="{Binding LookAllCommandParameter}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </TextBlock>
+    </DockPanel>
+</UserControl>

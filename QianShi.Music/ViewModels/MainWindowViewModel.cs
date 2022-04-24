@@ -19,7 +19,7 @@ namespace QianShi.Music.ViewModels
         private ObservableCollection<MenuBar> menuBars;
         private readonly IContainerProvider _containerProvider;
         private readonly IRegionManager _regionManager;
-        private IRegionNavigationJournal _journal;
+        private IRegionNavigationJournal _journal = null!;
         public string Title
         {
             get { return _title; }
@@ -48,6 +48,7 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand GoForwardCommand { get; private set; }
         public DelegateCommand LogoutComand { get; private set; }
         public DelegateCommand<ContentControl> OpenPlayViewCommand { get; private set; }
+        public DelegateCommand<string> SearchCommand { get; private set; }
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager)
         {
@@ -67,6 +68,15 @@ namespace QianShi.Music.ViewModels
             });
             LogoutComand = new DelegateCommand(Logout);
             OpenPlayViewCommand = new DelegateCommand<ContentControl>(OpenPlayView);
+            SearchCommand = new DelegateCommand<string>(Search);
+        }
+
+        void Search(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText)) return;
+            var parameters = new NavigationParameters();
+            parameters.Add("SearchText", searchText);
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("SearchView", parameters);
         }
 
         void OpenPlayView(ContentControl obj)
