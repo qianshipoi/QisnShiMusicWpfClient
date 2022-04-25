@@ -8,7 +8,7 @@ namespace QianShi.Music.Services
 {
     public class PlaylistService : IPlaylistService
     {
-        private static RestClient _client => new RestClient(new RestClientOptions("https://netease-cloud-music-api-qianshi.vercel.app")
+        private static RestClient _client => new RestClient(new RestClientOptions("http://150.158.194.185:3001")
         {
             Timeout = -1
         });
@@ -106,5 +106,71 @@ namespace QianShi.Music.Services
                 requset.AddQueryParameter("type", type.ToString());
             return await Get<ToplistArtistResponse>(requset) ?? new ToplistArtistResponse();
         }
+
+        public async Task<SearchResponse> Search(SearchRequest parasmeters)
+        {
+            var request = new RestRequest("/search");
+            request.AddQueryParameters(parasmeters);
+
+            Type type = null!;
+
+            switch (parasmeters.Type)
+            {
+                case SearchRequest.SearchType.单曲:
+                    type = typeof(SongSearchResult);
+                    break;
+                case SearchRequest.SearchType.专辑:
+                    type = typeof(AlbumSearchResult);
+                    break;
+                case SearchRequest.SearchType.歌手:
+                    type = typeof(ArtistSearchResult);
+                    break;
+                case SearchRequest.SearchType.歌单:
+                    type = typeof(PlaylistSearchResult);
+                    break;
+                case SearchRequest.SearchType.用户:
+                    type = typeof(ArtistSearchResult);
+                    break;
+                case SearchRequest.SearchType.MV:
+                    type = typeof(MvSearchResult);
+                    break;
+                case SearchRequest.SearchType.歌词:
+                    type = typeof(ArtistSearchResult);
+                    break;
+                case SearchRequest.SearchType.电台:
+                    break;
+                case SearchRequest.SearchType.视频:
+                    break;
+                case SearchRequest.SearchType.综合:
+                    break;
+                case SearchRequest.SearchType.声音:
+                    break;
+                default:
+                    break;
+            }
+
+            if (type == null) throw new ArgumentException("type is not correct.");
+
+            var method = GetType().GetMethod("Get", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+            var responseType = typeof(SearchResponse<>).MakeGenericType(new Type[] { type });
+
+            var genericMethod = method?.MakeGenericMethod(new Type[] { responseType });
+            var task = genericMethod?.Invoke(this, new object[] { request }) as Task;
+            if (task == null) return new SearchResponse();
+
+            await task.ConfigureAwait(false);
+            var resultProperty = task.GetType().GetProperty("Result");
+            var response = resultProperty?.GetValue(task) as SearchResponse;
+
+            return response ?? new SearchResponse();
+        }
+
+        public async Task<SongDetailResponse> SongDetail(string ids)
+        {
+
+            return new SongDetailResponse();
+        }
+
     }
 }

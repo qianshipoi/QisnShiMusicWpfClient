@@ -23,7 +23,6 @@ namespace QianShi.Music.Common.Models.Response
         public int SubscribedCount { get; set; }
         public int TrackCount { get; set; }
         public int ColudTrackCount { get; set; }
-        [JsonPropertyName("CoverImgUrl")]
         public string CoverImgUrl { get; set; } = null!;
         public long CoverImgId { get; set; }
         public string? Description { get; set; }
@@ -50,6 +49,10 @@ namespace QianShi.Music.Common.Models.Response
         public string? Alg { get; set; }
         public long CommentCount { get; set; }
 
+        public string Action { get; set; } = string.Empty;
+        public string ActionType { get; set; } = string.Empty;
+        public string RecommendText { get; set; } = string.Empty;
+
         public class Track
         {
             public long Id { get; set; }
@@ -62,21 +65,18 @@ namespace QianShi.Music.Common.Models.Response
             public long Size { get; set; }  // 毫秒
             public long MV { get; set; }
         }
-
         public class Artist
         {
             public long Id { get; set; }
             public string Name { get; set; } = null!;
             public List<string> Alias { get;set; } = new List<string>();
         }
-
         public class Album
         {
             public long Id { get; set; }
             public string Name { get; set; } = null!;
             public string PicUrl { get; set; } = null!;
         }
-
     }
     public class RecommendInfo
     {

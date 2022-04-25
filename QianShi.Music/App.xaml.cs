@@ -31,7 +31,6 @@ namespace QianShi.Music
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.Register<IMusicService, MockMusicService>();
             containerRegistry.Register<IPlaylistService, PlaylistService>();
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
@@ -44,8 +43,8 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<PlayView, PlayViewModel>();
             containerRegistry.RegisterForNavigation<PlaylistCardView, PlaylistCardViewModel>();
             containerRegistry.RegisterForNavigation<AlbumView, AlbumViewModel>();
-            //containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
-            containerRegistry.RegisterForNavigation<SearchView, DesignSearchViewModel>();
+            containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
+            //containerRegistry.RegisterForNavigation<SearchView, DesignSearchViewModel>();
         }
     }
 }

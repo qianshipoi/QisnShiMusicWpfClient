@@ -17,20 +17,13 @@ namespace QianShi.Music.ViewModels
 
     public class IndexViewModel : NavigationViewModel
     {
-        private readonly IMusicService _musicService;
         private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
-        private ObservableCollection<PlayList> _applyMusic;
         private ObservableCollection<IPlaylist> _recommendPlayList;
         private ObservableCollection<IPlaylist> _recommendSingerList;
         private ObservableCollection<IPlaylist> _newAlbumList;
         private ObservableCollection<IPlaylist> _rankingList;
 
-        public ObservableCollection<PlayList> ApplyMusic
-        {
-            get => _applyMusic;
-            set { _applyMusic = value; RaisePropertyChanged(); }
-        }
         public ObservableCollection<IPlaylist> RecommendPlayList
         {
             get => _recommendPlayList;
@@ -56,14 +49,11 @@ namespace QianShi.Music.ViewModels
 
         public IndexViewModel(
             IContainerProvider provider,
-            IMusicService musicService,
             IPlaylistService playlistService,
             IRegionManager regionManager) : base(provider)
         {
             _regionManager = regionManager;
-            _musicService = musicService;
             _playlistService = playlistService;
-            _applyMusic = new ObservableCollection<PlayList>();
             _recommendPlayList = new ObservableCollection<IPlaylist>();
             _recommendSingerList = new ObservableCollection<IPlaylist>();
             _newAlbumList = new ObservableCollection<IPlaylist>();
@@ -108,12 +98,8 @@ namespace QianShi.Music.ViewModels
 
         }
 
-        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var music = await _musicService.GetApplyMusic();
-            _applyMusic.Clear();
-            _applyMusic.AddRange(music);
-
             var actions = new List<Action>();
 
             if (_recommendPlayList.Count == 0)

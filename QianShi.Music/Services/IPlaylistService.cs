@@ -81,5 +81,12 @@ namespace QianShi.Music.Services
         /// <param name="type">地区 1: 华语 2: 欧美 3: 韩国 4: 日本</param>
         /// <returns></returns>
         Task<ToplistArtistResponse> ToplistArtist(int? type = null);
+
+        /// <summary>
+        /// 搜索
+        /// </summary>
+        /// <param name="parasmeters"></param>
+        /// <returns></returns>
+        Task<SearchResponse> Search(SearchRequest parasmeters);
     }
 }

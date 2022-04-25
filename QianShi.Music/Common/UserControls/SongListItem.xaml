@@ -48,6 +48,7 @@
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="60" />
                         </Grid.ColumnDefinitions>
+                        <!--<local:FilletImage ImageSource="{Binding }" />-->
                         <Rectangle
                             Width="40"
                             Height="40"

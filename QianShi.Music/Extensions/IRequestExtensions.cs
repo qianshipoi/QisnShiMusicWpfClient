@@ -21,6 +21,11 @@ namespace QianShi.Music.Extensions
             foreach (var prop in properties)
             {
                 var value = prop.GetValue(parameter);
+                if (prop.PropertyType.IsEnum)
+                { 
+                    value = Convert.ToInt32(value);
+                }
+
                 if (prop.GetCustomAttribute(typeof(DescriptionAttribute)) is DescriptionAttribute description
                     && value != null
                     && !string.IsNullOrWhiteSpace(description.Description)
@@ -28,6 +33,7 @@ namespace QianShi.Music.Extensions
                 {
                     request.AddQueryParameter(description.Description, value.ToString());
                 }
+
             }
         }
     }
