@@ -12,6 +12,7 @@ namespace QianShi.Music.Common.Models.Response
             [JsonPropertyName("al")]
             public Album Album { get; set; } = null!;
             public List<string> Alia { get; set; } = new List<string>();
+            [JsonPropertyName("ar")]
             public List<Artist> Artists { get; set; } = new List<Artist>();
             public string Cd { get; set; } = string.Empty;
             public string Cf { get; set; } = string.Empty;
@@ -27,7 +28,7 @@ namespace QianShi.Music.Common.Models.Response
             public long Id { get; set; }
             public Quality? L { get; set; }
             public Quality? M { get; set; }
-            public int Mark { get; set; }
+            public long Mark { get; set; }
             public int Mst { get; set; }
             public int Mv { get; set; }
             public string Name { get; set; } = string.Empty;
@@ -55,5 +56,4 @@ namespace QianShi.Music.Common.Models.Response
             public int Version { get; set; }
         }
     }
-
 }

@@ -1,8 +1,14 @@
-﻿namespace QianShi.Music.Common.Models.Response
+﻿using System.Text.Json.Serialization;
+
+using static QianShi.Music.Common.Models.Response.SongDetailResponse;
+
+namespace QianShi.Music.Common.Models.Response
 {
     public class SearchResponse
     {
         public int Code { get; set; }
+
+        public string? Msg { get; set; }
 
         public ISearchResultBase Result { get; set; } = null!;
     }
@@ -18,38 +24,36 @@
                 _result = value;
                 base.Result = value;
             }
-        }
+        } 
     }
 
-    public interface ISearchResultBase
-    { }
+    public interface ISearchResultBase { }
 
     public record SongSearchResult : ISearchResultBase
     {
         public bool HasMore { get; set; }
         public int SongCount { get; set; }
         public List<Song> Songs { get; set; } = new List<Song>();
-
-        public class Song
-        {
-            public long Id { get; set; }
-            public string Name { get; set; } = null!;
-            public Album Album { get; set; } = null!;
-            public List<Artist> Artists { get; set; } = new List<Artist>();
-            public long Duration { get; set; }
-            /// <summary>
-            /// 为 1 无法播放
-            /// </summary>
-            public int Fee { get; set; }
-            public long Mvid { get; set; }
-            public long CopyrightId { get; set; }
-            public int Ftype { get; set; }
-            public int mark { get; set; }
-            public string? RUrl { get; set; }
-            public int Rtype { get; set; }
-            public int Status { get; set; }
-            public List<string> TransNames { get; set; } = new List<string>();
-        }
+        //public class Song
+        //{
+        //    public long Id { get; set; }
+        //    public string Name { get; set; } = null!;
+        //    public Album Album { get; set; } = null!;
+        //    public List<Artist> Artists { get; set; } = new List<Artist>();
+        //    public long Duration { get; set; }
+        //    /// <summary>
+        //    /// 为 1 无法播放
+        //    /// </summary>
+        //    public int Fee { get; set; }
+        //    public long Mvid { get; set; }
+        //    public long CopyrightId { get; set; }
+        //    public int Ftype { get; set; }
+        //    public int mark { get; set; }
+        //    public string? RUrl { get; set; }
+        //    public int Rtype { get; set; }
+        //    public int Status { get; set; }
+        //    public List<string> TransNames { get; set; } = new List<string>();
+        //}
     }
 
     public record AlbumSearchResult : ISearchResultBase
@@ -74,13 +78,15 @@
         public List<Playlist> Playlists { get; set; } = new();
     }
 
-    public record MvSearchResult : ISearchResultBase
+    public record MovieVideoSearchResult : ISearchResultBase
     {
-        public int MvCount { get; set; }
-        public List<Mv> Mvs { get; set; } = new();
+        [JsonPropertyName("mvCount")]
+        public int MovieVideoCount { get; set; }
+        [JsonPropertyName("mvs")]
+        public List<MovieVideo>? MovieVideos { get; set; }
     }
 
-    public class Mv
+    public class MovieVideo : IPlaylist
     {
         public string Alg { get; set; } = string.Empty;
         public string ArTransName { get; set; } = string.Empty;
@@ -90,6 +96,7 @@
         public List<Artist> Artists { get; set; } = new();
         public dynamic? BriefDesc { get; set; }
         public string Cover { get; set; } = string.Empty;
+        public string CoverImgUrl { get => Cover; set => Cover = value; }
         public string Desc { get; set; } = string.Empty;
         public long Duration { get; set; }
         public long Id { get; set; }

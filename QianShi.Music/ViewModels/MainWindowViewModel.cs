@@ -76,7 +76,11 @@ namespace QianShi.Music.ViewModels
             if (string.IsNullOrWhiteSpace(searchText)) return;
             var parameters = new NavigationParameters();
             parameters.Add("SearchText", searchText);
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("SearchView", parameters);
+
+            var regions = _regionManager.Regions[PrismManager.MainViewRegionName];
+
+            var uri = _journal.CurrentEntry.Uri;   // TODO 导航BUG 待修复
+            regions.RequestNavigate("SearchView", parameters);
         }
 
         void OpenPlayView(ContentControl obj)

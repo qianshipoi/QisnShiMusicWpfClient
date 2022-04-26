@@ -33,7 +33,7 @@ namespace QianShi.Music.Common.Models.Response
         public long TotalDuration { get; set; }
         public Creator? Creator { get; set; }
         public List<Creator>? Subscribers { get; set; }
-        public Creator? Subscribed { get; set; }
+        public bool? Subscribed { get; set; }
         public List<Track> Tracks { get; set; } = new List<Track>();
         public string? CommentThreadId { get; set; }
         public bool NewImported { get; set; }

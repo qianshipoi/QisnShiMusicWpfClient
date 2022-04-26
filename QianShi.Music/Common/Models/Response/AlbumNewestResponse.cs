@@ -38,5 +38,6 @@ namespace QianShi.Music.Common.Models.Response
         public long PicId { get; set; }
         public List<Song>? Songs { get; set; }
         public int Status { get; set; }
+        public List<string> Tns { get; set; } = new();
     }
 }

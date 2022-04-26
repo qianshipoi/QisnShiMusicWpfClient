@@ -88,5 +88,11 @@ namespace QianShi.Music.Services
         /// <param name="parasmeters"></param>
         /// <returns></returns>
         Task<SearchResponse> Search(SearchRequest parasmeters);
+        /// <summary>
+        /// 获取歌曲详情
+        /// </summary>
+        /// <param name="ids">音乐 id, 如 ids=347230</param>
+        /// <returns></returns>
+        Task<SongDetailResponse> SongDetail(string ids);
     }
 }

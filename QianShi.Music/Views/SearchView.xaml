@@ -158,12 +158,12 @@
                                     Height="120"
                                     CornerRadius="12"
                                     Cursor="Hand"
-                                    ImageSource="{Binding CoverImgUrl}" />
+                                    ImageSource="{Binding Cover}" />
                                 <TextBlock FontSize="16" Text="{Binding Name}" />
                                 <TextBlock
                                     FontSize="12"
                                     Opacity=".68"
-                                    Text="{Binding Artist.Name}" />
+                                    Text="{Binding Artists[0].Name}" />
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

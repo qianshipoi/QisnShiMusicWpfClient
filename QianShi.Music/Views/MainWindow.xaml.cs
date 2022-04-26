@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows;
 
 namespace QianShi.Music.Views
 {
@@ -32,39 +30,6 @@ namespace QianShi.Music.Views
                //if (dialogResult.Result != Prism.Services.Dialogs.ButtonResult.OK) return;
                this.Close();
            };
-
-            ColorZone.MouseMove += (s, e) =>
-            {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    this.DragMove();
-                }
-                e.Handled = true;
-            };
-            ColorZone.MouseDoubleClick += (s, e) =>
-            {
-                if (this.WindowState == WindowState.Normal)
-                    this.WindowState = WindowState.Maximized;
-                else
-                    this.WindowState = WindowState.Normal;
-            };
         }
-
-        public struct POINT
-        {
-            public int X;
-            public int Y;
-            public POINT(int x, int y)
-            {
-                this.X = x;
-                this.Y = y;
-            }
-            public override string ToString() => "{" + X + "," + Y + "}";
-        }
-
-        [DllImport("user32.dll")]
-        public static extern bool GetCursorPos(out POINT lpPoint);
     }
-
-
 }

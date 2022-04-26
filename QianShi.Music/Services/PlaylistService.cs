@@ -106,7 +106,6 @@ namespace QianShi.Music.Services
                 requset.AddQueryParameter("type", type.ToString());
             return await Get<ToplistArtistResponse>(requset) ?? new ToplistArtistResponse();
         }
-
         public async Task<SearchResponse> Search(SearchRequest parasmeters)
         {
             var request = new RestRequest("/search");
@@ -132,10 +131,9 @@ namespace QianShi.Music.Services
                     type = typeof(ArtistSearchResult);
                     break;
                 case SearchRequest.SearchType.MV:
-                    type = typeof(MvSearchResult);
+                    type = typeof(MovieVideoSearchResult);
                     break;
                 case SearchRequest.SearchType.歌词:
-                    type = typeof(ArtistSearchResult);
                     break;
                 case SearchRequest.SearchType.电台:
                     break;
@@ -162,15 +160,19 @@ namespace QianShi.Music.Services
             await task.ConfigureAwait(false);
             var resultProperty = task.GetType().GetProperty("Result");
             var response = resultProperty?.GetValue(task) as SearchResponse;
+            if (response == null || !string.IsNullOrEmpty(response.Msg))
+            {
+                return new SearchResponse();
+            }
 
-            return response ?? new SearchResponse();
+            return response;
         }
 
         public async Task<SongDetailResponse> SongDetail(string ids)
         {
-
-            return new SongDetailResponse();
+            var request = new RestRequest("/song/detail");
+            request.AddQueryParameter("ids", ids);
+            return await Get<SongDetailResponse>(request) ?? new SongDetailResponse();
         }
-
     }
 }
