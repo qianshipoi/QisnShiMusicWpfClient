@@ -25,6 +25,7 @@
             Cursor="Hand"
             DockPanel.Dock="Right"
             FontSize="13"
+            MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"
             Opacity=".68"
             Text="查看全部"
             Visibility="{Binding ShowLookAll, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -37,11 +38,11 @@
                     </Style.Triggers>
                 </Style>
             </TextBlock.Style>
-            <i:Interaction.Triggers>
+            <!--<i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseLeftButtonUp">
-                    <i:InvokeCommandAction Command="{Binding LookAllCommandParameter}" CommandParameter="{Binding LookAllCommandParameter}" />
+                    <i:InvokeCommandAction Command="{Binding LookAllCommandParameter}" CommandParameter="adasd" />
                 </i:EventTrigger>
-            </i:Interaction.Triggers>
+            </i:Interaction.Triggers>-->
         </TextBlock>
     </DockPanel>
 </UserControl>

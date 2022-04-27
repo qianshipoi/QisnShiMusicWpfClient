@@ -1,9 +1,13 @@
-﻿using Prism.Ioc;
+﻿using Prism.Commands;
+using Prism.Ioc;
 using Prism.Regions;
 
 using QianShi.Music.Common;
+using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
+using QianShi.Music.Extensions;
 using QianShi.Music.Services;
+using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 
@@ -15,6 +19,7 @@ namespace QianShi.Music.ViewModels
     public class SearchViewModel : NavigationViewModel
     {
         private readonly IPlaylistService _playlistService;
+        private readonly IRegionManager _regionManager;
         private string _currentSearchKeywords = string.Empty;
 
         public ObservableCollection<Artist> Artists { get; set; }
@@ -22,8 +27,9 @@ namespace QianShi.Music.ViewModels
         public ObservableCollection<Song> Songs { get; set; }
         public ObservableCollection<Playlist> Playlists { get; set; }
         public ObservableCollection<MovieVideo> MovieVideos { get; set; }
+        public DelegateCommand<SearchType?> MoreCommand { get; private set; }
 
-        public SearchViewModel(IContainerProvider containerProvider, IPlaylistService playlistService) : base(containerProvider)
+        public SearchViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
         {
             _playlistService = playlistService;
             Artists = new();
@@ -31,6 +37,17 @@ namespace QianShi.Music.ViewModels
             Songs = new();
             Playlists = new();
             MovieVideos = new();
+            MoreCommand = new(More);
+            _regionManager = regionManager;
+        }
+
+        private void More(SearchType? type)
+        {
+            if (type == null) return;
+            var parameters = new NavigationParameters();
+            parameters.Add(SearchDetailViewModel.SearchTypeParameterName, type);
+            parameters.Add(SearchDetailViewModel.SearchKeywordsParameterName, _currentSearchKeywords);
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(SearchDetailView), parameters);
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)

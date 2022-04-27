@@ -94,32 +94,6 @@
                 Columns="2"
                 Rows="1">
                 <uc:ScrollImage />
-                <!--<materialDesign:Card
-                    Margin="0,0,10,0"
-                    Padding="8"
-                    Foreground="{DynamicResource PrimaryHueDarkForegroundBrush}"
-                    UniformCornerRadius="6">
-                    <materialDesign:Card.Background>
-                        <LinearGradientBrush Opacity="1" StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Offset="0.0" Color="#9E9E9E" />
-                            <GradientStop Offset="0.5" Color="White" />
-                            <GradientStop Offset="1.0" Color="White" />
-                        </LinearGradientBrush>
-                    </materialDesign:Card.Background>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="200" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock
-                            Padding="10,0"
-                            HorizontalAlignment="Stretch"
-                            FontSize="66"
-                            FontWeight="Bold"
-                            Text="每日推荐"
-                            TextWrapping="Wrap" />
-                    </Grid>
-                </materialDesign:Card>-->
                 <materialDesign:Card
                     Margin="10,0,0,0"
                     Padding="18"

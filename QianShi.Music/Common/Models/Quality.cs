@@ -9,6 +9,6 @@
         public int Fid { get; set; }
         public long Size { get; set; }
         public int Sr { get; set; }
-        public int Vd { get; set; }
+        public double Vd { get; set; }
     }
 }

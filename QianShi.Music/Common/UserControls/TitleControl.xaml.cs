@@ -60,5 +60,11 @@ namespace QianShi.Music.Common.UserControls
         {
             InitializeComponent();
         }
+
+        private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (LookAllCammand.CanExecute(LookAllCommandParameter))
+                LookAllCammand.Execute(LookAllCommandParameter);
+        }
     }
 }

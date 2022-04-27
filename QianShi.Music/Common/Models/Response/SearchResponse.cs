@@ -34,26 +34,6 @@ namespace QianShi.Music.Common.Models.Response
         public bool HasMore { get; set; }
         public int SongCount { get; set; }
         public List<Song> Songs { get; set; } = new List<Song>();
-        //public class Song
-        //{
-        //    public long Id { get; set; }
-        //    public string Name { get; set; } = null!;
-        //    public Album Album { get; set; } = null!;
-        //    public List<Artist> Artists { get; set; } = new List<Artist>();
-        //    public long Duration { get; set; }
-        //    /// <summary>
-        //    /// 为 1 无法播放
-        //    /// </summary>
-        //    public int Fee { get; set; }
-        //    public long Mvid { get; set; }
-        //    public long CopyrightId { get; set; }
-        //    public int Ftype { get; set; }
-        //    public int mark { get; set; }
-        //    public string? RUrl { get; set; }
-        //    public int Rtype { get; set; }
-        //    public int Status { get; set; }
-        //    public List<string> TransNames { get; set; } = new List<string>();
-        //}
     }
 
     public record AlbumSearchResult : ISearchResultBase

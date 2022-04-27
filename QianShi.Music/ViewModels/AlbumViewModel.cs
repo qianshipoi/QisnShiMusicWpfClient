@@ -139,7 +139,7 @@ namespace QianShi.Music.ViewModels
                         Id = x.Id,
                         ArtistName = x.Artists[0].Name,
                         Name = x.Name,
-                        Time = x.Time
+                        Time = x.Dt
                     }));
                 }
                 Loading = false;

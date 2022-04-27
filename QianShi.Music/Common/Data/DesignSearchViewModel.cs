@@ -4,8 +4,6 @@ using QianShi.Music.Common.Models.Response;
 
 using System.Collections.ObjectModel;
 
-using static QianShi.Music.Common.Models.Response.AlbumResponse;
-
 namespace QianShi.Music.Common.Data
 {
     public class MovieVideo

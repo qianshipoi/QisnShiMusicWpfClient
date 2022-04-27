@@ -8,6 +8,7 @@ namespace QianShi.Music.Services
 {
     public class PlaylistService : IPlaylistService
     {
+
         private static RestClient _client => new RestClient(new RestClientOptions("http://150.158.194.185:3001")
         {
             Timeout = -1
@@ -115,33 +116,33 @@ namespace QianShi.Music.Services
 
             switch (parasmeters.Type)
             {
-                case SearchRequest.SearchType.单曲:
+                case SearchType.单曲:
                     type = typeof(SongSearchResult);
                     break;
-                case SearchRequest.SearchType.专辑:
+                case SearchType.专辑:
                     type = typeof(AlbumSearchResult);
                     break;
-                case SearchRequest.SearchType.歌手:
+                case SearchType.歌手:
                     type = typeof(ArtistSearchResult);
                     break;
-                case SearchRequest.SearchType.歌单:
+                case SearchType.歌单:
                     type = typeof(PlaylistSearchResult);
                     break;
-                case SearchRequest.SearchType.用户:
+                case SearchType.用户:
                     type = typeof(ArtistSearchResult);
                     break;
-                case SearchRequest.SearchType.MV:
+                case SearchType.MV:
                     type = typeof(MovieVideoSearchResult);
                     break;
-                case SearchRequest.SearchType.歌词:
+                case SearchType.歌词:
                     break;
-                case SearchRequest.SearchType.电台:
+                case SearchType.电台:
                     break;
-                case SearchRequest.SearchType.视频:
+                case SearchType.视频:
                     break;
-                case SearchRequest.SearchType.综合:
+                case SearchType.综合:
                     break;
-                case SearchRequest.SearchType.声音:
+                case SearchType.声音:
                     break;
                 default:
                     break;
@@ -168,11 +169,46 @@ namespace QianShi.Music.Services
             return response;
         }
 
+        public const string SearchApi = "/search";
+        public async Task<SearchResponse<PlaylistSearchResult>> SearchPlaylist(SearchRequest parameters)
+        {
+            var request = new RestRequest(SearchApi);
+            parameters.Type = SearchType.歌单;
+            request.AddQueryParameters(parameters);
+            return await Get<SearchResponse<PlaylistSearchResult>>(request) ?? new SearchResponse<PlaylistSearchResult>();
+        }
+        public async Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters)
+        {
+            parameters.Type = SearchType.歌手;
+            return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ?? new SearchResponse<ArtistSearchResult>();
+        }
         public async Task<SongDetailResponse> SongDetail(string ids)
         {
             var request = new RestRequest("/song/detail");
             request.AddQueryParameter("ids", ids);
             return await Get<SongDetailResponse>(request) ?? new SongDetailResponse();
+        }
+        public async Task<SearchResponse<AlbumSearchResult>> SearchAlbum(SearchRequest parameters)
+        {
+            var request = new RestRequest(SearchApi);
+            parameters.Type = SearchType.专辑;
+            request.AddQueryParameters(parameters);
+            return await Get<SearchResponse<AlbumSearchResult>>(request) ?? new();
+        }
+        public async Task<SearchResponse<MovieVideoSearchResult>> SearchMovieVideo(SearchRequest parameters)
+        {
+            var request = new RestRequest(SearchApi);
+            parameters.Type = SearchType.MV;
+            request.AddQueryParameters(parameters);
+            return await Get<SearchResponse<MovieVideoSearchResult>>(request) ?? new();
+        }
+        public async Task<SearchResponse<SongSearchResult>> SearchSong(SearchRequest parameters)
+        {
+            var request = new RestRequest(SearchApi);
+            parameters.Type = SearchType.单曲;
+            request.AddQueryParameters(parameters);
+
+            return await Get<SearchResponse<SongSearchResult>>(request) ?? new();
         }
     }
 }

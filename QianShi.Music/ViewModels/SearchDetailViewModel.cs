@@ -1,0 +1,179 @@
+﻿using Prism.Commands;
+using Prism.Ioc;
+using Prism.Regions;
+
+using QianShi.Music.Common;
+using QianShi.Music.Common.Models.Request;
+using QianShi.Music.Services;
+
+using System.Collections.ObjectModel;
+
+namespace QianShi.Music.ViewModels
+{
+    public class SearchDetailViewModel : NavigationViewModel
+    {
+        public static string SearchTypeParameterName = "Type";
+        public static string SearchKeywordsParameterName = "Keywords";
+
+        private readonly IRegionManager _regionManager;
+        private readonly IPlaylistService _playlistService;
+        private int _limit = 30;
+        private int _offset = 0;
+
+        private bool _hasMore;
+        public bool HasMore
+        {
+            get { return _hasMore; }
+            set { SetProperty(ref _hasMore, value); }
+        }
+
+        private SearchType _searchType = SearchType.单曲;
+        public SearchType SearchType
+        {
+            get { return _searchType; }
+            set { SetProperty(ref _searchType, value); }
+        }
+
+        private string _keywords = String.Empty;
+        public string Keywords
+        {
+            get { return _keywords; }
+            set { SetProperty(ref _keywords, value); }
+        }
+
+        private ObservableCollection<object> _items;
+        public ObservableCollection<object> Items
+        {
+            get { return _items; }
+            set { SetProperty(ref _items, value); }
+        }
+
+        private DelegateCommand _moreCommand = default!;
+        public DelegateCommand MoreCommand => _moreCommand ??= new DelegateCommand(More);
+
+        private async void More()
+        {
+            await Search();
+        }
+
+        public SearchDetailViewModel(IContainerProvider containerProvider, IRegionManager regionManager, IPlaylistService playlistService) : base(containerProvider)
+        {
+            _regionManager = regionManager;
+            _playlistService = playlistService;
+            _items = new ObservableCollection<object>();
+        }
+
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            base.OnNavigatedTo(navigationContext);
+
+            var parameters = navigationContext.Parameters;
+            if (parameters.ContainsKey(SearchTypeParameterName) && parameters.ContainsKey(SearchKeywordsParameterName))
+            {
+                SearchType = parameters.GetValue<SearchType>(SearchTypeParameterName);
+                Keywords = parameters.GetValue<string>(SearchKeywordsParameterName);
+                await Search(true);
+            }
+        }
+
+        private async Task Search(bool clear = false)
+        {
+            if (clear)
+            {
+                _offset = 0;
+                HasMore = false;
+                Items.Clear();
+            }
+
+            var request = new SearchRequest
+            {
+                Keywords = Keywords,
+                Limit = _limit,
+                Offset = _offset,
+            };
+
+            void FormatCover(IPlaylist playlist) => playlist.CoverImgUrl += "?param=200y200";
+            switch (SearchType)
+            {
+                case SearchType.单曲:
+                    {
+                        var response = await _playlistService.SearchSong(request);
+                        if (response.Code == 200 && string.IsNullOrWhiteSpace(response.Msg))
+                        {
+                            var ids = string.Join(',', response.Result.Songs.Select(x => x.Id));
+                            var songResponse = await _playlistService.SongDetail(ids);
+                            if (songResponse.Code == 200)
+                            {
+                                songResponse.Songs.ForEach((song) => FormatCover(song.Album));
+                                Items.AddRange(songResponse.Songs);
+                                HasMore = response.Result.HasMore;
+                            }
+                        }
+                    }
+                    break;
+                case SearchType.专辑:
+                    {
+                        var response = await _playlistService.SearchAlbum(request);
+                        if (response.Code == 200 && string.IsNullOrWhiteSpace(response.Msg))
+                        {
+                            response.Result.Albums.ForEach(FormatCover);
+                            Items.AddRange(response.Result.Albums);
+                            HasMore = response.Result.AlbumCount < _offset + response.Result.Albums.Count;
+                        }
+                    }
+                    break;
+                case SearchType.歌手:
+                    {
+                        var response = await _playlistService.SearchArtist(request);
+                        if (response.Code == 200 && string.IsNullOrWhiteSpace(response.Msg))
+                        {
+                            response.Result.Artists.ForEach(FormatCover);
+                            Items.AddRange(response.Result.Artists);
+                            HasMore = response.Result.HasMore;
+                        }
+                    }
+                    break;
+                case SearchType.歌单:
+                    {
+                        var response = await _playlistService.SearchPlaylist(request);
+                        if (response.Code == 200 && string.IsNullOrWhiteSpace(response.Msg))
+                        {
+                            response.Result.Playlists.ForEach(FormatCover);
+                            Items.AddRange(response.Result.Playlists);
+                            HasMore = response.Result.HasMore;
+                        }
+                    }
+                    break;
+                case SearchType.用户:
+                    break;
+                case SearchType.MV:
+                    {
+                        var response = await _playlistService.SearchMovieVideo(request);
+                        if (response.Code == 200
+                            && string.IsNullOrWhiteSpace(response.Msg)
+                            && response.Result.MovieVideos != null)
+                        {
+                            response.Result.MovieVideos.ForEach(FormatCover);
+                            Items.AddRange(response.Result.MovieVideos);
+                            HasMore = response.Result.MovieVideoCount < _offset + response.Result.MovieVideos.Count;
+                        }
+                    }
+                    break;
+                case SearchType.歌词:
+                    break;
+                case SearchType.电台:
+                    break;
+                case SearchType.视频:
+                    break;
+                case SearchType.综合:
+                    break;
+                case SearchType.声音:
+                    break;
+                default:
+                    break;
+            }
+
+            _offset += _limit;
+        }
+    }
+}

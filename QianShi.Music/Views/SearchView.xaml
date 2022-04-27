@@ -6,6 +6,7 @@
     xmlns:data="clr-namespace:QianShi.Music.Common.Data"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:request="clr-namespace:QianShi.Music.Common.Models.Request"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,
                                      Type={x:Type data:DesignSearchViewModel}}"
@@ -89,6 +90,8 @@
                 <uc:TitleControl
                     Title="歌曲"
                     Margin="0,20,0,10"
+                    LookAllCammand="{Binding MoreCommand}"
+                    LookAllCommandParameter="{x:Static request:SearchType.单曲}"
                     ShowLookAll="True" />
                 <ItemsControl ItemsSource="{Binding Songs}">
                     <ItemsControl.ItemsPanel>

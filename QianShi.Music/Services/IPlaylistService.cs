@@ -89,6 +89,36 @@ namespace QianShi.Music.Services
         /// <returns></returns>
         Task<SearchResponse> Search(SearchRequest parasmeters);
         /// <summary>
+        /// 搜索歌单
+        /// </summary>
+        /// <param name="parasmeters"></param>
+        /// <returns></returns>
+        Task<SearchResponse<PlaylistSearchResult>> SearchPlaylist(SearchRequest parameters);
+        /// <summary>
+        /// 搜索专辑
+        /// </summary>
+        /// <param name="parasmeters"></param>
+        /// <returns></returns>
+        Task<SearchResponse<AlbumSearchResult>> SearchAlbum(SearchRequest parameters);
+        /// <summary>
+        /// 搜索歌手
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters);
+        /// <summary>
+        /// 搜索MV
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<SearchResponse<MovieVideoSearchResult>> SearchMovieVideo(SearchRequest parameters);
+        /// <summary>
+        /// 搜索单曲
+        /// </summary>
+        /// <param name="parasmeters"></param>
+        /// <returns></returns>
+        Task<SearchResponse<SongSearchResult>> SearchSong(SearchRequest parameters);
+        /// <summary>
         /// 获取歌曲详情
         /// </summary>
         /// <param name="ids">音乐 id, 如 ids=347230</param>
