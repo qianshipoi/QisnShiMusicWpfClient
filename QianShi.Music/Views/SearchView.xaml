@@ -34,12 +34,21 @@
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <uc:TitleControl Title="艺人" ShowLookAll="True" />
+                    <uc:TitleControl
+                        Title="艺人"
+                        LookAllCammand="{Binding MoreCommand}"
+                        LookAllCommandParameter="{x:Static request:SearchType.歌手}"
+                        ShowLookAll="True" />
                     <uc:TitleControl
                         Title="专辑"
                         Grid.Column="2"
+                        LookAllCammand="{Binding MoreCommand}"
+                        LookAllCommandParameter="{x:Static request:SearchType.专辑}"
                         ShowLookAll="True" />
-                    <ItemsControl Grid.Row="1" ItemsSource="{Binding Artists}">
+                    <ItemsControl
+                        Grid.Row="1"
+                        Margin="0,8,0,0"
+                        ItemsSource="{Binding Artists}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Rows="1" />
@@ -61,6 +70,7 @@
                     <ItemsControl
                         Grid.Row="1"
                         Grid.Column="2"
+                        Margin="0,8,0,0"
                         ItemsSource="{Binding Albums}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -147,6 +157,8 @@
                 <uc:TitleControl
                     Title="视频"
                     Margin="0,20,0,10"
+                    LookAllCammand="{Binding MoreCommand}"
+                    LookAllCommandParameter="{x:Static request:SearchType.MV}"
                     ShowLookAll="True" />
                 <ItemsControl ItemsSource="{Binding MovieVideos}">
                     <ItemsControl.ItemsPanel>
@@ -174,6 +186,8 @@
                 <uc:TitleControl
                     Title="歌单"
                     Margin="0,20,0,10"
+                    LookAllCammand="{Binding MoreCommand}"
+                    LookAllCommandParameter="{x:Static request:SearchType.歌单}"
                     ShowLookAll="True" />
                 <ItemsControl ItemsSource="{Binding Playlists}">
                     <ItemsControl.ItemsPanel>

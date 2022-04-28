@@ -99,16 +99,16 @@
                                 Width="160"
                                 Height="32"
                                 Margin="0,0,10,0"
-                                Padding="2"
                                 Panel.ZIndex="1"
                                 materialDesign:ShadowAssist.ShadowDepth="Depth1"
                                 CornerRadius="4"
                                 Mode="Standard">
                                 <TextBox
                                     x:Name="SearchInputControl"
-                                    Padding="10,4"
+                                    Padding="10,2"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
                                     materialDesign:HintAssist.Hint="搜索"
                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                                     BorderThickness="0"

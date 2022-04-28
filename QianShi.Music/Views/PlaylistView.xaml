@@ -163,7 +163,7 @@
                     <ItemsControl ItemsSource="{Binding Playlists}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <uc:PlaylistListItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayImmediatelyCommand}" />
+                                <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayImmediatelyCommand}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

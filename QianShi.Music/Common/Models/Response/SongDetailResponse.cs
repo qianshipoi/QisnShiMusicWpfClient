@@ -8,7 +8,7 @@ namespace QianShi.Music.Common.Models.Response
         public List<Song> Songs { get; set; } = new List<Song>();
     }
 
-    public record Song
+    public partial class Song
     {
         [JsonPropertyName("al")]
         public Album Album { get; set; } = null!;

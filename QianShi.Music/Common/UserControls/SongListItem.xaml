@@ -43,17 +43,19 @@
                 <Border Style="{StaticResource PlaylistItemBorderStyle}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="68" />
+                            <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="60" />
                         </Grid.ColumnDefinitions>
-                        <Rectangle
-                            Width="40"
-                            Height="40"
-                            Margin="0,0,20,0"
-                            Fill="SkyBlue" />
-
+                        <materialDesign:PackIcon
+                            x:Name="PlayIconControl"
+                            Width="20"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            Foreground="#335EEA"
+                            Kind="Play"
+                            Visibility="Collapsed" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <TextBlock
                                 x:Name="NameControl"
@@ -101,9 +103,12 @@
                 <ControlTemplate.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="LikeControl" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="PlayIconControl" Property="Visibility" Value="Visible" />
                     </Trigger>
                     <DataTrigger Binding="{Binding IsPlaying}" Value="True">
                         <Setter TargetName="NameControl" Property="Foreground" Value="#335eea" />
+                        <Setter TargetName="PlayIconControl" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="PlayIconControl" Property="Kind" Value="VolumeHigh" />
                     </DataTrigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>

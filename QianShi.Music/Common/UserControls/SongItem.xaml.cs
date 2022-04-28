@@ -18,7 +18,7 @@ namespace QianShi.Music.Common.UserControls
         }
 
         public static readonly DependencyProperty PlayImmediatelyCommandProperty =
-            DependencyProperty.Register(nameof(PlayImmediatelyCommand), typeof(ICommand), typeof(PlaylistListItem), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(PlayImmediatelyCommand), typeof(ICommand), typeof(SongItem), new PropertyMetadata(null));
 
         public Song Item
         {

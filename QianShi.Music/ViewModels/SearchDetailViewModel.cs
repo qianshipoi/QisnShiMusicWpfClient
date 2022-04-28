@@ -7,10 +7,11 @@ using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
 {
-    public class SearchDetailViewModel : NavigationViewModel
+    public class SearchDetailViewModel : NavigationViewModel, IRegionMemberLifetime
     {
         public static string SearchTypeParameterName = "Type";
         public static string SearchKeywordsParameterName = "Keywords";
@@ -48,11 +49,21 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _items, value); }
         }
 
-        private DelegateCommand _moreCommand = default!;
-        public DelegateCommand MoreCommand => _moreCommand ??= new DelegateCommand(More);
-
-        private async void More()
+        private bool _loading;
+        public bool Loading
         {
+            get { return _loading; }
+            set { SetProperty(ref _loading, value); }
+        }
+
+        private DelegateCommand<ItemsControl> _moreCommand = default!;
+        public DelegateCommand<ItemsControl> MoreCommand => _moreCommand ??= new DelegateCommand<ItemsControl>(More);
+
+        public bool KeepAlive => false;
+
+        private async void More(ItemsControl control)
+        {
+            control.Focus();
             await Search();
         }
 
@@ -84,7 +95,7 @@ namespace QianShi.Music.ViewModels
                 HasMore = false;
                 Items.Clear();
             }
-
+            Loading = true;
             var request = new SearchRequest
             {
                 Keywords = Keywords,
@@ -118,7 +129,7 @@ namespace QianShi.Music.ViewModels
                         {
                             response.Result.Albums.ForEach(FormatCover);
                             Items.AddRange(response.Result.Albums);
-                            HasMore = response.Result.AlbumCount < _offset + response.Result.Albums.Count;
+                            HasMore = response.Result.AlbumCount > _offset + response.Result.Albums.Count;
                         }
                     }
                     break;
@@ -155,7 +166,7 @@ namespace QianShi.Music.ViewModels
                         {
                             response.Result.MovieVideos.ForEach(FormatCover);
                             Items.AddRange(response.Result.MovieVideos);
-                            HasMore = response.Result.MovieVideoCount < _offset + response.Result.MovieVideos.Count;
+                            HasMore = response.Result.MovieVideoCount > _offset + response.Result.MovieVideos.Count;
                         }
                     }
                     break;
@@ -174,6 +185,7 @@ namespace QianShi.Music.ViewModels
             }
 
             _offset += _limit;
+            Loading = false;
         }
     }
 }

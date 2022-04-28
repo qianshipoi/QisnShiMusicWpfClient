@@ -5,6 +5,7 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
@@ -57,13 +58,13 @@ namespace QianShi.Music.ViewModels
         private readonly IContainerProvider _containerProvider;
         private string _title;
         private bool _loading;
-        private ObservableCollection<PlaylistItem> _playlists;
+        private ObservableCollection<Song> _playlists;
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
         }
-        public ObservableCollection<PlaylistItem> Playlists
+        public ObservableCollection<Song> Playlists
         {
             get => _playlists;
             set => SetProperty(ref _playlists, value);
@@ -77,24 +78,24 @@ namespace QianShi.Music.ViewModels
         /// <summary>
         /// 播放歌单
         /// </summary>
-        public DelegateCommand<PlaylistItem?> PlayCommand { get; private set; }
+        public DelegateCommand<Song?> PlayCommand { get; private set; }
         /// <summary>
         /// 立即播放
         /// </summary>
-        public DelegateCommand<PlaylistItem?> PlayImmediatelyCommand { get; private set; }
+        public DelegateCommand<Song?> PlayImmediatelyCommand { get; private set; }
 
         public PlaylistViewModel(IContainerProvider containerProvider,
             IPlaylistService playlistService) : base(containerProvider)
         {
             _title = string.Empty;
-            _playlists = new ObservableCollection<PlaylistItem>();
-            PlayCommand = new DelegateCommand<PlaylistItem?>(Play);
-            PlayImmediatelyCommand = new DelegateCommand<PlaylistItem?>(Play);
+            _playlists = new ObservableCollection<Song>();
+            PlayCommand = new DelegateCommand<Song?>(Play);
+            PlayImmediatelyCommand = new DelegateCommand<Song?>(Play);
             _playlistService = playlistService;
             _containerProvider = containerProvider;
         }
 
-        void Play(PlaylistItem? palylist)
+        void Play(Song? palylist)
         {
             if (palylist != null)
             {
@@ -126,24 +127,22 @@ namespace QianShi.Music.ViewModels
                     Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
                     _playlists.Clear();
 
-                    foreach (var track in response.PlaylistDetail.Tracks)
+                    // 获取所有歌曲
+                    var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
+                    var songResponse = await _playlistService.SongDetail(ids);
+                    if (songResponse.Code == 200)
                     {
-                        var playlistItem = new PlaylistItem
+                        int i = 0;
+                        foreach (var song in songResponse.Songs)
                         {
-                            Id = track.Id,
-                            AlbumName = track.Album.Name,
-                            ArtistName = track.Artists[0].Name,
-                            Name = track.Name,
-                            IsPlaying = false,
-                            PicUrl = track.Album.PicUrl + "?param=48y48",
-                            Size = track.Size
-                        };
-                        playlistItem.PicImageSource = BitmapFrame.Create(
-                            new Uri(playlistItem.PicUrl),
-                            BitmapCreateOptions.None, BitmapCacheOption.Default);
-
-                        _playlists.Add(playlistItem);
-                        await Task.Delay(20);
+                            song.Album.CoverImgUrl += "?param=48y48";
+                            _playlists.Add(song);
+                            i++;
+                            if (i % 5 == 0)
+                            {
+                                await Task.Delay(20);
+                            }
+                        }
                     }
                 }
                 Loading = false;

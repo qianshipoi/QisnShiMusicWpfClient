@@ -35,6 +35,7 @@ namespace QianShi.Music.Common.Models.Response
         public List<Creator>? Subscribers { get; set; }
         public bool? Subscribed { get; set; }
         public List<Track> Tracks { get; set; } = new List<Track>();
+        public List<TrackId> TrackIds { get; set; } = new List<TrackId>();
         public string? CommentThreadId { get; set; }
         public bool NewImported { get; set; }
         public int AdType { get; set; }
@@ -52,6 +53,18 @@ namespace QianShi.Music.Common.Models.Response
         public string Action { get; set; } = string.Empty;
         public string ActionType { get; set; } = string.Empty;
         public string RecommendText { get; set; } = string.Empty;
+
+        public class TrackId
+        {
+            public long Id { get; set; }
+            public int V { get; set; }
+            public int T { get; set; }
+            public long At { get; set; }
+            public string? Alg { get; set; }
+            public long Uid { get; set; }
+            public string? RcmdReason { get; set; }
+            public string? Sc { get; set; }
+        }
 
         public class Track
         {

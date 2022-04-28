@@ -55,7 +55,7 @@
                             Margin="0,0,20,0"
                             HorizontalAlignment="Left"
                             Cursor="Hand"
-                            Source="{Binding PicUrl}">
+                            Source="{Binding Album.CoverImgUrl}">
                             <Image.Clip>
                                 <RectangleGeometry
                                     RadiusX="12"
@@ -77,7 +77,7 @@
                                 FontSize="13"
                                 Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                                 Opacity=".68"
-                                Text="{Binding ArtistName}"
+                                Text="{Binding Artists[0].Name}"
                                 TextTrimming="CharacterEllipsis" />
                         </StackPanel>
                         <TextBlock
@@ -86,7 +86,7 @@
                             FontSize="16"
                             Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                             Opacity="0.88"
-                            Text="{Binding AlbumName}" />
+                            Text="{Binding Album.Name}" />
                         <materialDesign:PackIcon
                             x:Name="LikeControl"
                             Grid.Column="3"
@@ -106,7 +106,7 @@
                             FontSize="16"
                             Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                             Opacity="0.88"
-                            Text="{Binding Size, Converter={StaticResource LongToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
+                            Text="{Binding Dt, Converter={StaticResource LongToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
