@@ -45,6 +45,7 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<AlbumView, AlbumViewModel>();
             containerRegistry.RegisterForNavigation<SearchView, SearchViewModel>();
             containerRegistry.RegisterForNavigation<SearchDetailView, SearchDetailViewModel>();
+            containerRegistry.RegisterForNavigation<LoginView, LoginViewModel>();
             //containerRegistry.RegisterForNavigation<SearchView, DesignSearchViewModel>();
         }
     }

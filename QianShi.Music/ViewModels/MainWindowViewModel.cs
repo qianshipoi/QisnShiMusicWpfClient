@@ -93,7 +93,7 @@ namespace QianShi.Music.ViewModels
 
         void Logout()
         {
-            throw new NotImplementedException();
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(LoginView));
         }
 
         void CreateMenuBar()
