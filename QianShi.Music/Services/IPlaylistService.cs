@@ -124,5 +124,22 @@ namespace QianShi.Music.Services
         /// <param name="ids">音乐 id, 如 ids=347230</param>
         /// <returns></returns>
         Task<SongDetailResponse> SongDetail(string ids);
+        /// <summary>
+        /// 二维码登录第一步 获取key
+        /// </summary>
+        /// <returns></returns>
+        Task<LoginQrKeyResponse> LoginQrKey();
+        /// <summary>
+        /// 二维码登录第二步 创建链接
+        /// </summary>
+        /// <param name="qrKey"></param>
+        /// <returns></returns>
+        Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 =false);
+        /// <summary>
+        /// 二维码登录第三步 检查授权
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task<LoginQrCheckResponse> LoginQrCheck(string key);
     }
 }

@@ -210,5 +210,40 @@ namespace QianShi.Music.Services
 
             return await Get<SearchResponse<SongSearchResult>>(request) ?? new();
         }
+
+        public async Task<LoginQrKeyResponse> LoginQrKey()
+        {
+            var request = new RestRequest("login/qr/key");
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginQrKeyResponse>(request) ?? new();
+        }
+
+        public async Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 = false)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException($"“{nameof(key)}”不能为 null 或空白。", nameof(key));
+            }
+
+            var request = new RestRequest("/login/qr/create");
+            request.AddQueryParameter("key", key);
+            if (isBase64)
+                request.AddQueryParameter("qrimg", true);
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginQrCreateResponse>(request) ?? new();
+        }
+
+        public async Task<LoginQrCheckResponse> LoginQrCheck(string key)
+        {
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException($"“{nameof(key)}”不能为 null 或空白。", nameof(key));
+            }
+
+            var request = new RestRequest("/login/qr/check");
+            request.AddQueryParameter("key", key);
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginQrCheckResponse>(request) ?? new();
+        }
     }
 }
