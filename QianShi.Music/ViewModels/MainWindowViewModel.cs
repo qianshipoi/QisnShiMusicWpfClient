@@ -6,6 +6,7 @@ using Prism.Regions;
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
+using QianShi.Music.Services;
 using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
@@ -19,7 +20,15 @@ namespace QianShi.Music.ViewModels
         private ObservableCollection<MenuBar> menuBars;
         private readonly IContainerProvider _containerProvider;
         private readonly IRegionManager _regionManager;
+        private readonly IPlaylistService _playlistService;
         private IRegionNavigationJournal _journal = null!;
+
+        private UserData _userData = default!;
+        public UserData UserData
+        {
+            get { return _userData; }
+            set { SetProperty(ref _userData, value); }
+        }
         public string Title
         {
             get { return _title; }
@@ -46,11 +55,12 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
         public DelegateCommand GoBackCommand { get; private set; }
         public DelegateCommand GoForwardCommand { get; private set; }
-        public DelegateCommand LogoutComand { get; private set; }
+        public DelegateCommand LogoutCommand { get; private set; }
         public DelegateCommand<ContentControl> OpenPlayViewCommand { get; private set; }
         public DelegateCommand<string> SearchCommand { get; private set; }
+        public DelegateCommand LoginCommand { get; private set; }
         public MainWindowViewModel(IContainerProvider containerProvider,
-            IRegionManager regionManager)
+            IRegionManager regionManager, IPlaylistService playlistService)
         {
             _regionManager = regionManager;
             _containerProvider = containerProvider;
@@ -66,9 +76,12 @@ namespace QianShi.Music.ViewModels
                 if (_journal != null && _journal.CanGoForward)
                     _journal.GoForward();
             });
-            LogoutComand = new DelegateCommand(Logout);
+            LogoutCommand = new DelegateCommand(Logout);
+            LoginCommand = new DelegateCommand(Login);
             OpenPlayViewCommand = new DelegateCommand<ContentControl>(OpenPlayView);
             SearchCommand = new DelegateCommand<string>(Search);
+            _playlistService = playlistService;
+            _userData = UserData.Instance;
         }
 
         void Search(string searchText)
@@ -91,7 +104,17 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        void Logout()
+        async void Logout()
+        {
+            var response = await _playlistService.Logout();
+            if (response.Code == 200)
+            {
+                UserData.Clear();
+                UserData.Save();
+            }
+        }
+
+        void Login()
         {
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(LoginView));
         }
@@ -119,27 +142,36 @@ namespace QianShi.Music.ViewModels
             if (menuBar != null && menuBar != NavigateCurrentItem)
             {
                 _navigateCurrentItem = menuBar;
-                RaisePropertyChanged(nameof(NavigateCurrentItem));
             }
             else
             {
                 _navigateCurrentItem = null;
-                RaisePropertyChanged(nameof(NavigateCurrentItem));
             }
+            RaisePropertyChanged(nameof(NavigateCurrentItem));
         }
 
         /// <summary>
         /// 配置首页初始化参数
         /// </summary>
-        public void Configure()
+        public async void Configure()
         {
             CreateMenuBar();
+
+            var response = await _playlistService.LoginStatus();
+            if (response.Data.Code == 200)
+            {
+                UserData.Cover = response.Data.Profile?.AvatarUrl;
+                UserData.NickName = response.Data.Profile?.Nickname;
+                UserData.Save();
+            }
+
             _regionManager.Regions[PrismManager.MainViewRegionName].NavigationService.Navigated += NavigationService_Navigated;
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(MenuBars[0].NameSpace, back =>
             {
                 _journal = back.Context.NavigationService.Journal;
             });
             _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
+
         }
     }
 }

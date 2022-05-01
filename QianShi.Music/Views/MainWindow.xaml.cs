@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using QianShi.Music.Services;
+
+using System.Windows;
 
 namespace QianShi.Music.Views
 {
@@ -7,7 +9,8 @@ namespace QianShi.Music.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IPlaylistService _playlistService;
+        public MainWindow(IPlaylistService playlistService)
         {
             InitializeComponent();
 
@@ -30,6 +33,13 @@ namespace QianShi.Music.Views
                //if (dialogResult.Result != Prism.Services.Dialogs.ButtonResult.OK) return;
                this.Close();
            };
+            _playlistService = playlistService;
+        }
+
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
         }
     }
 }

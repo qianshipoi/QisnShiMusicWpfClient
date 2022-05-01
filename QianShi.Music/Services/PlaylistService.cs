@@ -4,24 +4,30 @@ using QianShi.Music.Extensions;
 
 using RestSharp;
 
+using System.Net;
+
 namespace QianShi.Music.Services
 {
     public class PlaylistService : IPlaylistService
     {
+        private CookieContainer _cookieContainer;
 
-        private static RestClient _client => new RestClient(new RestClientOptions("http://150.158.194.185:3001")
+        public PlaylistService()
         {
-            Timeout = -1
+            _cookieContainer = new CookieContainer();
+        }
+        public void SetCookie(CookieCollection cookies) => _cookieContainer.Add(cookies);
+        public void SetCookie(Cookie cookie) => _cookieContainer.Add(cookie);
+
+        public CookieCollection? GetCookieCollection() => _cookieContainer.GetAllCookies();
+
+        private RestClient _client => new RestClient(new RestClientOptions("http://150.158.194.185:3001")
+        {
+            Timeout = -1,
+            CookieContainer = _cookieContainer
         });
 
-        private static Task<T?> Get<T>(RestRequest request)
-        {
-            //var client = new RestClient(new RestClientOptions("https://netease-cloud-music-api-qianshi.vercel.app")
-            //{
-            //    Timeout = -1
-            //});
-            return _client.GetAsync<T>(request);
-        }
+        private Task<T?> Get<T>(RestRequest request) => _client.GetAsync<T>(request);
 
         public async Task<CatlistResponse> GetCatlistAsync()
             => await Get<CatlistResponse>(new RestRequest("/playlist/catlist"))
@@ -217,7 +223,6 @@ namespace QianShi.Music.Services
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginQrKeyResponse>(request) ?? new();
         }
-
         public async Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 = false)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -232,7 +237,6 @@ namespace QianShi.Music.Services
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginQrCreateResponse>(request) ?? new();
         }
-
         public async Task<LoginQrCheckResponse> LoginQrCheck(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -244,6 +248,25 @@ namespace QianShi.Music.Services
             request.AddQueryParameter("key", key);
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginQrCheckResponse>(request) ?? new();
+        }
+        public async Task<LoginStatusResponse> LoginStatus()
+        {
+            var request = new RestRequest("/login/status");
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginStatusResponse>(request) ?? new();
+        }
+        public async Task<LogoutResponse> Logout()
+        {
+            try
+            {
+                var request = new RestRequest("/logout");
+                request.AddQueryParameter("time", DateTime.Now.Ticks);
+                return (await Get<LogoutResponse>(request)) ?? new LogoutResponse();
+            }
+            finally
+            {
+                _cookieContainer = new CookieContainer();
+            }
         }
     }
 }

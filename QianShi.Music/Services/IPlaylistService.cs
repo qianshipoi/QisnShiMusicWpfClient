@@ -1,12 +1,16 @@
 ﻿using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
 
-using System.ComponentModel;
+using System.Net;
 
 namespace QianShi.Music.Services
 {
     public interface IPlaylistService
     {
+        void SetCookie(CookieCollection cookies);
+        void SetCookie(Cookie cookie);
+        CookieCollection? GetCookieCollection();
+
         /// <summary>
         /// 获取歌单分类
         /// </summary>
@@ -134,12 +138,22 @@ namespace QianShi.Music.Services
         /// </summary>
         /// <param name="qrKey"></param>
         /// <returns></returns>
-        Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 =false);
+        Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 = false);
         /// <summary>
         /// 二维码登录第三步 检查授权
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         Task<LoginQrCheckResponse> LoginQrCheck(string key);
+        /// <summary>
+        /// 登录状态
+        /// </summary>
+        /// <returns></returns>
+        Task<LoginStatusResponse> LoginStatus();
+        /// <summary>
+        /// 登出
+        /// </summary>
+        /// <returns></returns>
+        Task<LogoutResponse> Logout();
     }
 }

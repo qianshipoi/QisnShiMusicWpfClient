@@ -18,6 +18,8 @@ namespace QianShi.Music.ViewModels
     {
         private readonly IPlaylistService _playlistService;
         private readonly IRegionManager _regionManager;
+        private readonly UserData _userData;
+        private IRegionNavigationJournal _journal = default!;
         private string? _qrKey;
         private DispatcherTimer? _dispatcherTimer;
 
@@ -87,7 +89,15 @@ namespace QianShi.Music.ViewModels
                     }
                     else if (response.Code == 803)
                     {
-                        MessageBox.Show(response.Cookie);
+                        _userData.IsLogin = true;
+                        _userData.Cookie = response.Cookie;
+                        var statusResponse = await _playlistService.LoginStatus();
+                        if (statusResponse.Data.Code == 200)
+                        {
+                            _userData.NickName = statusResponse.Data.Profile?.Nickname;
+                            _userData.Cover = statusResponse.Data.Profile?.AvatarUrl;
+                        }
+                        _userData.Save();
                         Back();
                     }
                 }
@@ -108,6 +118,13 @@ namespace QianShi.Music.ViewModels
         void Back()
         {
             EndCheck();
+            _journal.GoBack();
+        }
+
+        public override void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            base.OnNavigatedTo(navigationContext);
+            _journal = navigationContext.NavigationService.Journal;
         }
 
         private ImageSource? _qrCodeSource;
@@ -121,9 +138,9 @@ namespace QianShi.Music.ViewModels
         {
             _playlistService = playlistService;
             _regionManager = regionManager;
+            _userData = UserData.Instance;
         }
 
-        public bool KeepAlive => true;
+        public bool KeepAlive => false;
     }
-
 }
