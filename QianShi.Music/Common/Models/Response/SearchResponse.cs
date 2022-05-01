@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using static QianShi.Music.Common.Models.Response.SongDetailResponse;
-
 namespace QianShi.Music.Common.Models.Response
 {
     public class SearchResponse
@@ -16,6 +14,7 @@ namespace QianShi.Music.Common.Models.Response
     public class SearchResponse<T> : SearchResponse where T : ISearchResultBase
     {
         private T _result = default!;
+
         public new T Result
         {
             get => _result;
@@ -24,10 +23,11 @@ namespace QianShi.Music.Common.Models.Response
                 _result = value;
                 base.Result = value;
             }
-        } 
+        }
     }
 
-    public interface ISearchResultBase { }
+    public interface ISearchResultBase
+    { }
 
     public record SongSearchResult : ISearchResultBase
     {
@@ -86,4 +86,3 @@ namespace QianShi.Music.Common.Models.Response
         public dynamic? TransNames { get; set; }
     }
 }
-

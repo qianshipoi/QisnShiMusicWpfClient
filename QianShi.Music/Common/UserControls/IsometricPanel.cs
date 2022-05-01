@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 
 namespace QianShi.Music.Common.UserControls
@@ -22,6 +18,7 @@ namespace QianShi.Music.Common.UserControls
             }
             return size;
         }
+
         protected override Size ArrangeOverride(Size availableSize)
         {
             var size = availableSize;

@@ -24,11 +24,13 @@ namespace QianShi.Music.ViewModels
         private string _title;
         private bool _loading;
         private ObservableCollection<SongBindable> _playlists;
+
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
         }
+
         public ObservableCollection<SongBindable> Playlists
         {
             get => _playlists;
@@ -47,10 +49,12 @@ namespace QianShi.Music.ViewModels
         }
 
         public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
+
         /// <summary>
         /// 播放歌单
         /// </summary>
         public DelegateCommand<SongBindable?> PlayCommand { get; private set; }
+
         /// <summary>
         /// 立即播放
         /// </summary>
@@ -75,7 +79,7 @@ namespace QianShi.Music.ViewModels
             ShowDescriptionCommand = new DelegateCommand(ShowDescription);
         }
 
-        void Play(SongBindable? palylist)
+        private void Play(SongBindable? palylist)
         {
             if (palylist != null)
             {
@@ -88,7 +92,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async void ShowDescription()
+        private async void ShowDescription()
         {
             var parameters = new DialogParameters();
             parameters.Add("Description", Detail.Description);
@@ -159,7 +163,6 @@ namespace QianShi.Music.ViewModels
             }
             base.OnNavigatedFrom(navigationContext);
         }
-
     }
 
     public class SongBindable : BindableBase

@@ -11,9 +11,6 @@ using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 
-using static QianShi.Music.Common.Models.Request.SearchRequest;
-using static QianShi.Music.Common.Models.Response.SongDetailResponse;
-
 namespace QianShi.Music.ViewModels
 {
     public class SearchViewModel : NavigationViewModel
@@ -111,26 +108,31 @@ namespace QianShi.Music.ViewModels
                                     }
                                 }
                                 break;
+
                             case SearchType.专辑:
                                 var albumSearchResult = (AlbumSearchResult)response.Result;
                                 albumSearchResult.Albums.ForEach(FormatCoverDetault);
                                 Albums.AddRange(albumSearchResult.Albums);
                                 break;
+
                             case SearchType.歌手:
                                 var artistSearchResult = (ArtistSearchResult)response.Result;
                                 artistSearchResult.Artists.ForEach(FormatCoverDetault);
                                 Artists.AddRange(artistSearchResult.Artists);
                                 break;
+
                             case SearchType.歌单:
                                 var playlistSearchResult = (PlaylistSearchResult)response.Result;
                                 playlistSearchResult.Playlists.ForEach(FormatCoverDetault);
                                 Playlists.AddRange(playlistSearchResult.Playlists);
                                 break;
+
                             case SearchType.MV:
                                 var mvSearchResult = (MovieVideoSearchResult)response.Result;
                                 if (mvSearchResult.MovieVideos != null)
                                     MovieVideos.AddRange(mvSearchResult.MovieVideos);
                                 break;
+
                             case SearchType.用户:
                             case SearchType.歌词:
                             case SearchType.电台:

@@ -2,7 +2,7 @@
 
 namespace QianShi.Music.Common.Models.Request
 {
-    public class PagedRequestBase 
+    public class PagedRequestBase
     {
         /// <summary>
         /// 返回数量

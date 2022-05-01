@@ -10,6 +10,7 @@ namespace QianShi.Music.ViewModels
         private readonly IContainerProvider _containerProvider;
 
         public readonly IEventAggregator _aggregator;
+
         public NavigationViewModel(IContainerProvider containerProvider)
         {
             _containerProvider = containerProvider;
@@ -30,7 +31,7 @@ namespace QianShi.Music.ViewModels
         }
 
         public void UpdateLoding(bool isOpen)
-        { 
+        {
         }
     }
 }

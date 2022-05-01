@@ -22,6 +22,7 @@ namespace QianShi.Music.ViewModels
         private int _offset = 0;
 
         private bool _hasMore;
+
         public bool HasMore
         {
             get { return _hasMore; }
@@ -29,6 +30,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private SearchType _searchType = SearchType.单曲;
+
         public SearchType SearchType
         {
             get { return _searchType; }
@@ -36,6 +38,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private string _keywords = String.Empty;
+
         public string Keywords
         {
             get { return _keywords; }
@@ -43,6 +46,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<object> _items;
+
         public ObservableCollection<object> Items
         {
             get { return _items; }
@@ -50,6 +54,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private bool _loading;
+
         public bool Loading
         {
             get { return _loading; }
@@ -122,6 +127,7 @@ namespace QianShi.Music.ViewModels
                         }
                     }
                     break;
+
                 case SearchType.专辑:
                     {
                         var response = await _playlistService.SearchAlbum(request);
@@ -133,6 +139,7 @@ namespace QianShi.Music.ViewModels
                         }
                     }
                     break;
+
                 case SearchType.歌手:
                     {
                         var response = await _playlistService.SearchArtist(request);
@@ -144,6 +151,7 @@ namespace QianShi.Music.ViewModels
                         }
                     }
                     break;
+
                 case SearchType.歌单:
                     {
                         var response = await _playlistService.SearchPlaylist(request);
@@ -155,8 +163,10 @@ namespace QianShi.Music.ViewModels
                         }
                     }
                     break;
+
                 case SearchType.用户:
                     break;
+
                 case SearchType.MV:
                     {
                         var response = await _playlistService.SearchMovieVideo(request);
@@ -170,16 +180,22 @@ namespace QianShi.Music.ViewModels
                         }
                     }
                     break;
+
                 case SearchType.歌词:
                     break;
+
                 case SearchType.电台:
                     break;
+
                 case SearchType.视频:
                     break;
+
                 case SearchType.综合:
                     break;
+
                 case SearchType.声音:
                     break;
+
                 default:
                     break;
             }

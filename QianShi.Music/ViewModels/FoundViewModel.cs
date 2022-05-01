@@ -28,41 +28,49 @@ namespace QianShi.Music.ViewModels
         private bool _more = false;
         private int _offset = 0;
         private long _before = 0;
+
         public ObservableCollection<Cat> Cats
         {
             get => _cats;
             set { _cats = value; RaisePropertyChanged(); }
         }
+
         public ObservableCollection<CatOption> CatOptions
         {
             get => _catOptions;
             set { _catOptions = value; RaisePropertyChanged(); }
         }
+
         public Visibility MoreCat
         {
             get => _moreCat;
             set { _moreCat = value; RaisePropertyChanged(); }
         }
+
         public bool Loading
         {
             get => _loading;
             set => SetProperty(ref _loading, value);
         }
+
         public bool More
         {
             get => _more;
             set => SetProperty(ref _more, value);
         }
+
         public ObservableCollection<IPlaylist> Playlists
         {
             get => _playlists;
             set => SetProperty(ref _playlists, value);
         }
+
         public DelegateCommand<Cat> SwitchMoreCatCommand { get; private set; }
         public DelegateCommand<Cat> AddCatCommand { get; private set; }
         public DelegateCommand<Cat> SelectedCatCommand { get; private set; }
         public DelegateCommand<ItemsControl> MorePlaylistCommand { get; private set; }
         public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
+
         public FoundViewModel(
             IContainerProvider provider,
             IRegionManager regionManager,
@@ -84,7 +92,7 @@ namespace QianShi.Music.ViewModels
             OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
         }
 
-        void OpenPlaylist(IPlaylist obj)
+        private void OpenPlaylist(IPlaylist obj)
         {
             var parameters = new NavigationParameters();
             parameters.Add("PlaylistId", obj.Id);
@@ -95,7 +103,7 @@ namespace QianShi.Music.ViewModels
         /// <summary>
         /// 更多歌单
         /// </summary>
-        async void MorePlaylist(ItemsControl el)
+        private async void MorePlaylist(ItemsControl el)
         {
             if (_currentCat != null)
             {
@@ -108,7 +116,7 @@ namespace QianShi.Music.ViewModels
         /// 获取精选歌单
         /// </summary>
         /// <returns></returns>
-        async Task QuerySelectPlaylist(bool isClear = false)
+        private async Task QuerySelectPlaylist(bool isClear = false)
         {
             var response = await _playlistService.GetTopPlaylistHighqualityAsnyc(new TopPlaylistHighqualityRequest
             {
@@ -124,7 +132,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
+        private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
         {
             if (isClear)
                 Playlists.Clear();
@@ -144,7 +152,7 @@ namespace QianShi.Music.ViewModels
         /// </summary>
         /// <param name="catName"></param>
         /// <returns></returns>
-        async Task QueryCatPlaylist(string catName, bool isClear = false)
+        private async Task QueryCatPlaylist(string catName, bool isClear = false)
         {
             var response = await _playlistService.GetTopPlaylistAsync(new TopPlaylistRequest
             {
@@ -163,7 +171,7 @@ namespace QianShi.Music.ViewModels
         /// 获取推荐歌单
         /// </summary>
         /// <returns></returns>
-        async Task QueryRecommendedPalylist()
+        private async Task QueryRecommendedPalylist()
         {
             var response = await _playlistService.GetPersonalizedAsync();
             if (response != null)
@@ -178,7 +186,7 @@ namespace QianShi.Music.ViewModels
         /// 获取排行榜列表
         /// </summary>
         /// <returns></returns>
-        async Task QueryToplist()
+        private async Task QueryToplist()
         {
             var response = await _playlistService.GetToplistAsync();
             if (response != null)
@@ -188,7 +196,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async void SelectedCat(Cat cat)
+        private async void SelectedCat(Cat cat)
         {
             if (_currentCat == cat) return;
             if (_currentCat != null)
@@ -200,10 +208,9 @@ namespace QianShi.Music.ViewModels
             More = false;
 
             await CallApi(cat, true);
-
         }
 
-        async Task CallApi(Cat cat, bool isClear = false)
+        private async Task CallApi(Cat cat, bool isClear = false)
         {
             Loading = true;
             try
@@ -214,12 +221,15 @@ namespace QianShi.Music.ViewModels
                     case "精品":
                         await QuerySelectPlaylist(isClear);
                         break;
+
                     case "推荐":
                         await QueryRecommendedPalylist();
                         break;
+
                     case "排行榜":
                         await QueryToplist();
                         break;
+
                     default:
                         await QueryCatPlaylist(cat.Name, isClear);
                         break;
@@ -234,7 +244,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        void AddCat(Cat cat)
+        private void AddCat(Cat cat)
         {
             if (_cats.Any(x => x.Equals(cat)))
             {
@@ -248,7 +258,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        void SwitchMoreCat(Cat cat)
+        private void SwitchMoreCat(Cat cat)
         {
             cat.IsActivation = !cat.IsActivation;
             MoreCat = MoreCat == Visibility.Collapsed
@@ -289,7 +299,6 @@ namespace QianShi.Music.ViewModels
                 if (_currentCat == null)
                     SelectedCat(Cats[0]);
             }
-
 
             if (_catOptions.Count == 0)
             {

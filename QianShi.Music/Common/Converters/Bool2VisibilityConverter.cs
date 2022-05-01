@@ -8,7 +8,7 @@ namespace QianShi.Music.Common.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(value is bool flag) return flag? Visibility.Visible : Visibility.Collapsed;
+            if (value is bool flag) return flag ? Visibility.Visible : Visibility.Collapsed;
             return Visibility.Collapsed;
         }
 

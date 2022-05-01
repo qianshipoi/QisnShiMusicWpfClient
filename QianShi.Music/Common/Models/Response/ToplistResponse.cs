@@ -9,7 +9,7 @@
 
         public List<Toplist> List { get; set; } = new();
 
-        public class Toplist :  IPlaylist
+        public class Toplist : IPlaylist
         {
             public long Id { get; set; }
             public string UpdateFrequency { get; set; } = null!;
@@ -19,5 +19,4 @@
             public long PlayCount { get; set; }
         }
     }
-
 }

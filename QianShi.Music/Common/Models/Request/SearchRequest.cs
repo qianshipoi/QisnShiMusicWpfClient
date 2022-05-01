@@ -12,8 +12,8 @@ namespace QianShi.Music.Common.Models.Request
         /// </summary>
         [Description("type")]
         public SearchType Type { get; set; } = SearchType.单曲;
-
     }
+
     public enum SearchType
     {
         单曲 = 1,

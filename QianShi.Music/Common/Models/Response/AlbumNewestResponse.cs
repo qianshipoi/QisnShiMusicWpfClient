@@ -1,7 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 
-using static QianShi.Music.Common.Models.Response.SongDetailResponse;
-
 namespace QianShi.Music.Common.Models.Response
 {
     public class AlbumNewestResponse
@@ -10,14 +8,17 @@ namespace QianShi.Music.Common.Models.Response
 
         public List<Album> Albums { get; set; } = new();
     }
+
     public class Album : IPlaylist
     {
         public long Id { get; set; }
         public string Name { get; set; } = null!;
         public string Type { get; set; } = null!;
         public int Size { get; set; }
+
         [JsonPropertyName("picUrl")]
         public string CoverImgUrl { get; set; } = null!;
+
         public string Description { get; set; } = null!;
         public string Tags { get; set; } = null!;
         public Artist Artist { get; set; } = new();

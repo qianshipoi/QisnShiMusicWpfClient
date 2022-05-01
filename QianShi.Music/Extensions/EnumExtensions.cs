@@ -20,7 +20,6 @@ namespace QianShi.Music.Extensions
             {
                 return enumValue.ToString();
             }
-
         }
     }
 }

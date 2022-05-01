@@ -8,6 +8,7 @@ namespace QianShi.Music.Common.UserControls
     {
         //记录上一次的滚动位置
         private double LastLocation = 0;
+
         //重写鼠标滚动事件
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
@@ -27,6 +28,7 @@ namespace QianShi.Music.Common.UserControls
             //告诉ScrollViewer我们已经完成了滚动
             e.Handled = true;
         }
+
         private void AnimateScroll(double ToValue)
         {
             //为了避免重复，先结束掉上一个动画

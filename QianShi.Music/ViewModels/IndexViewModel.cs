@@ -3,8 +3,6 @@ using Prism.Ioc;
 using Prism.Regions;
 
 using QianShi.Music.Common;
-using QianShi.Music.Common.Models;
-using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
@@ -14,7 +12,6 @@ using System.Windows;
 
 namespace QianShi.Music.ViewModels
 {
-
     public class IndexViewModel : NavigationViewModel
     {
         private readonly IRegionManager _regionManager;
@@ -29,21 +26,25 @@ namespace QianShi.Music.ViewModels
             get => _recommendPlayList;
             set { _recommendPlayList = value; RaisePropertyChanged(); }
         }
+
         public ObservableCollection<IPlaylist> RecommendSingerList
         {
             get => _recommendSingerList;
             set { _recommendSingerList = value; RaisePropertyChanged(); }
         }
+
         public ObservableCollection<IPlaylist> NewAlbumList
         {
             get => _newAlbumList;
             set { _newAlbumList = value; RaisePropertyChanged(); }
         }
+
         public ObservableCollection<IPlaylist> RankingList
         {
             get => _rankingList;
             set { _rankingList = value; RaisePropertyChanged(); }
         }
+
         public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
         public DelegateCommand<string> JumpFoundCommand { get; private set; }
 
@@ -91,11 +92,10 @@ namespace QianShi.Music.ViewModels
             {
                 _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("AlbumView", parameters);
             }
-            else {
-
+            else
+            {
                 _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("PlaylistView", parameters);
             }
-
         }
 
         public override void OnNavigatedTo(NavigationContext navigationContext)

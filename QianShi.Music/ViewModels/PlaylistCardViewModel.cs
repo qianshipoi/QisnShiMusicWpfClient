@@ -19,6 +19,7 @@ namespace QianShi.Music.ViewModels
         private int _limit = 100;
 
         private bool _loading;
+
         public bool Loading
         {
             get => _loading;
@@ -26,12 +27,15 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<IPlaylist> _playlists;
+
         public ObservableCollection<IPlaylist> Playlists
         {
             get => _playlists;
             set => SetProperty(ref _playlists, value);
         }
+
         private bool _more = false;
+
         public bool More
         {
             get => _more;
@@ -54,15 +58,17 @@ namespace QianShi.Music.ViewModels
             OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
             MorePlaylistCommand = new DelegateCommand<ItemsControl>(MorePlaylist);
         }
+
         /// <summary>
         /// 更多歌单
         /// </summary>
-        async void MorePlaylist(ItemsControl el)
+        private async void MorePlaylist(ItemsControl el)
         {
             el.Focus();
             _offset += _limit;
             await LoadPlaylist();
         }
+
         private async Task LoadPlaylist(bool clear = false)
         {
             Loading = true;
@@ -100,7 +106,7 @@ namespace QianShi.Music.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
 
-        async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
+        private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
         {
             if (isClear)
                 Playlists.Clear();
@@ -114,6 +120,5 @@ namespace QianShi.Music.ViewModels
                 i++;
             }
         }
-
     }
 }

@@ -5,6 +5,7 @@
         public int Code { get; set; }
 
         public List<Tag> Tags { get; set; } = new List<Tag>();
+
         public class Tag
         {
             public PlaylistTag? PlaylistTag { get; set; }
@@ -43,6 +44,5 @@
             public int HighQualityPos { get; set; }
             public int OfficialPos { get; set; }
         }
-
     }
 }

@@ -7,12 +7,10 @@ using Prism.Regions;
 
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 
 using System.Collections.ObjectModel;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace QianShi.Music.ViewModels
 {
@@ -22,11 +20,13 @@ namespace QianShi.Music.ViewModels
         public string? PicUrl { get; set; } = "https://oss.kuriyama.top/static/background.png";
 
         private ImageSource? _picImageSource;
+
         public ImageSource? PicImageSource
         {
             get => _picImageSource;
             set => SetProperty(ref _picImageSource, value);
         }
+
         public string Name { get; set; } = null!;
         public string ArtistName { get; set; } = null!;
         public string AlbumName { get; set; } = null!;
@@ -59,11 +59,13 @@ namespace QianShi.Music.ViewModels
         private string _title;
         private bool _loading;
         private ObservableCollection<Song> _playlists;
+
         public string Title
         {
             get => _title;
             set => SetProperty(ref _title, value);
         }
+
         public ObservableCollection<Song> Playlists
         {
             get => _playlists;
@@ -75,10 +77,12 @@ namespace QianShi.Music.ViewModels
         public bool Loading { get => _loading; set => SetProperty(ref _loading, value); }
 
         public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
+
         /// <summary>
         /// 播放歌单
         /// </summary>
         public DelegateCommand<Song?> PlayCommand { get; private set; }
+
         /// <summary>
         /// 立即播放
         /// </summary>
@@ -95,7 +99,7 @@ namespace QianShi.Music.ViewModels
             _containerProvider = containerProvider;
         }
 
-        void Play(Song? palylist)
+        private void Play(Song? palylist)
         {
             if (palylist != null)
             {
@@ -162,6 +166,5 @@ namespace QianShi.Music.ViewModels
             }
             base.OnNavigatedFrom(navigationContext);
         }
-
     }
 }

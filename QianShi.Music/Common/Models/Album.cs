@@ -7,7 +7,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Cover { get; set; }   
+        public string Cover { get; set; }
         public Singer Singer { get; set; }
     }
 }

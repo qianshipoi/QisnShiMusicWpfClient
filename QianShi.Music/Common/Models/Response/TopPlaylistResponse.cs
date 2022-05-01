@@ -70,20 +70,26 @@ namespace QianShi.Music.Common.Models.Response
         {
             public long Id { get; set; }
             public string Name { get; set; } = null!;
+
             [JsonPropertyName("ar")]
             public List<Artist> Artists { get; set; } = new List<Artist>();
+
             [JsonPropertyName("al")]
             public Album Album { get; set; } = new Album();
+
             [JsonPropertyName("dt")]
             public long Size { get; set; }  // 毫秒
+
             public long MV { get; set; }
         }
+
         public class Artist
         {
             public long Id { get; set; }
             public string Name { get; set; } = null!;
-            public List<string> Alias { get;set; } = new List<string>();
+            public List<string> Alias { get; set; } = new List<string>();
         }
+
         public class Album
         {
             public long Id { get; set; }
@@ -91,6 +97,7 @@ namespace QianShi.Music.Common.Models.Response
             public string PicUrl { get; set; } = null!;
         }
     }
+
     public class RecommendInfo
     {
         public string? Alg { get; set; }

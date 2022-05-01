@@ -80,6 +80,7 @@ namespace QianShi.Music.ViewModels
                 }
             }
         }
+
         private void Init()
         {
             if (_playView == null) return;
@@ -88,7 +89,6 @@ namespace QianShi.Music.ViewModels
 
             _playView.Init(url, lyricsString);
         }
-
     }
 
     public class Lyric : BindableBase
@@ -98,6 +98,7 @@ namespace QianShi.Music.ViewModels
 
         private bool _activating = false;
         public bool Activating { get => _activating; set => SetProperty(ref _activating, value); }
+
         public override string ToString() => Content;
     }
 }

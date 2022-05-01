@@ -6,6 +6,7 @@ namespace QianShi.Music.Common.Models.Response
     {
         public int Code { get; set; }
         public List<TopSong>? Data { get; set; }
+
         public class TopSong
         {
             public bool Starred { get; set; }
@@ -46,6 +47,7 @@ namespace QianShi.Music.Common.Models.Response
             public bool Exclusive { get; set; }
             public Privilege? Privilege { get; set; }
         }
+
         public class Privilege
         {
             public long Id { get; set; }
@@ -64,6 +66,7 @@ namespace QianShi.Music.Common.Models.Response
             public long Flag { get; set; }
             public bool PreSell { get; set; }
         }
+
         public class Music
         {
             public long DfsId { get; set; }
@@ -76,6 +79,7 @@ namespace QianShi.Music.Common.Models.Response
             public long Size { get; set; }
             public string? Extension { get; set; }
         }
+
         public class Album
         {
             public List<string>? Songs { get; set; }
@@ -117,8 +121,10 @@ namespace QianShi.Music.Common.Models.Response
         public string? Trans { get; set; }
         public int AlbumSize { get; set; }
         public string? Img1v1Url { get; set; }
+
         [JsonPropertyName("picUrl")]
         public string CoverImgUrl { get; set; } = null!;
+
         public bool Followed { get; set; }
         public string? BriefDesc { get; set; }
         public List<string> Alias { get; set; } = new List<string>();

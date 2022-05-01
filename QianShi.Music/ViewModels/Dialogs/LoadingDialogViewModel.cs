@@ -5,12 +5,6 @@ using Prism.Services.Dialogs;
 
 using QianShi.Music.Common;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace QianShi.Music.ViewModels.Dialogs
 {
     public class LoadingDialogViewModel : IDialogHostAware

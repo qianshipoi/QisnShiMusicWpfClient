@@ -22,7 +22,7 @@ namespace QianShi.Music.Extensions
             {
                 var value = prop.GetValue(parameter);
                 if (prop.PropertyType.IsEnum)
-                { 
+                {
                     value = Convert.ToInt32(value);
                 }
 
@@ -33,7 +33,6 @@ namespace QianShi.Music.Extensions
                 {
                     request.AddQueryParameter(description.Description, value.ToString());
                 }
-
             }
         }
     }

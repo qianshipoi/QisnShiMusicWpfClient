@@ -19,12 +19,15 @@ namespace QianShi.Music.Common.UserControls
                     case Playlist:
                         dt = fe.FindResource("PlaylistItemTemplate") as DataTemplate;
                         break;
+
                     case PersonalizedResponse.PersonalizedPlaylist:
                         dt = fe.FindResource("PersonalizedPlaylistItemTemplate") as DataTemplate;
                         break;
+
                     case ToplistResponse.Toplist:
                         dt = fe.FindResource("ToplistItemTemplate") as DataTemplate;
                         break;
+
                     default:
                         break;
                 }

@@ -12,9 +12,12 @@ namespace QianShi.Music.Common.Models.Response
     {
         [JsonPropertyName("al")]
         public Album Album { get; set; } = null!;
+
         public List<string> Alia { get; set; } = new List<string>();
+
         [JsonPropertyName("ar")]
         public List<Artist> Artists { get; set; } = new List<Artist>();
+
         public string Cd { get; set; } = string.Empty;
         public string Cf { get; set; } = string.Empty;
         public long Copyright { get; set; }
@@ -45,8 +48,10 @@ namespace QianShi.Music.Common.Models.Response
         public List<string> RtUrls { get; set; } = new();
         public int Rtype { get; set; }
         public dynamic? Rurl { get; set; }
+
         [JsonPropertyName("s_id")]
         public int Sid { get; set; }
+
         public int Single { get; set; }
         public int St { get; set; }
         public int T { get; set; }

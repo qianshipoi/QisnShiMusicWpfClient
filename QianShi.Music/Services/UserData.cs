@@ -2,7 +2,6 @@
 
 using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace QianShi.Music.Services
 {
@@ -40,6 +39,7 @@ namespace QianShi.Music.Services
         public event EventHandler<LoginChangedEventArgs>? LoginChanged;
 
         private bool _isLogin;
+
         public bool IsLogin
         {
             get => _isLogin;
@@ -52,6 +52,7 @@ namespace QianShi.Music.Services
                 SetProperty(ref _isLogin, value);
             }
         }
+
         private string? _cover;
         public string? Cover { get => _cover; set => SetProperty(ref _cover, value); }
         private string? _nickname;
@@ -65,6 +66,7 @@ namespace QianShi.Music.Services
             NickName = null;
             Cookie = null;
         }
+
         public void Save()
         {
             var settingPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, SettingFileName);

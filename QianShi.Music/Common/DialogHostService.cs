@@ -25,7 +25,7 @@ namespace QianShi.Music.Common
             //从容器当中去除弹出窗口的实例
             var content = containerExtension.Resolve<object>(name);
 
-            //验证实例的有效性 
+            //验证实例的有效性
             if (!(content is FrameworkElement dialogContent))
                 throw new NullReferenceException("A dialog's content must be a FrameworkElement");
 

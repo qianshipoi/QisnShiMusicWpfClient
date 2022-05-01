@@ -4,6 +4,7 @@
     {
         public int Code { get; set; }
         public List<Tag>? Tags { get; set; }
+
         public class Tag
         {
             public int Id { get; set; }

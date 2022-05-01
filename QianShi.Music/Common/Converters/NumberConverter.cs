@@ -13,8 +13,10 @@ namespace QianShi.Music.Common.Converters
                 {
                     case > 10_000 and < 100_000_000:
                         return $"{val / 10_000d:f2}万";
+
                     case > 100_000_000:
                         return $"{val / 100_000_000d:f2}亿";
+
                     default:
                         return val.ToString();
                 }

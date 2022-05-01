@@ -36,6 +36,5 @@ namespace QianShi.Music.Common.Models
             get { return nameSpace; }
             set { nameSpace = value; }
         }
-
     }
 }

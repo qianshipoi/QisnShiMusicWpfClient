@@ -20,6 +20,7 @@ namespace QianShi.Music.Common.Data
         public ObservableCollection<Song> Songs { get; set; }
         public ObservableCollection<Playlist> Playlists { get; set; }
         public ObservableCollection<MovieVideo> MovieVideos { get; set; }
+
         public DesignSearchViewModel()
         {
             var cover = "https://oss.kuriyama.top/static/background.png";

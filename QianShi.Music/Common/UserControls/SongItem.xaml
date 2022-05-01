@@ -29,7 +29,6 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
     <ContentControl DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=Item}">

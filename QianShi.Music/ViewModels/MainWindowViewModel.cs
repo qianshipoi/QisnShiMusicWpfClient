@@ -24,22 +24,27 @@ namespace QianShi.Music.ViewModels
         private IRegionNavigationJournal _journal = null!;
 
         private UserData _userData = default!;
+
         public UserData UserData
         {
             get { return _userData; }
             set { SetProperty(ref _userData, value); }
         }
+
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
+
         public ObservableCollection<MenuBar> MenuBars
         {
             get { return menuBars; }
             set { menuBars = value; RaisePropertyChanged(); }
         }
+
         private MenuBar? _navigateCurrentItem;
+
         public MenuBar? NavigateCurrentItem
         {
             get => _navigateCurrentItem;
@@ -52,6 +57,7 @@ namespace QianShi.Music.ViewModels
                 SetProperty(ref _navigateCurrentItem, value);
             }
         }
+
         public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
         public DelegateCommand GoBackCommand { get; private set; }
         public DelegateCommand GoForwardCommand { get; private set; }
@@ -59,6 +65,7 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<ContentControl> OpenPlayViewCommand { get; private set; }
         public DelegateCommand<string> SearchCommand { get; private set; }
         public DelegateCommand LoginCommand { get; private set; }
+
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager, IPlaylistService playlistService)
         {
@@ -84,7 +91,7 @@ namespace QianShi.Music.ViewModels
             _userData = UserData.Instance;
         }
 
-        void Search(string searchText)
+        private void Search(string searchText)
         {
             if (string.IsNullOrWhiteSpace(searchText)) return;
             var parameters = new NavigationParameters();
@@ -96,7 +103,7 @@ namespace QianShi.Music.ViewModels
             regions.RequestNavigate("SearchView", parameters);
         }
 
-        void OpenPlayView(ContentControl obj)
+        private void OpenPlayView(ContentControl obj)
         {
             if (obj.Content is PlayView playView)
             {
@@ -104,7 +111,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async void Logout()
+        private async void Logout()
         {
             var response = await _playlistService.Logout();
             if (response.Code == 200)
@@ -114,19 +121,19 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        void Login()
+        private void Login()
         {
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(LoginView));
         }
 
-        void CreateMenuBar()
+        private void CreateMenuBar()
         {
             MenuBars.Add(new MenuBar() { Icon = "Home", Title = "首页", NameSpace = "IndexView" });
             MenuBars.Add(new MenuBar() { Icon = "NotebookOutline", Title = "发现", NameSpace = "FoundView" });
             MenuBars.Add(new MenuBar() { Icon = "NotebookPlus", Title = "音乐库", NameSpace = "LibraryView" });
         }
 
-        void Navigate(MenuBar obj)
+        private void Navigate(MenuBar obj)
         {
             if (obj == null || string.IsNullOrWhiteSpace(obj.NameSpace))
                 return;
@@ -171,7 +178,6 @@ namespace QianShi.Music.ViewModels
                 _journal = back.Context.NavigationService.Journal;
             });
             _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
-
         }
     }
 }

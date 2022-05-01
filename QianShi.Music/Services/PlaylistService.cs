@@ -16,7 +16,9 @@ namespace QianShi.Music.Services
         {
             _cookieContainer = new CookieContainer();
         }
+
         public void SetCookie(CookieCollection cookies) => _cookieContainer.Add(cookies);
+
         public void SetCookie(Cookie cookie) => _cookieContainer.Add(cookie);
 
         public CookieCollection? GetCookieCollection() => _cookieContainer.GetAllCookies();
@@ -113,6 +115,7 @@ namespace QianShi.Music.Services
                 requset.AddQueryParameter("type", type.ToString());
             return await Get<ToplistArtistResponse>(requset) ?? new ToplistArtistResponse();
         }
+
         public async Task<SearchResponse> Search(SearchRequest parasmeters)
         {
             var request = new RestRequest("/search");
@@ -125,31 +128,42 @@ namespace QianShi.Music.Services
                 case SearchType.单曲:
                     type = typeof(SongSearchResult);
                     break;
+
                 case SearchType.专辑:
                     type = typeof(AlbumSearchResult);
                     break;
+
                 case SearchType.歌手:
                     type = typeof(ArtistSearchResult);
                     break;
+
                 case SearchType.歌单:
                     type = typeof(PlaylistSearchResult);
                     break;
+
                 case SearchType.用户:
                     type = typeof(ArtistSearchResult);
                     break;
+
                 case SearchType.MV:
                     type = typeof(MovieVideoSearchResult);
                     break;
+
                 case SearchType.歌词:
                     break;
+
                 case SearchType.电台:
                     break;
+
                 case SearchType.视频:
                     break;
+
                 case SearchType.综合:
                     break;
+
                 case SearchType.声音:
                     break;
+
                 default:
                     break;
             }
@@ -176,6 +190,7 @@ namespace QianShi.Music.Services
         }
 
         public const string SearchApi = "/search";
+
         public async Task<SearchResponse<PlaylistSearchResult>> SearchPlaylist(SearchRequest parameters)
         {
             var request = new RestRequest(SearchApi);
@@ -183,17 +198,20 @@ namespace QianShi.Music.Services
             request.AddQueryParameters(parameters);
             return await Get<SearchResponse<PlaylistSearchResult>>(request) ?? new SearchResponse<PlaylistSearchResult>();
         }
+
         public async Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters)
         {
             parameters.Type = SearchType.歌手;
             return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ?? new SearchResponse<ArtistSearchResult>();
         }
+
         public async Task<SongDetailResponse> SongDetail(string ids)
         {
             var request = new RestRequest("/song/detail");
             request.AddQueryParameter("ids", ids);
             return await Get<SongDetailResponse>(request) ?? new SongDetailResponse();
         }
+
         public async Task<SearchResponse<AlbumSearchResult>> SearchAlbum(SearchRequest parameters)
         {
             var request = new RestRequest(SearchApi);
@@ -201,6 +219,7 @@ namespace QianShi.Music.Services
             request.AddQueryParameters(parameters);
             return await Get<SearchResponse<AlbumSearchResult>>(request) ?? new();
         }
+
         public async Task<SearchResponse<MovieVideoSearchResult>> SearchMovieVideo(SearchRequest parameters)
         {
             var request = new RestRequest(SearchApi);
@@ -208,6 +227,7 @@ namespace QianShi.Music.Services
             request.AddQueryParameters(parameters);
             return await Get<SearchResponse<MovieVideoSearchResult>>(request) ?? new();
         }
+
         public async Task<SearchResponse<SongSearchResult>> SearchSong(SearchRequest parameters)
         {
             var request = new RestRequest(SearchApi);
@@ -223,6 +243,7 @@ namespace QianShi.Music.Services
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginQrKeyResponse>(request) ?? new();
         }
+
         public async Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 = false)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -237,6 +258,7 @@ namespace QianShi.Music.Services
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginQrCreateResponse>(request) ?? new();
         }
+
         public async Task<LoginQrCheckResponse> LoginQrCheck(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -249,12 +271,14 @@ namespace QianShi.Music.Services
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginQrCheckResponse>(request) ?? new();
         }
+
         public async Task<LoginStatusResponse> LoginStatus()
         {
             var request = new RestRequest("/login/status");
             request.AddQueryParameter("time", DateTime.Now.Ticks);
             return await Get<LoginStatusResponse>(request) ?? new();
         }
+
         public async Task<LogoutResponse> Logout()
         {
             try

@@ -52,7 +52,7 @@ namespace QianShi.Music.Common.UserControls
 
         private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (null!= LookAllCammand && LookAllCammand.CanExecute(LookAllCommandParameter))
+            if (null != LookAllCammand && LookAllCammand.CanExecute(LookAllCommandParameter))
                 LookAllCammand.Execute(LookAllCommandParameter);
         }
     }

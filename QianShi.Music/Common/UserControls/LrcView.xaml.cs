@@ -25,16 +25,22 @@ namespace QianShi.Music.Common.UserControls
     public partial class LrcView : UserControl
     {
         public Dictionary<double, LrcModel> Lrcs = new Dictionary<double, LrcModel>();
+
         //当前焦点所在歌词集合位置
         public int FoucsLrcLocation { get; set; } = -1;
+
         //添加当前焦点歌词变量
         public LrcModel foucslrc { get; set; }
+
         //非焦点歌词颜色
         public SolidColorBrush NoramlLrcColor = new SolidColorBrush(Colors.Black);
+
         //焦点歌词颜色
         public SolidColorBrush FoucsLrcColor = new SolidColorBrush(Colors.OrangeRed);
-        DispatcherTimer _dt;
+
+        private DispatcherTimer _dt;
         private bool _rolling = true;
+
         public LrcView()
         {
             InitializeComponent();
@@ -159,5 +165,4 @@ namespace QianShi.Music.Common.UserControls
         /// </summary>
         public double Time { get; set; }
     }
-
 }

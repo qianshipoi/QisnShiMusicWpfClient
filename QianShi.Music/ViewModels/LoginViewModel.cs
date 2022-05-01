@@ -24,6 +24,7 @@ namespace QianShi.Music.ViewModels
         private DispatcherTimer? _dispatcherTimer;
 
         private LoginMode _loginMode = LoginMode.QrCode;
+
         public LoginMode LoginMode
         {
             get { return _loginMode; }
@@ -31,10 +32,11 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
+
         public DelegateCommand<LoginMode?> SwitchLoginModeCommand =>
             _switchLoginModeCommand ?? (_switchLoginModeCommand = new DelegateCommand<LoginMode?>(ExecuteSwitchLoginModeCommand));
 
-        void ExecuteSwitchLoginModeCommand(LoginMode? mode)
+        private void ExecuteSwitchLoginModeCommand(LoginMode? mode)
         {
             LoginMode = mode ?? LoginMode;
             if (mode == LoginMode.QrCode)
@@ -43,7 +45,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task CreateQrCode()
+        private async Task CreateQrCode()
         {
             if (string.IsNullOrWhiteSpace(_qrKey))
             {
@@ -72,7 +74,7 @@ namespace QianShi.Music.ViewModels
             StartCheck();
         }
 
-        void StartCheck()
+        private void StartCheck()
         {
             EndCheck();
             _dispatcherTimer = new DispatcherTimer();
@@ -105,7 +107,7 @@ namespace QianShi.Music.ViewModels
             _dispatcherTimer.Start();
         }
 
-        void EndCheck()
+        private void EndCheck()
         {
             if (_dispatcherTimer == null) return;
             _dispatcherTimer.Stop();
@@ -115,7 +117,7 @@ namespace QianShi.Music.ViewModels
         /// <summary>
         /// 返回页面
         /// </summary>
-        void Back()
+        private void Back()
         {
             EndCheck();
             _journal.GoBack();
@@ -128,6 +130,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ImageSource? _qrCodeSource;
+
         public ImageSource? QrCodeSource
         {
             get { return _qrCodeSource; }

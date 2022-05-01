@@ -6,6 +6,7 @@
         /// mv id
         /// </summary>
         public long Id { get; set; }
+
         /// <summary>
         /// 分辨率,默认 1080,可从 /mv/detail 接口获取分辨率列表
         /// </summary>
