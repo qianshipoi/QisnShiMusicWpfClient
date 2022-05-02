@@ -1,0 +1,100 @@
+﻿<UserControl
+    x:Class="QianShi.Music.Views.ArtistView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:QianShi.Music.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
+    mc:Ignorable="d">
+    <materialDesign:DialogHost>
+        <uc:ScrollViewerAnimation Padding="20,0" Background="White">
+            <StackPanel>
+                <DockPanel
+                    Height="264"
+                    Margin="0,32,0,0"
+                    LastChildFill="True">
+                    <uc:FilletImage
+                        Width="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualHeight}"
+                        Margin="0,0,56,0"
+                        CornerRadius="150"
+                        DockPanel.Dock="Left"
+                        ImageSource="https://oss.kuriyama.top/static/background.png" />
+                    <StackPanel>
+                        <TextBlock
+                            FontSize="56"
+                            FontWeight="Bold"
+                            Text="周杰伦" />
+                        <TextBlock
+                            Margin="0,24,0,0"
+                            FontSize="18"
+                            Text="艺人" />
+                        <StackPanel
+                            Margin="0,2,0,0"
+                            Opacity=".68"
+                            Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="14" />
+                                </Style>
+                            </StackPanel.Resources>
+                            <TextBlock Style="{StaticResource UnderlineTextBlock}" Text="533 首歌" />
+                            <TextBlock Margin="4,0" Text="·" />
+                            <TextBlock Style="{StaticResource UnderlineTextBlock}" Text="40 张专辑" />
+                            <TextBlock Margin="4,0" Text="·" />
+                            <TextBlock Style="{StaticResource UnderlineTextBlock}" Text="8 个MV" />
+                        </StackPanel>
+                        <TextBlock
+                            Height="36"
+                            Margin="0,24,0,0"
+                            Cursor="Hand"
+                            FontSize="14"
+                            Opacity=".68"
+                            Text="周杰伦（Jay Chou），1979年1月18日出生于台湾省新北市，祖籍福建省泉州市永春县，中国台湾流行乐男歌手、原创音乐人、演员、导演、编剧，毕业于淡江中学。 2000年发行首张个人专辑《Jay》。2001年发行的专辑《范特西》奠定其融合中西方音乐的风格。"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="WrapWithOverflow" />
+                        <StackPanel Margin="0,26,0,0" Orientation="Horizontal">
+                            <Button
+                                Height="40"
+                                Padding="12,8"
+                                Cursor="Hand">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="24"
+                                        Height="24"
+                                        VerticalAlignment="Center"
+                                        Kind="Play" />
+                                    <TextBlock
+                                        Margin="4"
+                                        VerticalAlignment="Center"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Text="播放" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                                Height="40"
+                                Margin="12,0"
+                                Content="关注"
+                                FontWeight="Bold"
+                                Style="{StaticResource MaterialDesignPaperLightButton}" />
+                            <Button Height="40" Style="{StaticResource MaterialDesignPaperLightButton}">
+                                <materialDesign:PackIcon
+                                    Width="24"
+                                    Height="24"
+                                    Kind="DotsHorizontal" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+                <uc:TitleControl
+                    Title="最新发布"
+                    Margin="0,46,0,16"
+                    FontSize="22" />
+            </StackPanel>
+        </uc:ScrollViewerAnimation>
+    </materialDesign:DialogHost>
+</UserControl>

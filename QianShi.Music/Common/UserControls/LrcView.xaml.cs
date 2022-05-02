@@ -53,7 +53,7 @@ namespace QianShi.Music.Common.UserControls
             };
         }
 
-        public event EventHandler<TimeChangedEventArgs> TimeChangedEvent;
+        public event EventHandler<TimeChangedEventArgs>? TimeChangedEvent;
 
         public void LoadLrc(string lyricsString)
         {
@@ -103,7 +103,7 @@ namespace QianShi.Music.Common.UserControls
             //获得焦点歌词位置
             if (foucslrc == null) return;
             GeneralTransform gf = foucslrc.LrcTb.TransformToVisual(LrcItemsControl);
-            if (gf != null) return;
+            if (gf == null) return;
             Point p = gf.Transform(new Point(0, 0));
             //滚动条当前位置
             Debug.WriteLine(ScrollViewerControl.VerticalOffset + "/" + p.Y);

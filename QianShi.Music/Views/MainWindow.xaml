@@ -130,13 +130,17 @@
                                 x:Name="LoginButtonControl"
                                 Width="25"
                                 Height="25"
+                                Margin="4,0"
                                 Padding="0"
                                 Command="{Binding LoginCommand}"
-                                Content="登录"
                                 Cursor="Hand"
                                 DockPanel.Dock="Right"
+                                FontSize="12"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                 Visibility="{Binding UserData.IsLogin, Converter={StaticResource InverseBoolToVisConverter}}"
-                                WindowChrome.IsHitTestVisibleInChrome="True" />
+                                WindowChrome.IsHitTestVisibleInChrome="True">
+                                <materialDesign:PackIcon Focusable="False" Kind="Account" />
+                            </Button>
 
                             <materialDesign:PopupBox
                                 DockPanel.Dock="Right"

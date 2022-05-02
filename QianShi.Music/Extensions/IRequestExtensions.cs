@@ -7,13 +7,13 @@ namespace QianShi.Music.Extensions
 {
     public static class IRequestExtensions
     {
-        public static void AddQueryParameters(this RestRequest request, object parameter)
+        public static RestRequest AddQueryParameters(this RestRequest request, object parameter)
         {
             if (request is null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
-            if (parameter is null) return;
+            if (parameter is null) return request;
 
             var type = parameter.GetType();
             var properties = type.GetProperties();
@@ -34,6 +34,7 @@ namespace QianShi.Music.Extensions
                     request.AddQueryParameter(description.Description, value.ToString());
                 }
             }
+            return request;
         }
     }
 }

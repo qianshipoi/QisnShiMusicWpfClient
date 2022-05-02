@@ -4,7 +4,7 @@ namespace QianShi.Music.Common.Models
 {
     public class MenuBar : BindableBase
     {
-        private string icon;
+        private string icon = String.Empty;
 
         /// <summary>
         /// 菜单图标
@@ -15,7 +15,7 @@ namespace QianShi.Music.Common.Models
             set { icon = value; }
         }
 
-        private string title;
+        private string title = String.Empty;
 
         /// <summary>
         /// 菜单名称
@@ -26,7 +26,7 @@ namespace QianShi.Music.Common.Models
             set { title = value; }
         }
 
-        private string nameSpace;
+        private string nameSpace = String.Empty;
 
         /// <summary>
         /// 菜单命名空间

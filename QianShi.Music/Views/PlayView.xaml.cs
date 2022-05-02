@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace QianShi.Music.Views
@@ -69,7 +57,7 @@ namespace QianShi.Music.Views
             };
         }
 
-        void LrcRoll()
+        private void LrcRoll()
         {
             CurrentTimeControl.Text = me.Position.ToString(@"mm\:ss");
             if (_canChangProgressControlValue)
@@ -77,13 +65,13 @@ namespace QianShi.Music.Views
             LrcView.LrcRoll(me.Position.TotalMilliseconds);
         }
 
-        void PlayView_Loaded(object sender, RoutedEventArgs e)
+        private void PlayView_Loaded(object sender, RoutedEventArgs e)
         {
             _targetWindow = Window.GetWindow(this);
             Margin = new Thickness(0, _targetWindow.Height, 0, 0);
         }
 
-        void PlayView_MouseMove(object sender, MouseEventArgs e)
+        private void PlayView_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
@@ -91,7 +79,7 @@ namespace QianShi.Music.Views
             }
         }
 
-        void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             if (_playing)
             {

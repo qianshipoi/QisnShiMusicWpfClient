@@ -292,5 +292,29 @@ namespace QianShi.Music.Services
                 _cookieContainer = new CookieContainer();
             }
         }
+
+        public async Task<SimiArtistResponse> SimiArtist(long id)
+        {
+            var request = new RestRequest("/simi/artist");
+            request.AddQueryParameter("id", id);
+            return (await Get<SimiArtistResponse>(request)) ?? new();
+        }
+
+        public async Task<ArtistsResponse> Artists(long id)
+        {
+            var request = new RestRequest("/artists");
+            request.AddQueryParameter("id", id);
+            return (await Get<ArtistsResponse>(request)) ?? new();
+        }
+
+        private async Task<T> Request<T>(string route, object parameters) where T : new()
+            => (await Get<T>(new RestRequest(route).AddQueryParameters(parameters))) ?? new T();
+
+        public async Task<ArtistAlbumResponse> ArtistAlbum(ArtistAlbumRequest parameters)
+            => await Request<ArtistAlbumResponse>("/artist/album", parameters);
+
+        public async Task<ArtistMvResponse> ArtistMv(ArtistMvRequest parameters)
+            => await Request<ArtistMvResponse>("/artist/mv", parameters);
+
     }
 }

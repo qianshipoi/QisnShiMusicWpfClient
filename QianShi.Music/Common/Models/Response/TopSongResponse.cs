@@ -121,10 +121,8 @@ namespace QianShi.Music.Common.Models.Response
         public string? Trans { get; set; }
         public int AlbumSize { get; set; }
         public string? Img1v1Url { get; set; }
-
         [JsonPropertyName("picUrl")]
         public string CoverImgUrl { get; set; } = null!;
-
         public bool Followed { get; set; }
         public string? BriefDesc { get; set; }
         public List<string> Alias { get; set; } = new List<string>();
