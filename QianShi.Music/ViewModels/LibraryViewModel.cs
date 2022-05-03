@@ -1,6 +1,6 @@
 ﻿namespace QianShi.Music.ViewModels
 {
-    internal class LibraryViewModel
+    public class LibraryViewModel
     {
     }
 }

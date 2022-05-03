@@ -91,6 +91,10 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <SolidColorBrush x:Key="HoverColor" Color="#F5F5F7" />
+            <SolidColorBrush x:Key="DefaultColor" Color="White" />
+            <SolidColorBrush x:Key="ActiveColor" Color="#EAEFFD" />
+            <SolidColorBrush x:Key="MianColor" Color="#335EEA" />
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>
