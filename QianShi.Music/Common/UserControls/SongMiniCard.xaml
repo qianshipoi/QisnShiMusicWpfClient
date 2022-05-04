@@ -45,7 +45,7 @@
                     VerticalAlignment="Top"
                     FontSize="16"
                     FontWeight="Bold"
-                    Text="周杰伦"
+                    Text="{Binding Name}"
                     TextTrimming="WordEllipsis" />
                 <ItemsControl
                     x:Name="ArtistsControl"
@@ -53,6 +53,7 @@
                     helper:ItemsControlHelper.MarkIndex="True"
                     AlternationCount="2"
                     FontSize="12"
+                    ItemsSource="{Binding Artists}"
                     Opacity=".68">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -70,7 +71,7 @@
                                 <TextBlock
                                     Cursor="Hand"
                                     Style="{StaticResource UnderlineTextBlock}"
-                                    Text="{Binding}"
+                                    Text="{Binding Name}"
                                     TextTrimming="WordEllipsis" />
                             </StackPanel>
                             <DataTemplate.Triggers>

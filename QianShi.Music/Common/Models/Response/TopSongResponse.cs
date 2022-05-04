@@ -130,7 +130,7 @@ namespace QianShi.Music.Common.Models.Response
         public string Name { get; set; } = null!;
         public long Id { get; set; }
         public string? Img1v1Id_str { get; set; }
-        public long AccountId { get; set; }
+        public long? AccountId { get; set; }
         public string IdentityIconUrl { get; set; } = string.Empty;
         public string Alg { get; set; } = string.Empty;
     }
