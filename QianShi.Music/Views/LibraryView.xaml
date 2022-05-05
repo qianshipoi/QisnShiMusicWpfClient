@@ -3,12 +3,171 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:LibraryViewModel}"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
     mc:Ignorable="d">
-    <Grid>
-        <TextBlock Text="音乐库" />
-    </Grid>
+    <uc:ScrollViewerAnimation>
+        <Border
+            MaxWidth="1280"
+            Padding="20"
+            Background="White">
+            <StackPanel>
+                <DockPanel
+                    Margin="0,0,0,20"
+                    HorizontalAlignment="Stretch"
+                    LastChildFill="True">
+                    <uc:FilletImage
+                        Width="48"
+                        Height="48"
+                        Margin="0,0,12,0"
+                        CornerRadius="30"
+                        DockPanel.Dock="Left"
+                        ImageSource="https://oss.kuriyama.top/static/background.png" />
+                    <TextBlock
+                        FontSize="42"
+                        FontWeight="Bold"
+                        Text="大hentai_loli控的音乐库" />
+                </DockPanel>
+                <Grid Height="240">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:Card
+                        Margin="0,0,20,0"
+                        Padding="24,18"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
+                        Background="#EAEFFD"
+                        Cursor="Hand"
+                        UniformCornerRadius="16">
+                        <DockPanel LastChildFill="True">
+                            <DockPanel
+                                Height="50"
+                                DockPanel.Dock="Bottom"
+                                LastChildFill="True">
+                                <Button
+                                    Width="44"
+                                    Height="44"
+                                    Padding="0"
+                                    materialDesign:ButtonAssist.CornerRadius="100"
+                                    materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                    Cursor="Hand"
+                                    DockPanel.Dock="Right">
+                                    <materialDesign:PackIcon
+                                        Width="32"
+                                        Height="32"
+                                        Kind="Play" />
+                                </Button>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock
+                                        FontSize="24"
+                                        FontWeight="Bold"
+                                        Foreground="#673AB7"
+                                        Text="我喜欢的音乐" />
+                                    <TextBlock
+                                        FontSize="15"
+                                        Foreground="#673AB7"
+                                        Text="191 首歌" />
+                                </StackPanel>
+                            </DockPanel>
+                            <ItemsControl>
+                                <ItemsControl.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="#673AB7" />
+                                        <Setter Property="FontSize" Value="14" />
+                                        <Setter Property="LineHeight" Value="16" />
+                                    </Style>
+                                </ItemsControl.Resources>
+                                <TextBlock Text="Trying to get a little bit tipsy" />
+                                <TextBlock Text="Don't stop, make it pop" />
+                                <TextBlock Text="DJ, blow my speakers up" />
+                            </ItemsControl>
+                        </DockPanel>
+                    </materialDesign:Card>
+                    <ItemsControl Grid.Column="1">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.Resources>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Height" Value="54" />
+                                <Setter Property="Fill" Value="SkyBlue" />
+                                <Setter Property="RadiusX" Value="12" />
+                                <Setter Property="RadiusY" Value="12" />
+                                <Setter Property="Margin" Value="4" />
+                            </Style>
+                        </ItemsControl.Resources>
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                        <Rectangle />
+                    </ItemsControl>
+                </Grid>
+                <materialDesign:Card Margin="0,54,0,0" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                    <TabControl
+                        MinHeight="540"
+                        HorizontalContentAlignment="Right"
+                        materialDesign:ColorZoneAssist.Mode="PrimaryMid"
+                        materialDesign:NavigationRailAssist.ShowSelectionBackground="True"
+                        materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                        Style="{StaticResource MaterialDesignNavigationRailTabControl}"
+                        TabStripPlacement="Top">
+                        <TabControl.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}" TargetType="TabItem">
+                                <Setter Property="Height" Value="40" />
+                            </Style>
+                        </TabControl.ItemContainerStyle>
+                        <materialDesign:NavigationRailAssist.FloatingContent>
+                            <Button Margin="8,0" Padding="6,4">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon
+                                        Width="18"
+                                        Height="18"
+                                        Margin="0"
+                                        Kind="Plus" />
+                                    <TextBlock Text="新建歌单" />
+                                </StackPanel>
+                            </Button>
+                        </materialDesign:NavigationRailAssist.FloatingContent>
+                        <TabItem Header="全部歌单">
+                            <TextBlock Margin="8" Text="PrimaryLight Tab 1" />
+                        </TabItem>
+                        <TabItem Header="专辑">
+                            <TextBlock Margin="8" Text="PrimaryLight Tab 2" />
+                        </TabItem>
+                        <TabItem Header="艺人">
+                            <TextBlock Margin="8" Text="PrimaryLight Tab 2" />
+                        </TabItem>
+                        <TabItem Header="MV">
+                            <TextBlock Margin="8" Text="PrimaryLight Tab 2" />
+                        </TabItem>
+                        <TabItem Header="云盘">
+                            <TextBlock Margin="8" Text="PrimaryLight Tab 2" />
+                        </TabItem>
+                        <TabItem Header="听歌排行">
+                            <TextBlock Margin="8" Text="PrimaryLight Tab 2" />
+                        </TabItem>
+
+                    </TabControl>
+                </materialDesign:Card>
+            </StackPanel>
+        </Border>
+    </uc:ScrollViewerAnimation>
 </UserControl>
