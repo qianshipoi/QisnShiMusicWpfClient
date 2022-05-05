@@ -30,7 +30,8 @@
                 Width="38"
                 Height="38"
                 CornerRadius="6"
-                DockPanel.Dock="Left" />
+                DockPanel.Dock="Left"
+                ImageSource="{Binding Album.CoverImgUrl}" />
             <UniformGrid Margin="14,0" Rows="2">
                 <UniformGrid.Resources>
                     <Style TargetType="TextBlock">

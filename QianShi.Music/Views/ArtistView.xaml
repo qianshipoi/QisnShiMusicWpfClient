@@ -5,10 +5,10 @@
     xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="clr-namespace:QianShi.Music.Views.Dialogs"
-    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:vm="clr-namespace:QianShi.Music.ViewModels"
     d:DataContext="{d:DesignInstance Type={x:Type vm:ArtistViewModel}}"
@@ -102,85 +102,100 @@
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>
-                <uc:TitleControl
-                    Title="最新发布"
-                    Margin="0,46,0,16"
-                    FontSize="22" />
-                <UniformGrid Columns="2">
-                    <DockPanel LastChildFill="True">
-                        <DockPanel.Style>
-                            <Style TargetType="DockPanel">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding HasNewAlbum}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DockPanel.Style>
-                        <uc:PlaylistCover
-                            Width="130"
-                            Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth}"
-                            VerticalAlignment="Center"
-                            CornerRadius="12"
-                            DockPanel.Dock="Left"
-                            ImageSource="{Binding Albums[0].CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}" />
-                        <StackPanel Margin="24,0" VerticalAlignment="Center">
-                            <TextBlock
-                                Margin="0,0,0,8"
-                                FontSize="18"
-                                FontWeight="Bold"
-                                Style="{StaticResource UnderlineTextBlock}"
-                                Text="{Binding Albums[0].Name}" />
-                            <TextBlock
-                                FontSize="14"
-                                Opacity=".68"
-                                Text="{Binding Albums[0].PublishTime}" />
-                            <TextBlock
-                                Margin="0,2,0,0"
-                                FontSize="12"
-                                Opacity=".68"
-                                Text="{Binding Albums[0].Size, StringFormat={}Single · {0} 首歌}" />
-                        </StackPanel>
-                    </DockPanel>
-                    <DockPanel LastChildFill="True">
-                        <DockPanel.Style>
-                            <Style TargetType="DockPanel">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding HasNewMovieVideo}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </DockPanel.Style>
-                        <uc:FilletImage
-                            Width="230"
-                            Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
-                            CornerRadius="12"
-                            Cursor="Hand"
-                            DockPanel.Dock="Left"
-                            ImageSource="{Binding MovieVideos[0].CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}" />
-                        <StackPanel Margin="24,0" VerticalAlignment="Center">
-                            <TextBlock
-                                Margin="0,0,0,8"
-                                FontSize="18"
-                                FontWeight="Bold"
-                                Style="{StaticResource UnderlineTextBlock}"
-                                Text="{Binding MovieVideos[0].Name}"
-                                TextTrimming="WordEllipsis" />
-                            <TextBlock
-                                FontSize="14"
-                                Opacity=".68"
-                                Text="{Binding MovieVideos[0].PublishTime}" />
-                            <TextBlock
-                                Margin="0,2,0,0"
-                                FontSize="12"
-                                Opacity=".68"
-                                Text="最新 MV" />
-                        </StackPanel>
-                    </DockPanel>
-                </UniformGrid>
+                <StackPanel>
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Album, Converter={StaticResource IsNullConverter}}" Value="True" />
+                                        <Condition Binding="{Binding MovieVideo, Converter={StaticResource IsNullConverter}}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                    <uc:TitleControl
+                        Title="最新发布"
+                        Margin="0,46,0,16"
+                        FontSize="22" />
+                    <UniformGrid Columns="2">
+                        <DockPanel LastChildFill="True">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Album, Converter={StaticResource IsNullConverter}}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <uc:PlaylistCover
+                                Width="130"
+                                Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth}"
+                                VerticalAlignment="Center"
+                                CornerRadius="12"
+                                DockPanel.Dock="Left"
+                                ImageSource="{Binding Album.CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}" />
+                            <StackPanel Margin="24,0" VerticalAlignment="Center">
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Style="{StaticResource UnderlineTextBlock}"
+                                    Text="{Binding Album.Name}" />
+                                <TextBlock
+                                    FontSize="14"
+                                    Opacity=".68"
+                                    Text="{Binding Album.PublishTime}" />
+                                <TextBlock
+                                    Margin="0,2,0,0"
+                                    FontSize="12"
+                                    Opacity=".68"
+                                    Text="{Binding Album.Size, StringFormat={}Single · {0} 首歌}" />
+                            </StackPanel>
+                        </DockPanel>
+                        <DockPanel LastChildFill="True">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MovieVideo, Converter={StaticResource IsNullConverter}}" Value="False">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <uc:FilletImage
+                                Width="230"
+                                Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
+                                CornerRadius="12"
+                                Cursor="Hand"
+                                DockPanel.Dock="Left"
+                                ImageSource="{Binding MovieVideo.CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}" />
+                            <StackPanel Margin="24,0" VerticalAlignment="Center">
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    Style="{StaticResource UnderlineTextBlock}"
+                                    Text="{Binding MovieVideo.Name}"
+                                    TextTrimming="WordEllipsis" />
+                                <TextBlock
+                                    FontSize="14"
+                                    Opacity=".68"
+                                    Text="{Binding MovieVideo.PublishTime}" />
+                                <TextBlock
+                                    Margin="0,2,0,0"
+                                    FontSize="12"
+                                    Opacity=".68"
+                                    Text="最新 MV" />
+                            </StackPanel>
+                        </DockPanel>
+                    </UniformGrid>
+                </StackPanel>
                 <uc:TitleControl
                     Title="热门歌曲"
                     Margin="0,46,0,16"
@@ -292,15 +307,13 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+                        <DataTemplate DataType="{x:Type response:Artist}">
                             <StackPanel Margin="12" HorizontalAlignment="Stretch">
-                                <uc:PlaylistCover CornerRadius="100" ImageSource="{Binding CoverImgUrl}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="ImageClick">
-                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtistView}}, Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </uc:PlaylistCover>
+                                <uc:PlaylistCover
+                                    CornerRadius="100"
+                                    ImageSource="{Binding CoverImgUrl}"
+                                    OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtistView}}, Path=DataContext.OpenArtistCommand}"
+                                    OpenPlaylistCommandParameter="{Binding}" />
                                 <TextBlock
                                     Margin="0,10,0,0"
                                     HorizontalAlignment="Center"

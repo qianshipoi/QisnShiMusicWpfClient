@@ -33,23 +33,15 @@ namespace QianShi.Music.ViewModels
             set
             {
                 SetProperty(ref _albums, value);
-                RaisePropertyChanged(nameof(HasNewAlbum));
             }
         }
-
-        public bool HasNewAlbum => Albums.Count() > 0;
 
         private ObservableCollection<MovieVideo> _movieVideos;
         public ObservableCollection<MovieVideo> MovieVideos
         {
-            get { return _movieVideos; }
-            set {
-                SetProperty(ref _movieVideos, value);
-                RaisePropertyChanged(nameof(HasNewMovieVideo));
-            }
+            get => _movieVideos;
+            set => SetProperty(ref _movieVideos, value);
         }
-
-        public bool HasNewMovieVideo => MovieVideos.Count() > 0;
 
         private ObservableCollection<Artist> _artists;
         public ObservableCollection<Artist> Artists
@@ -63,6 +55,20 @@ namespace QianShi.Music.ViewModels
         {
             get { return _artist; }
             set { SetProperty(ref _artist, value); }
+        }
+
+        private Album? _album;
+        public Album? Album
+        {
+            get { return _album; }
+            set { SetProperty(ref _album, value); }
+        }
+
+        private MovieVideo? _movieVideo;
+        public MovieVideo? MovieVideo
+        {
+            get { return _movieVideo; }
+            set { SetProperty(ref _movieVideo, value); }
         }
 
         private bool _loading;
@@ -164,11 +170,16 @@ namespace QianShi.Music.ViewModels
             });
             if (response.Code == 200)
             {
-                Albums.AddRange(response.HotAlbums.Select(x =>
+                var albums = response.HotAlbums.Select(x =>
                 {
                     x.CoverImgUrl += "?param=200y200";
                     return x;
-                }));
+                }).ToList();
+                if (albums.Count() > 0)
+                {
+                    Albums.AddRange(albums);
+                    Album = albums[0];
+                }
             }
         }
 
@@ -181,11 +192,17 @@ namespace QianShi.Music.ViewModels
             });
             if (response.Code == 200)
             {
-                MovieVideos.AddRange(response.Mvs.Select(x =>
+                var mvs = response.Mvs.Select(x =>
                 {
                     x.CoverImgUrl += "?param=464y260";
                     return x;
-                }));
+                }).ToList();
+
+                if (mvs.Count() > 0)
+                {
+                    MovieVideos.AddRange(mvs);
+                    MovieVideo = mvs[0];
+                }
             }
         }
 

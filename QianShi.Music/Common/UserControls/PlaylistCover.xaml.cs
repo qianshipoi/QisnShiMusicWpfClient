@@ -55,6 +55,17 @@ namespace QianShi.Music.Common.UserControls
         public static readonly DependencyProperty OpenPlaylistCommandProperty =
             DependencyProperty.Register(nameof(OpenPlaylistCommand), typeof(ICommand), typeof(PlaylistCover), new PropertyMetadata(null));
 
+        public object OpenPlaylistCommandParameter
+        {
+            get { return (object)GetValue(OpenPlaylistCommandParameterProperty); }
+            set { SetValue(OpenPlaylistCommandParameterProperty, value); }
+        }
+
+        public static readonly DependencyProperty OpenPlaylistCommandParameterProperty =
+            DependencyProperty.Register(nameof(OpenPlaylistCommandParameter), typeof(object), typeof(PlaylistCover), new PropertyMetadata(null));
+
+
+
         public PlaylistCover()
         {
             InitializeComponent();
@@ -64,6 +75,8 @@ namespace QianShi.Music.Common.UserControls
         {
             var args = new RoutedEventArgs(ImageClickEvent, this);
             RaiseEvent(args);
+            if (OpenPlaylistCommand != null && OpenPlaylistCommand.CanExecute(OpenPlaylistCommandParameter))
+                OpenPlaylistCommand.Execute(OpenPlaylistCommandParameter);
         }
     }
 }
