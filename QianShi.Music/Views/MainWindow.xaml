@@ -160,7 +160,7 @@
                                     </Image>
                                 </materialDesign:PopupBox.ToggleContent>
                                 <StackPanel>
-                                    <!--<Button Command="{Binding AppCenterCommand}" Content="个人中心"/>-->
+                                    <!--<Button Command="{Binding AppCenterCommand}" Content="个人中心" />-->
                                     <Button Command="{Binding LogoutCommand}" Content="注销当前账户" />
                                 </StackPanel>
                             </materialDesign:PopupBox>

@@ -58,7 +58,7 @@ namespace QianShi.Music.Common.Converters
             throw new NotImplementedException();
         }
 
-        #endregion
+        #endregion IValueConverter Members
 
         // Evaluates a mathematical string and keeps track of the results in a List<double> of numbers
         private void EvaluateMathString(ref string mathEquation, ref List<double> numbers, int index)
@@ -106,15 +106,19 @@ namespace QianShi.Music.Common.Converters
                             case "+":
                                 numbers[index] = numbers[index] + numbers[index + 1];
                                 break;
+
                             case "-":
                                 numbers[index] = numbers[index] - numbers[index + 1];
                                 break;
+
                             case "*":
                                 numbers[index] = numbers[index] * numbers[index + 1];
                                 break;
+
                             case "/":
                                 numbers[index] = numbers[index] / numbers[index + 1];
                                 break;
+
                             case "%":
                                 numbers[index] = numbers[index] % numbers[index + 1];
                                 break;

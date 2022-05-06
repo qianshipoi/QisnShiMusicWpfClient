@@ -10,6 +10,7 @@ namespace QianShi.Music.Views
     public partial class MainWindow : Window
     {
         private readonly IPlaylistService _playlistService;
+
         public MainWindow(IPlaylistService playlistService)
         {
             InitializeComponent();
@@ -35,7 +36,6 @@ namespace QianShi.Music.Views
            };
             _playlistService = playlistService;
         }
-
 
         protected override void OnClosed(EventArgs e)
         {

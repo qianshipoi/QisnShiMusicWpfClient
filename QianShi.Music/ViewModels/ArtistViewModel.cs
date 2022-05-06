@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
 
@@ -9,6 +7,8 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
+
+using System.Collections.ObjectModel;
 
 namespace QianShi.Music.ViewModels
 {
@@ -20,6 +20,7 @@ namespace QianShi.Music.ViewModels
         private readonly IRegionManager _regionManager;
         private long ArtistId = 0;
         private ObservableCollection<Song> _songs;
+
         public ObservableCollection<Song> Songs
         {
             get { return _songs; }
@@ -27,6 +28,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Album> _albums;
+
         public ObservableCollection<Album> Albums
         {
             get { return _albums; }
@@ -37,6 +39,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<MovieVideo> _movieVideos;
+
         public ObservableCollection<MovieVideo> MovieVideos
         {
             get => _movieVideos;
@@ -44,6 +47,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Artist> _artists;
+
         public ObservableCollection<Artist> Artists
         {
             get { return _artists; }
@@ -51,6 +55,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private Artist _artist = default!;
+
         public Artist Artist
         {
             get { return _artist; }
@@ -58,6 +63,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private Album? _album;
+
         public Album? Album
         {
             get { return _album; }
@@ -65,6 +71,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private MovieVideo? _movieVideo;
+
         public MovieVideo? MovieVideo
         {
             get { return _movieVideo; }
@@ -72,6 +79,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private bool _loading;
+
         public bool Loading
         {
             get { return _loading; }
@@ -83,7 +91,6 @@ namespace QianShi.Music.ViewModels
         /// </summary>
         public ArtistViewModel() : base(null)
         {
-
         }
 
         public ArtistViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
@@ -98,20 +105,22 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand<Album> _openPlaylistCommand = default!;
+
         public DelegateCommand<Album> OpenPlaylistCommand => _openPlaylistCommand ??= new DelegateCommand<Album>((album) =>
-        {
-            var parameters = new NavigationParameters();
-            parameters.Add("PlaylistId", album.Id);
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(AlbumView), parameters);
-        });
+         {
+             var parameters = new NavigationParameters();
+             parameters.Add("PlaylistId", album.Id);
+             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(AlbumView), parameters);
+         });
 
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
+
         public DelegateCommand<IPlaylist> OpenArtistCommand => _openArtistCommand ??= new DelegateCommand<IPlaylist>((playlist) =>
-        {
-            var parameters = new NavigationParameters();
-            parameters.Add(ArtistViewModel.ArtistIdParameterName, playlist.Id);
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(ArtistView), parameters);
-        });
+         {
+             var parameters = new NavigationParameters();
+             parameters.Add(ArtistViewModel.ArtistIdParameterName, playlist.Id);
+             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(ArtistView), parameters);
+         });
 
         public bool KeepAlive => false;
 
@@ -146,7 +155,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetHotSongs()
+        private async Task GetHotSongs()
         {
             var response = await _playlistService.Artists(ArtistId);
             if (response.Code == 200)
@@ -161,7 +170,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetAlbums()
+        private async Task GetAlbums()
         {
             var response = await _playlistService.ArtistAlbum(new Common.Models.Request.ArtistAlbumRequest
             {
@@ -183,7 +192,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMovieVideos()
+        private async Task GetMovieVideos()
         {
             var response = await _playlistService.ArtistMv(new Common.Models.Request.ArtistMvRequest
             {
@@ -206,7 +215,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetArtists()
+        private async Task GetArtists()
         {
             var response = await _playlistService.SimiArtist(ArtistId);
             if (response.Code == 200)

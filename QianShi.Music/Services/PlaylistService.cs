@@ -307,14 +307,67 @@ namespace QianShi.Music.Services
             return (await Get<ArtistsResponse>(request)) ?? new();
         }
 
-        private async Task<T> Request<T>(string route, object parameters) where T : new()
-            => (await Get<T>(new RestRequest(route).AddQueryParameters(parameters))) ?? new T();
-
         public async Task<ArtistAlbumResponse> ArtistAlbum(ArtistAlbumRequest parameters)
             => await Request<ArtistAlbumResponse>("/artist/album", parameters);
 
         public async Task<ArtistMvResponse> ArtistMv(ArtistMvRequest parameters)
             => await Request<ArtistMvResponse>("/artist/mv", parameters);
 
+        /// <summary>
+        /// 获取已收藏专辑列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<AlbumSublistResponse> AlbumSublist(PagedRequestBase parameters)
+            => await Request<AlbumSublistResponse>("/album/sublist", parameters);
+
+        /// <summary>
+        /// 收藏的歌手列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<ArtistSublistResponse> ArtistSublist(PagedRequestBase parameters)
+            => await Request<ArtistSublistResponse>("/artist/sublist", parameters);
+
+        /// <summary>
+        /// 收藏的 MV 列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<MvSublistResponse> MvSublis(PagedRequestBase parameters)
+            => await Request<MvSublistResponse>("/mv/sublist", parameters);
+
+        /// <summary>
+        /// 云盘
+        /// </summary>
+        /// <returns></returns>
+        public async Task<UserCloudResponse> UserCloud(PagedRequestBase parameters)
+            => await Request<UserCloudResponse>("/user/cloud", parameters);
+
+        /// <summary>
+        /// 获取用户歌单
+        /// </summary>
+        /// <returns></returns>
+        public async Task<UserPlaylistResponse> UserPlaylist(UserPlaylistRequest parameters)
+            => await Request<UserPlaylistResponse>("/user/playlist", parameters);
+
+        /// <summary>
+        /// 获取用户播放记录
+        /// </summary>
+        /// <returns></returns>
+        public async Task<UserRecordResponse> UserRecord(UserRecordRequest parameters)
+            => await Request<UserRecordResponse>("/user/record", parameters);
+
+        /// <summary>
+        /// 喜欢音乐列表
+        /// </summary>
+        /// <param name="uid">用户id</param>
+        /// <returns></returns>
+        public async Task<LikelistResponse> Likelist(long uid)
+        {
+            var request = new RestRequest();
+            request.AddQueryParameter("uid", uid);
+            return (await Get<LikelistResponse>(request)) ?? new();
+        }
+
+        private async Task<T> Request<T>(string route, object parameters) where T : new()
+            => (await Get<T>(new RestRequest(route).AddQueryParameters(parameters))) ?? new T();
     }
 }

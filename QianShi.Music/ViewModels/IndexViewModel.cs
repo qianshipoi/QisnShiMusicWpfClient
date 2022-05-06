@@ -49,10 +49,11 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<string> JumpFoundCommand { get; private set; }
 
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
+
         public DelegateCommand<IPlaylist> OpenArtistCommand =>
             _openArtistCommand ?? (_openArtistCommand = new DelegateCommand<IPlaylist>(ExecuteOpenArtistCommand));
 
-        void ExecuteOpenArtistCommand(IPlaylist playlist)
+        private void ExecuteOpenArtistCommand(IPlaylist playlist)
         {
             var parameters = new NavigationParameters();
             parameters.Add(ArtistViewModel.ArtistIdParameterName, playlist.Id);

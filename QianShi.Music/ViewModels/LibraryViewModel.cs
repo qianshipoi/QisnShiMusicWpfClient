@@ -6,13 +6,10 @@ namespace QianShi.Music.ViewModels
     {
         public LibraryViewModel() : base(App.Current.Container.Resolve<IContainerProvider>())
         {
-
         }
+
         public LibraryViewModel(IContainerProvider containerProvider) : base(containerProvider)
         {
         }
-
-
-
     }
 }

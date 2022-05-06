@@ -64,8 +64,6 @@ namespace QianShi.Music.Common.UserControls
         public static readonly DependencyProperty OpenPlaylistCommandParameterProperty =
             DependencyProperty.Register(nameof(OpenPlaylistCommandParameter), typeof(object), typeof(PlaylistCover), new PropertyMetadata(null));
 
-
-
         public PlaylistCover()
         {
             InitializeComponent();

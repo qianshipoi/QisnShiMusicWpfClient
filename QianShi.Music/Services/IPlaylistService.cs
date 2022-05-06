@@ -182,18 +182,21 @@ namespace QianShi.Music.Services
         /// <param name="id">歌手 id</param>
         /// <returns></returns>
         Task<SimiArtistResponse> SimiArtist(long id);
+
         /// <summary>
         /// 获取歌手单曲
         /// </summary>
         /// <param name="id">歌手 id, 可由搜索接口获得</param>
         /// <returns></returns>
         Task<ArtistsResponse> Artists(long id);
+
         /// <summary>
         /// 获取歌手专辑
         /// </summary>
         /// <param name="id">歌手id</param>
         /// <returns></returns>
         Task<ArtistAlbumResponse> ArtistAlbum(ArtistAlbumRequest parameters);
+
         /// <summary>
         /// 获取歌手MV
         /// </summary>

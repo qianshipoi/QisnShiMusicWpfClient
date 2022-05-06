@@ -90,6 +90,7 @@ namespace QianShi.Music.Common.Helpers
                 }
             }
         }
+
         #endregion MarkIndex
 
         #region ItemIndex
