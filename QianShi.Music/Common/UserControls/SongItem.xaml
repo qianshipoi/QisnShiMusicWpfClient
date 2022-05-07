@@ -54,7 +54,7 @@
                             Margin="0,0,20,0"
                             HorizontalAlignment="Left"
                             Cursor="Hand"
-                            Source="{Binding Album.CoverImgUrl}">
+                            Source="{Binding Album.CoverImgUrl, FallbackValue=https://oss.kuriyama.top/static/background.png, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
                             <Image.Clip>
                                 <RectangleGeometry
                                     RadiusX="12"

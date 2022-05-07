@@ -80,34 +80,38 @@ namespace QianShi.Music.Common.Models.Response
             public string? Extension { get; set; }
         }
 
-        public class Album
-        {
-            public List<string>? Songs { get; set; }
-            public bool Paid { get; set; }
-            public bool OnSale { get; set; }
-            public long PicId { get; set; }
-            public Artist? Artist { get; set; }
-            public string? CommentThreadId { get; set; }
-            public long PublishTime { get; set; }
-            public string? PicUrl { get; set; }
-            public int Status { get; set; }
-            public string? BriefDesc { get; set; }
-            public string? BlurPicUrl { get; set; }
-            public long CompanyId { get; set; }
-            public long Pic { get; set; }
-            public string? Tags { get; set; }
-            public List<string>? Alias { get; set; }
-            public List<Artist>? Artists { get; set; }
-            public long CopyrightId { get; set; }
-            public string? SubType { get; set; }
-            public string? Description { get; set; }
-            public string? Company { get; set; }
-            public string? Name { get; set; }
-            public long Id { get; set; }
-            public string? Type { get; set; }
-            public long Size { get; set; }
-            public string? PicId_str { get; set; }
-        }
+        //public class Album : IPlaylist
+        //{
+        //    public List<string>? Songs { get; set; }
+        //    public bool Paid { get; set; }
+        //    public bool OnSale { get; set; }
+        //    public long PicId { get; set; }
+        //    public Artist? Artist { get; set; }
+        //    public string? CommentThreadId { get; set; }
+        //    public long PublishTime { get; set; }
+        //    public string PicUrl { get; set; } = default!;
+        //    public int Status { get; set; }
+        //    public string? BriefDesc { get; set; }
+        //    public string? BlurPicUrl { get; set; }
+        //    public long CompanyId { get; set; }
+        //    public long Pic { get; set; }
+        //    public string? Tags { get; set; }
+        //    public List<string>? Alias { get; set; }
+        //    public List<Artist>? Artists { get; set; }
+        //    public long CopyrightId { get; set; }
+        //    public string? SubType { get; set; }
+        //    public string? Description { get; set; }
+        //    public string? Company { get; set; }
+        //    public string Name { get; set; } = default!;
+        //    public string CoverImgUrl { get => PicUrl; set => PicUrl = value; }
+        //    public long Id { get; set; }
+        //    public string? Type { get; set; }
+        //    public long Size { get; set; }
+        //    public string? PicId_str { get; set; }
+        //    public string? Msg { get; set; }
+        //    public long SubTime { get; set; }
+        //    public List<string> TransNames { get; set; } = new();
+        //}
     }
 
     /// <summary>
@@ -135,5 +139,8 @@ namespace QianShi.Music.Common.Models.Response
         public long? AccountId { get; set; }
         public string IdentityIconUrl { get; set; } = string.Empty;
         public string Alg { get; set; } = string.Empty;
+
+        public string Info { get; set; } = default!;
+        public int MvSize { get; set; }
     }
 }

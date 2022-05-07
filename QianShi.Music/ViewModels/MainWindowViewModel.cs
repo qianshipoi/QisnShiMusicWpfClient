@@ -169,6 +169,8 @@ namespace QianShi.Music.ViewModels
             {
                 UserData.Cover = response.Data.Profile?.AvatarUrl;
                 UserData.NickName = response.Data.Profile?.Nickname;
+                UserData.Id = response.Data.Account?.Id ?? 0;
+                UserData.VipType = response.Data.Account?.VipType ?? 0;
                 UserData.Save();
             }
 

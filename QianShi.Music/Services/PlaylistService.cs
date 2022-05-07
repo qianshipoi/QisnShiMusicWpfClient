@@ -10,6 +10,7 @@ namespace QianShi.Music.Services
 {
     public class PlaylistService : IPlaylistService
     {
+        public const string SearchApi = "/search";
         private CookieContainer _cookieContainer;
 
         public PlaylistService()
@@ -17,23 +18,76 @@ namespace QianShi.Music.Services
             _cookieContainer = new CookieContainer();
         }
 
-        public void SetCookie(CookieCollection cookies) => _cookieContainer.Add(cookies);
-
-        public void SetCookie(Cookie cookie) => _cookieContainer.Add(cookie);
-
-        public CookieCollection? GetCookieCollection() => _cookieContainer.GetAllCookies();
-
         private RestClient _client => new RestClient(new RestClientOptions("http://150.158.194.185:3001")
         {
             Timeout = -1,
             CookieContainer = _cookieContainer
         });
 
-        private Task<T?> Get<T>(RestRequest request) => _client.GetAsync<T>(request);
+        public async Task<AlbumSublistResponse> AlbumSublist(PagedRequestBase parameters)
+            => await Request<AlbumSublistResponse>("/album/sublist", parameters);
+
+        public async Task<ArtistAlbumResponse> ArtistAlbum(ArtistAlbumRequest parameters)
+            => await Request<ArtistAlbumResponse>("/artist/album", parameters);
+
+        public async Task<ArtistMvResponse> ArtistMv(ArtistMvRequest parameters)
+            => await Request<ArtistMvResponse>("/artist/mv", parameters);
+
+        public async Task<ArtistsResponse> Artists(long id)
+        {
+            var request = new RestRequest("/artists");
+            request.AddQueryParameter("id", id);
+            return (await Get<ArtistsResponse>(request)) ?? new();
+        }
+
+        public async Task<ArtistSublistResponse> ArtistSublist(PagedRequestBase parameters)
+            => await Request<ArtistSublistResponse>("/artist/sublist", parameters);
+
+        public async Task<AlbumResponse> GetAblumAsync(long id)
+        {
+            var request = new RestRequest("/album");
+            request.AddQueryParameter("id", id);
+            return await Get<AlbumResponse>(request) ?? new AlbumResponse();
+        }
+
+        public async Task<AlbumNewResponse> GetAlbumNewAsync(AlbumNewRequest parameters)
+        {
+            var request = new RestRequest("/album/new");
+            request.AddQueryParameters(parameters);
+            return await Get<AlbumNewResponse>(request) ?? new AlbumNewResponse();
+        }
+
+        public async Task<AlbumNewestResponse> GetAlbumNewestAsync()
+        {
+            var request = new RestRequest("/album/newest");
+            return await Get<AlbumNewestResponse>(request) ?? new AlbumNewestResponse();
+        }
 
         public async Task<CatlistResponse> GetCatlistAsync()
             => await Get<CatlistResponse>(new RestRequest("/playlist/catlist"))
             ?? new CatlistResponse();
+
+        public CookieCollection? GetCookieCollection() => _cookieContainer.GetAllCookies();
+
+        public Task<PlaylistHotResponse> GetHotAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PersonalizedResponse> GetPersonalizedAsync(int? limit)
+        {
+            var request = new RestRequest("/personalized");
+            if (limit != null)
+                request.AddQueryParameter<int>("limit", limit.Value);
+            return await Get<PersonalizedResponse>(request) ?? new PersonalizedResponse();
+        }
+
+        public async Task<PlaylistDetailResponse> GetPlaylistDetailAsync(long playlistId)
+        {
+            var request = new RestRequest("/playlist/detail");
+            request.AddParameter("id", playlistId);
+            return await Get<PlaylistDetailResponse>(request) ?? new PlaylistDetailResponse();
+        }
 
         public Task<PlaylistHighqualityTagsResponse> GetPlaylistHighqualityTagsAsync()
         {
@@ -43,6 +97,12 @@ namespace QianShi.Music.Services
         public Task<RelatedPlaylistResponse> GetRelatedPlaylistAsync(string id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<ToplistResponse> GetToplistAsync()
+        {
+            var request = new RestRequest("/toplist");
+            return await Get<ToplistResponse>(request) ?? new ToplistResponse();
         }
 
         public async Task<TopPlaylistResponse?> GetTopPlaylistAsync(TopPlaylistRequest parameter)
@@ -62,59 +122,71 @@ namespace QianShi.Music.Services
             return await Get<TopPlaylistHighqualityResponse>(request) ?? new TopPlaylistHighqualityResponse();
         }
 
-        public async Task<PersonalizedResponse> GetPersonalizedAsync(int? limit)
+        public async Task<LikelistResponse> Likelist(long uid)
         {
-            var request = new RestRequest("/personalized");
-            if (limit != null)
-                request.AddQueryParameter<int>("limit", limit.Value);
-            return await Get<PersonalizedResponse>(request) ?? new PersonalizedResponse();
+            var request = new RestRequest();
+            request.AddQueryParameter("uid", uid);
+            return (await Get<LikelistResponse>(request)) ?? new();
         }
 
-        public async Task<ToplistResponse> GetToplistAsync()
+        public async Task<LoginQrCheckResponse> LoginQrCheck(string key)
         {
-            var request = new RestRequest("/toplist");
-            return await Get<ToplistResponse>(request) ?? new ToplistResponse();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException($"“{nameof(key)}”不能为 null 或空白。", nameof(key));
+            }
+
+            var request = new RestRequest("/login/qr/check");
+            request.AddQueryParameter("key", key);
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginQrCheckResponse>(request) ?? new();
         }
 
-        public Task<PlaylistHotResponse> GetHotAsync()
+        public async Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 = false)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new ArgumentException($"“{nameof(key)}”不能为 null 或空白。", nameof(key));
+            }
+
+            var request = new RestRequest("/login/qr/create");
+            request.AddQueryParameter("key", key);
+            if (isBase64)
+                request.AddQueryParameter("qrimg", true);
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginQrCreateResponse>(request) ?? new();
         }
 
-        public async Task<AlbumNewestResponse> GetAlbumNewestAsync()
+        public async Task<LoginQrKeyResponse> LoginQrKey()
         {
-            var request = new RestRequest("/album/newest");
-            return await Get<AlbumNewestResponse>(request) ?? new AlbumNewestResponse();
+            var request = new RestRequest("login/qr/key");
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginQrKeyResponse>(request) ?? new();
         }
 
-        public async Task<PlaylistDetailResponse> GetPlaylistDetailAsync(long playlistId)
+        public async Task<LoginStatusResponse> LoginStatus()
         {
-            var request = new RestRequest("/playlist/detail");
-            request.AddParameter("id", playlistId);
-            return await Get<PlaylistDetailResponse>(request) ?? new PlaylistDetailResponse();
+            var request = new RestRequest("/login/status");
+            request.AddQueryParameter("time", DateTime.Now.Ticks);
+            return await Get<LoginStatusResponse>(request) ?? new();
         }
 
-        public async Task<AlbumNewResponse> GetAlbumNewAsync(AlbumNewRequest parameters)
+        public async Task<LogoutResponse> Logout()
         {
-            var request = new RestRequest("/album/new");
-            request.AddQueryParameters(parameters);
-            return await Get<AlbumNewResponse>(request) ?? new AlbumNewResponse();
+            try
+            {
+                var request = new RestRequest("/logout");
+                request.AddQueryParameter("time", DateTime.Now.Ticks);
+                return (await Get<LogoutResponse>(request)) ?? new LogoutResponse();
+            }
+            finally
+            {
+                _cookieContainer = new CookieContainer();
+            }
         }
 
-        public async Task<AlbumResponse> GetAblumAsync(long id)
-        {
-            var request = new RestRequest("/album");
-            request.AddQueryParameter("id", id);
-            return await Get<AlbumResponse>(request) ?? new AlbumResponse();
-        }
-
-        public async Task<ToplistArtistResponse> ToplistArtist(int? type = null)
-        {
-            var requset = new RestRequest("toplist/artist");
-            if (type != null)
-                requset.AddQueryParameter("type", type.ToString());
-            return await Get<ToplistArtistResponse>(requset) ?? new ToplistArtistResponse();
-        }
+        public async Task<MvSublistResponse> MvSublist(PagedRequestBase parameters)
+            => await Request<MvSublistResponse>("/mv/sublist", parameters);
 
         public async Task<SearchResponse> Search(SearchRequest parasmeters)
         {
@@ -189,29 +261,6 @@ namespace QianShi.Music.Services
             return response;
         }
 
-        public const string SearchApi = "/search";
-
-        public async Task<SearchResponse<PlaylistSearchResult>> SearchPlaylist(SearchRequest parameters)
-        {
-            var request = new RestRequest(SearchApi);
-            parameters.Type = SearchType.歌单;
-            request.AddQueryParameters(parameters);
-            return await Get<SearchResponse<PlaylistSearchResult>>(request) ?? new SearchResponse<PlaylistSearchResult>();
-        }
-
-        public async Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters)
-        {
-            parameters.Type = SearchType.歌手;
-            return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ?? new SearchResponse<ArtistSearchResult>();
-        }
-
-        public async Task<SongDetailResponse> SongDetail(string ids)
-        {
-            var request = new RestRequest("/song/detail");
-            request.AddQueryParameter("ids", ids);
-            return await Get<SongDetailResponse>(request) ?? new SongDetailResponse();
-        }
-
         public async Task<SearchResponse<AlbumSearchResult>> SearchAlbum(SearchRequest parameters)
         {
             var request = new RestRequest(SearchApi);
@@ -220,12 +269,26 @@ namespace QianShi.Music.Services
             return await Get<SearchResponse<AlbumSearchResult>>(request) ?? new();
         }
 
+        public async Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters)
+        {
+            parameters.Type = SearchType.歌手;
+            return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ?? new SearchResponse<ArtistSearchResult>();
+        }
+
         public async Task<SearchResponse<MovieVideoSearchResult>> SearchMovieVideo(SearchRequest parameters)
         {
             var request = new RestRequest(SearchApi);
             parameters.Type = SearchType.MV;
             request.AddQueryParameters(parameters);
             return await Get<SearchResponse<MovieVideoSearchResult>>(request) ?? new();
+        }
+
+        public async Task<SearchResponse<PlaylistSearchResult>> SearchPlaylist(SearchRequest parameters)
+        {
+            var request = new RestRequest(SearchApi);
+            parameters.Type = SearchType.歌单;
+            request.AddQueryParameters(parameters);
+            return await Get<SearchResponse<PlaylistSearchResult>>(request) ?? new SearchResponse<PlaylistSearchResult>();
         }
 
         public async Task<SearchResponse<SongSearchResult>> SearchSong(SearchRequest parameters)
@@ -237,61 +300,9 @@ namespace QianShi.Music.Services
             return await Get<SearchResponse<SongSearchResult>>(request) ?? new();
         }
 
-        public async Task<LoginQrKeyResponse> LoginQrKey()
-        {
-            var request = new RestRequest("login/qr/key");
-            request.AddQueryParameter("time", DateTime.Now.Ticks);
-            return await Get<LoginQrKeyResponse>(request) ?? new();
-        }
+        public void SetCookie(CookieCollection cookies) => _cookieContainer.Add(cookies);
 
-        public async Task<LoginQrCreateResponse> LoginQrCreate(string key, bool isBase64 = false)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                throw new ArgumentException($"“{nameof(key)}”不能为 null 或空白。", nameof(key));
-            }
-
-            var request = new RestRequest("/login/qr/create");
-            request.AddQueryParameter("key", key);
-            if (isBase64)
-                request.AddQueryParameter("qrimg", true);
-            request.AddQueryParameter("time", DateTime.Now.Ticks);
-            return await Get<LoginQrCreateResponse>(request) ?? new();
-        }
-
-        public async Task<LoginQrCheckResponse> LoginQrCheck(string key)
-        {
-            if (string.IsNullOrWhiteSpace(key))
-            {
-                throw new ArgumentException($"“{nameof(key)}”不能为 null 或空白。", nameof(key));
-            }
-
-            var request = new RestRequest("/login/qr/check");
-            request.AddQueryParameter("key", key);
-            request.AddQueryParameter("time", DateTime.Now.Ticks);
-            return await Get<LoginQrCheckResponse>(request) ?? new();
-        }
-
-        public async Task<LoginStatusResponse> LoginStatus()
-        {
-            var request = new RestRequest("/login/status");
-            request.AddQueryParameter("time", DateTime.Now.Ticks);
-            return await Get<LoginStatusResponse>(request) ?? new();
-        }
-
-        public async Task<LogoutResponse> Logout()
-        {
-            try
-            {
-                var request = new RestRequest("/logout");
-                request.AddQueryParameter("time", DateTime.Now.Ticks);
-                return (await Get<LogoutResponse>(request)) ?? new LogoutResponse();
-            }
-            finally
-            {
-                _cookieContainer = new CookieContainer();
-            }
-        }
+        public void SetCookie(Cookie cookie) => _cookieContainer.Add(cookie);
 
         public async Task<SimiArtistResponse> SimiArtist(long id)
         {
@@ -300,72 +311,31 @@ namespace QianShi.Music.Services
             return (await Get<SimiArtistResponse>(request)) ?? new();
         }
 
-        public async Task<ArtistsResponse> Artists(long id)
+        public async Task<SongDetailResponse> SongDetail(string ids)
         {
-            var request = new RestRequest("/artists");
-            request.AddQueryParameter("id", id);
-            return (await Get<ArtistsResponse>(request)) ?? new();
+            var request = new RestRequest("/song/detail");
+            request.AddQueryParameter("ids", ids);
+            return await Get<SongDetailResponse>(request) ?? new SongDetailResponse();
         }
 
-        public async Task<ArtistAlbumResponse> ArtistAlbum(ArtistAlbumRequest parameters)
-            => await Request<ArtistAlbumResponse>("/artist/album", parameters);
+        public async Task<ToplistArtistResponse> ToplistArtist(int? type = null)
+        {
+            var requset = new RestRequest("toplist/artist");
+            if (type != null)
+                requset.AddQueryParameter("type", type.ToString());
+            return await Get<ToplistArtistResponse>(requset) ?? new ToplistArtistResponse();
+        }
 
-        public async Task<ArtistMvResponse> ArtistMv(ArtistMvRequest parameters)
-            => await Request<ArtistMvResponse>("/artist/mv", parameters);
-
-        /// <summary>
-        /// 获取已收藏专辑列表
-        /// </summary>
-        /// <returns></returns>
-        public async Task<AlbumSublistResponse> AlbumSublist(PagedRequestBase parameters)
-            => await Request<AlbumSublistResponse>("/album/sublist", parameters);
-
-        /// <summary>
-        /// 收藏的歌手列表
-        /// </summary>
-        /// <returns></returns>
-        public async Task<ArtistSublistResponse> ArtistSublist(PagedRequestBase parameters)
-            => await Request<ArtistSublistResponse>("/artist/sublist", parameters);
-
-        /// <summary>
-        /// 收藏的 MV 列表
-        /// </summary>
-        /// <returns></returns>
-        public async Task<MvSublistResponse> MvSublis(PagedRequestBase parameters)
-            => await Request<MvSublistResponse>("/mv/sublist", parameters);
-
-        /// <summary>
-        /// 云盘
-        /// </summary>
-        /// <returns></returns>
         public async Task<UserCloudResponse> UserCloud(PagedRequestBase parameters)
             => await Request<UserCloudResponse>("/user/cloud", parameters);
 
-        /// <summary>
-        /// 获取用户歌单
-        /// </summary>
-        /// <returns></returns>
         public async Task<UserPlaylistResponse> UserPlaylist(UserPlaylistRequest parameters)
             => await Request<UserPlaylistResponse>("/user/playlist", parameters);
 
-        /// <summary>
-        /// 获取用户播放记录
-        /// </summary>
-        /// <returns></returns>
         public async Task<UserRecordResponse> UserRecord(UserRecordRequest parameters)
             => await Request<UserRecordResponse>("/user/record", parameters);
 
-        /// <summary>
-        /// 喜欢音乐列表
-        /// </summary>
-        /// <param name="uid">用户id</param>
-        /// <returns></returns>
-        public async Task<LikelistResponse> Likelist(long uid)
-        {
-            var request = new RestRequest();
-            request.AddQueryParameter("uid", uid);
-            return (await Get<LikelistResponse>(request)) ?? new();
-        }
+        private Task<T?> Get<T>(RestRequest request) => _client.GetAsync<T>(request);
 
         private async Task<T> Request<T>(string route, object parameters) where T : new()
             => (await Get<T>(new RestRequest(route).AddQueryParameters(parameters))) ?? new T();

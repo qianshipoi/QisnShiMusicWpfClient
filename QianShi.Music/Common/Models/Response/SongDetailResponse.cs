@@ -2,24 +2,63 @@
 
 namespace QianShi.Music.Common.Models.Response
 {
-    public class SongDetailResponse
+    public class Privilege
     {
-        public int Code { get; set; }
-        public List<Song> Songs { get; set; } = new List<Song>();
+        [JsonPropertyName("cp")]
+        public int Cp { get; set; }
+
+        [JsonPropertyName("cs")]
+        public bool Cs { get; set; }
+
+        [JsonPropertyName("dl")]
+        public int Dl { get; set; }
+
+        [JsonPropertyName("fee")]
+        public int Fee { get; set; }
+
+        [JsonPropertyName("fl")]
+        public int Fl { get; set; }
+
+        [JsonPropertyName("flag")]
+        public int Flag { get; set; }
+
+        [JsonPropertyName("id")]
+        public long Id { get; set; }
+        [JsonPropertyName("maxbr")]
+        public int Maxbr { get; set; }
+
+        [JsonPropertyName("payed")]
+        public int Payed { get; set; }
+
+        [JsonPropertyName("pl")]
+        public int Pl { get; set; }
+
+        [JsonPropertyName("preSell")]
+        public bool PreSell { get; set; }
+
+        [JsonPropertyName("sp")]
+        public int Sp { get; set; }
+
+        [JsonPropertyName("st")]
+        public int St { get; set; }
+        [JsonPropertyName("subp")]
+        public int Subp { get; set; }
+        [JsonPropertyName("toast")]
+        public bool Toast { get; set; }
     }
 
     public partial class Song
     {
         [JsonPropertyName("al")]
-        public Album Album { get; set; } = null!;
+        public Album? Album { get; set; }
 
-        public List<string> Alia { get; set; } = new List<string>();
+        public List<string>? Alia { get; set; }
 
         [JsonPropertyName("ar")]
-        public List<Artist> Artists { get; set; } = new List<Artist>();
+        public List<Artist>? Artists { get; set; }
 
-        public string Cd { get; set; } = string.Empty;
-        public string Cf { get; set; } = string.Empty;
+        public string? Cd { get; set; }
+        public string? Cf { get; set; }
         public long Copyright { get; set; }
         public long Cp { get; set; }
         public dynamic? Crbt { get; set; }
@@ -41,6 +80,7 @@ namespace QianShi.Music.Common.Models.Response
         public int OriginCoverType { get; set; }
         public dynamic? OriginSongSimpleData { get; set; }
         public int Pop { get; set; }
+        public Privilege? Privilege { get; set; }
         public int Pst { get; set; }
         public long PublishTime { get; set; }
         public bool ResourceState { get; set; }
@@ -53,63 +93,19 @@ namespace QianShi.Music.Common.Models.Response
         public int Sid { get; set; }
 
         public int Single { get; set; }
+        public dynamic? SongJumpInfo { get; set; }
+        public Quality? Sq { get; set; }
         public int St { get; set; }
         public int T { get; set; }
         public dynamic? TagPicList { get; set; }
-        public dynamic? SongJumpInfo { get; set; }
         public List<string> Tns { get; set; } = new();
-        public Quality? Sq { get; set; }
         public int V { get; set; }
         public int Version { get; set; }
-
-        public Privilege? Privilege { get; set; }
     }
 
-    public class Privilege
+    public class SongDetailResponse
     {
-        [JsonPropertyName("id")]
-        public long Id { get; set; }
-
-        [JsonPropertyName("fee")]
-        public int Fee { get; set; }
-
-        [JsonPropertyName("payed")]
-        public int Payed { get; set; }
-
-        [JsonPropertyName("st")]
-        public int St { get; set; }
-
-        [JsonPropertyName("pl")]
-        public int Pl { get; set; }
-
-        [JsonPropertyName("dl")]
-        public int Dl { get; set; }
-
-        [JsonPropertyName("sp")]
-        public int Sp { get; set; }
-
-        [JsonPropertyName("cp")]
-        public int Cp { get; set; }
-
-        [JsonPropertyName("subp")]
-        public int Subp { get; set; }
-
-        [JsonPropertyName("cs")]
-        public bool Cs { get; set; }
-
-        [JsonPropertyName("maxbr")]
-        public int Maxbr { get; set; }
-
-        [JsonPropertyName("fl")]
-        public int Fl { get; set; }
-
-        [JsonPropertyName("toast")]
-        public bool Toast { get; set; }
-
-        [JsonPropertyName("flag")]
-        public int Flag { get; set; }
-
-        [JsonPropertyName("preSell")]
-        public bool PreSell { get; set; }
+        public int Code { get; set; }
+        public List<Song> Songs { get; set; } = new List<Song>();
     }
 }

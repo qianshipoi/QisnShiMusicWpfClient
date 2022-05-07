@@ -71,9 +71,10 @@
                                         Foreground="#673AB7"
                                         Text="我喜欢的音乐" />
                                     <TextBlock
+                                        d:Text="191 首歌"
                                         FontSize="15"
                                         Foreground="#673AB7"
-                                        Text="191 首歌" />
+                                        Text="{Binding LikePlaylist.TrackCount, StringFormat={}{0}首歌}" />
                                 </StackPanel>
                             </DockPanel>
                             <ItemsControl>
@@ -90,33 +91,17 @@
                             </ItemsControl>
                         </DockPanel>
                     </materialDesign:Card>
-                    <ItemsControl Grid.Column="1">
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding Songs}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Columns="3" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.Resources>
-                            <Style TargetType="Rectangle">
-                                <Setter Property="Height" Value="54" />
-                                <Setter Property="Fill" Value="SkyBlue" />
-                                <Setter Property="RadiusX" Value="12" />
-                                <Setter Property="RadiusY" Value="12" />
-                                <Setter Property="Margin" Value="4" />
-                            </Style>
-                        </ItemsControl.Resources>
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
-                        <Rectangle />
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <uc:SongMiniCard />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
                 <materialDesign:Card Margin="0,54,0,0" materialDesign:ShadowAssist.ShadowDepth="Depth1">
@@ -146,8 +131,8 @@
                             </Button>
                         </materialDesign:NavigationRailAssist.FloatingContent>
                         <TabItem Header="全部歌单">
-                            <ItemsControl Background="White">
-                                <ItemsControl.ItemsSource>
+                            <ItemsControl Background="White" ItemsSource="{Binding Playlists}">
+                                <d:ItemsControl.ItemsSource>
                                     <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String">
                                         <sys:String>11</sys:String>
                                         <sys:String>11</sys:String>
@@ -161,7 +146,7 @@
                                         <sys:String>11</sys:String>
                                         <sys:String>11</sys:String>
                                     </x:Array>
-                                </ItemsControl.ItemsSource>
+                                </d:ItemsControl.ItemsSource>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <UniformGrid Columns="5" />
@@ -170,18 +155,18 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <uc:PlaylistCard
-                                            Title="标题"
-                                            Margin="8"
+                                            Title="{Binding Name}"
+                                            Margin="8,8,8,10"
                                             VerticalAlignment="Top"
-                                            Cover="https://oss.kuriyama.top/static/background.png"
-                                            Description="description" />
+                                            Cover="{Binding CoverImgUrl}"
+                                            Description="{Binding Creator.Nickname, StringFormat={}by {0}}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </TabItem>
                         <TabItem Header="专辑">
-                            <ItemsControl Background="White">
-                                <ItemsControl.ItemsSource>
+                            <ItemsControl Background="White" ItemsSource="{Binding Albums}">
+                                <d:ItemsControl.ItemsSource>
                                     <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String">
                                         <sys:String>11</sys:String>
                                         <sys:String>11</sys:String>
@@ -195,7 +180,7 @@
                                         <sys:String>11</sys:String>
                                         <sys:String>11</sys:String>
                                     </x:Array>
-                                </ItemsControl.ItemsSource>
+                                </d:ItemsControl.ItemsSource>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <UniformGrid Columns="5" />
@@ -204,18 +189,18 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <uc:PlaylistCard
-                                            Title="{Binding}"
+                                            Title="{Binding Name}"
                                             Margin="8"
                                             VerticalAlignment="Top"
-                                            Cover="https://oss.kuriyama.top/static/background.png"
-                                            Description="description" />
+                                            Cover="{Binding CoverImgUrl}"
+                                            Description="{Binding Artists[0].Name}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </TabItem>
                         <TabItem Header="艺人">
-                            <ItemsControl Background="White">
-                                <ItemsControl.ItemsSource>
+                            <ItemsControl Background="White" ItemsSource="{Binding Artists}">
+                                <d:ItemsControl.ItemsSource>
                                     <x:Array xmlns:sys="clr-namespace:System;assembly=mscorlib" Type="sys:String">
                                         <sys:String>11</sys:String>
                                         <sys:String>11</sys:String>
@@ -229,7 +214,7 @@
                                         <sys:String>11</sys:String>
                                         <sys:String>11</sys:String>
                                     </x:Array>
-                                </ItemsControl.ItemsSource>
+                                </d:ItemsControl.ItemsSource>
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <UniformGrid Columns="5" />
@@ -237,32 +222,32 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <StackPanel>
+                                        <StackPanel Margin="8,8,8,10">
                                             <uc:PlaylistCover
-                                                Margin="8"
                                                 VerticalAlignment="Top"
+                                                d:ImageSource="https://oss.kuriyama.top/static/background.png"
                                                 CornerRadius="200"
-                                                ImageSource="https://oss.kuriyama.top/static/background.png" />
+                                                ImageSource="{Binding CoverImgUrl}" />
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 FontSize="16"
                                                 FontWeight="Bold"
-                                                Text="{Binding}" />
+                                                Text="{Binding Name}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </TabItem>
                         <TabItem Header="MV">
-                            <ItemsControl>
+                            <ItemsControl ItemsSource="{Binding MovieVideos}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <UniformGrid Columns="5" />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type response:MovieVideo}">
-                                        <StackPanel Margin="12,0,12,24">
+                                    <DataTemplate DataType="{x:Type response:MovieVideoSubject}">
+                                        <StackPanel Margin="12,8,12,24">
                                             <uc:FilletImage
                                                 x:Name="ImageControl"
                                                 Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
@@ -281,17 +266,17 @@
                                             <TextBlock
                                                 FontSize="12"
                                                 Opacity=".68"
-                                                Text="{Binding PublishTime}" />
+                                                Text="{Binding Creator[0].UserName}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </TabItem>
                         <TabItem Header="云盘">
-                            <ItemsControl>
+                            <ItemsControl Padding="10" ItemsSource="{Binding CloudItems}">
                                 <ItemsControl.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type response:Song}">
-                                        <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type viewmodels:LibraryViewModel}}, Path=PlayImmediatelyCommand}" />
+                                    <DataTemplate>
+                                        <uc:SongItem Item="{Binding SimpleSong}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>

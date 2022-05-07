@@ -34,7 +34,7 @@ namespace QianShi.Music.Common.Models.Response
         public Creator? Creator { get; set; }
         public List<Creator>? Subscribers { get; set; }
         public bool? Subscribed { get; set; }
-        public List<Track> Tracks { get; set; } = new List<Track>();
+        public List<Song> Tracks { get; set; } = new List<Song>();
         public List<TrackId> TrackIds { get; set; } = new List<TrackId>();
         public string? CommentThreadId { get; set; }
         public bool NewImported { get; set; }
@@ -66,22 +66,22 @@ namespace QianShi.Music.Common.Models.Response
             public string? Sc { get; set; }
         }
 
-        public class Track
-        {
-            public long Id { get; set; }
-            public string Name { get; set; } = null!;
+        //public class Track
+        //{
+        //    public long Id { get; set; }
+        //    public string Name { get; set; } = null!;
 
-            [JsonPropertyName("ar")]
-            public List<Artist> Artists { get; set; } = new List<Artist>();
+        //    [JsonPropertyName("ar")]
+        //    public List<Artist> Artists { get; set; } = new List<Artist>();
 
-            [JsonPropertyName("al")]
-            public Album Album { get; set; } = new Album();
+        //    [JsonPropertyName("al")]
+        //    public Album Album { get; set; } = new Album();
 
-            [JsonPropertyName("dt")]
-            public long Size { get; set; }  // 毫秒
+        //    [JsonPropertyName("dt")]
+        //    public long Size { get; set; }  // 毫秒
 
-            public long MV { get; set; }
-        }
+        //    public long MV { get; set; }
+        //}
 
         public class Artist
         {

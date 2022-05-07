@@ -91,7 +91,7 @@ namespace QianShi.Music.Common.UserControls
 
         private void FilletImage_ImageClick(object sender, RoutedEventArgs e)
         {
-            if (OpenPlaylistCommand.CanExecute(Playlist))
+            if (OpenPlaylistCommand != null && OpenPlaylistCommand.CanExecute(Playlist))
                 OpenPlaylistCommand.Execute(Playlist);
         }
     }

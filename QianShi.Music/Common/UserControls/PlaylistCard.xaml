@@ -44,10 +44,12 @@
                 TextWrapping="WrapWithOverflow" />
             <TextBlock
                 x:Name="DescriptionControl"
+                MaxHeight="40"
                 Margin="2,2,0,0"
                 FontSize="12px"
                 Opacity=".68"
                 Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Description}"
+                TextTrimming="CharacterEllipsis"
                 Visibility="Collapsed" />
         </StackPanel>
     </Border>
