@@ -335,6 +335,17 @@ namespace QianShi.Music.Services
         public async Task<UserRecordResponse> UserRecord(UserRecordRequest parameters)
             => await Request<UserRecordResponse>("/user/record", parameters);
 
+       
+        public async Task<SongUrlResponse> SongUrl(SongUrlRequest parameters)
+            => await Request<SongUrlResponse>("/song/url", parameters);
+
+        public async Task<LyricResponse> Lyric(long id)
+        {
+            var request = new RestRequest("/lyric");
+            request.AddQueryParameter("id", id);
+            return await Get<LyricResponse>(request) ?? new LyricResponse();
+        }
+
         private Task<T?> Get<T>(RestRequest request) => _client.GetAsync<T>(request);
 
         private async Task<T> Request<T>(string route, object parameters) where T : new()

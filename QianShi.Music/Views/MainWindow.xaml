@@ -233,15 +233,29 @@
                                     Kind="SkipPrevious" />
                             </Button>
                             <Button
+                                x:Name="PlayButtonControl"
                                 Width="48"
                                 Height="48"
-                                Style="{StaticResource MaterialDesignIconButton}">
+                                Command="{Binding PlayCommand}"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <materialDesign:PackIcon
+                                    Width="36"
+                                    Height="36"
+                                    Kind="Play" />
+                            </Button>
+                            <Button
+                                Width="48"
+                                Height="48"
+                                Command="{Binding PauseCommand}"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <materialDesign:PackIcon
                                     Width="36"
                                     Height="36"
                                     Kind="Pause" />
-                                <!--<materialDesign:PackIcon Kind="Play" Width="28" Height="28" />-->
                             </Button>
+
                             <Button Cursor="Hand" Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon
                                     Width="26"

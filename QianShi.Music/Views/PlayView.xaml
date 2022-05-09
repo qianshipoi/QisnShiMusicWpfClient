@@ -163,7 +163,8 @@
             VerticalAlignment="Top"
             Command="{Binding CloseCommand}"
             Style="{StaticResource MaterialDesignIconButton}"
-            ToolTip="MaterialDesignIconButton">
+            ToolTip="MaterialDesignIconButton"
+            WindowChrome.IsHitTestVisibleInChrome="True">
             <materialDesign:PackIcon FontWeight="Bold" Kind="ChevronDown" />
         </Button>
     </Grid>

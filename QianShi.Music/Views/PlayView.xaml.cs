@@ -32,8 +32,6 @@ namespace QianShi.Music.Views
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromSeconds(0.5);
             _dt.Tick += (e, c) => LrcRoll();
-            me.Source = new Uri(url);
-            me.LoadedBehavior = MediaState.Pause;
             me.MediaOpened += (e, c) =>
             {
                 PlayProgressControl.Maximum = me.NaturalDuration.TimeSpan.TotalMilliseconds;
@@ -41,6 +39,12 @@ namespace QianShi.Music.Views
                 TotalTimeControl.Text = me.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
                 me.LoadedBehavior = MediaState.Manual;
             };
+            me.MediaFailed += (s, e) =>
+            {
+
+            };
+            me.Source = new Uri(url);
+            me.LoadedBehavior = MediaState.Pause;
             PlayProgressControl.PreviewMouseLeftButtonDown += (e, c) =>
             {
                 _canChangProgressControlValue = false;

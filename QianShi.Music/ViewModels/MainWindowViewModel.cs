@@ -5,6 +5,7 @@ using Prism.Regions;
 
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
@@ -21,6 +22,7 @@ namespace QianShi.Music.ViewModels
         private readonly IContainerProvider _containerProvider;
         private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
+        private readonly IPlayService _playService;
         private IRegionNavigationJournal _journal = null!;
 
         private UserData _userData = default!;
@@ -66,8 +68,30 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<string> SearchCommand { get; private set; }
         public DelegateCommand LoginCommand { get; private set; }
 
+        private DelegateCommand _playCommand;
+        public DelegateCommand PlayCommand =>
+            _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
+
+        private DelegateCommand _pauseCommand;
+        public DelegateCommand PauseCommand =>
+            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
+
+        private bool _isPlaying = false;
+        public bool IsPlaying
+        {
+            get { return _isPlaying; }
+            set { SetProperty(ref _isPlaying, value); }
+        }
+
+        private Song? _currentSong = null;
+        public Song? CurrentSong
+        {
+            get { return _currentSong; }
+            set { SetProperty(ref _currentSong, value); }
+        }
+
         public MainWindowViewModel(IContainerProvider containerProvider,
-            IRegionManager regionManager, IPlaylistService playlistService)
+            IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService)
         {
             _regionManager = regionManager;
             _containerProvider = containerProvider;
@@ -89,6 +113,9 @@ namespace QianShi.Music.ViewModels
             SearchCommand = new DelegateCommand<string>(Search);
             _playlistService = playlistService;
             _userData = UserData.Instance;
+            _playService = playService;
+            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.IsPlaying;
+            _playService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
         }
 
         private void Search(string searchText)
@@ -180,6 +207,11 @@ namespace QianShi.Music.ViewModels
                 _journal = back.Context.NavigationService.Journal;
             });
             _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
+
+            _playService.Add(new Song
+            {
+                Id = 33894312
+            });
         }
     }
 }

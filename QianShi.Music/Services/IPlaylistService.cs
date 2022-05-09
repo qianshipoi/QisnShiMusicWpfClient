@@ -246,5 +246,19 @@ namespace QianShi.Music.Services
         /// </summary>
         /// <returns></returns>
         Task<UserRecordResponse> UserRecord(UserRecordRequest parameters);
+
+        /// <summary>
+        /// 获取音乐 url
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<SongUrlResponse> SongUrl(SongUrlRequest parameters);
+
+        /// <summary>
+        /// 获取歌词
+        /// </summary>
+        /// <param name="id">音乐 id</param>
+        /// <returns></returns>
+        Task<LyricResponse> Lyric(long id);
     }
 }
