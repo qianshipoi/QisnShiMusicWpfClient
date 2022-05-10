@@ -8,11 +8,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
+    xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     d:DesignHeight="720"
     d:DesignWidth="1280" 
     d:DataContext="{d:DesignData viewmodels:PlayViewModel.PlayViewModelDesign}"
     Visibility="{Binding Display, Converter={StaticResource BooleanToVisibilityConverter}}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:MillisecondToTimeSpanConverter x:Key="MillisecondToTimeSpanConverter" />
+    </UserControl.Resources>
     <Grid
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
@@ -77,12 +81,12 @@
                         x:Name="CurrentTimeControl"
                         DockPanel.Dock="Left"
                         Opacity=".58"
-                        Text="0:32" />
+                        Text="{Binding Position, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=00:00}" />
                     <TextBlock
                         x:Name="TotalTimeControl"
                         DockPanel.Dock="Right"
                         Opacity=".58"
-                        Text="4:02" />
+                        Text="{Binding Duration, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=01:00}" />
                     <Slider x:Name="PlayProgressControl" Margin="8,0" 
                             Value="{Binding Position}" 
                             Maximum="{Binding Duration}" Minimum="0"/>

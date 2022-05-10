@@ -126,7 +126,7 @@ namespace QianShi.Music.ViewModels
                 if (view != null)
                 {
                     _playView = view as PlayView;
-                    await Init();
+                    //await Init();
                 }
             }
         }

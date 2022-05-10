@@ -34,10 +34,6 @@ namespace QianShi.Music.Views
                 LrcRoll();
             };
 
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                return;
-            }
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromSeconds(0.5);
             _dt.Tick += (e, c) => LrcRoll();
