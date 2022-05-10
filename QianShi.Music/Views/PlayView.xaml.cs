@@ -23,12 +23,21 @@ namespace QianShi.Music.Views
 
         public void Init(string url, string lyricsString)
         {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return;
+            }
             LrcView.LoadLrc(lyricsString);
             LrcView.TimeChangedEvent += (s, e) =>
             {
                 me.Position = TimeSpan.FromMilliseconds(e.Time);
                 LrcRoll();
             };
+
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return;
+            }
             _dt = new DispatcherTimer();
             _dt.Interval = TimeSpan.FromSeconds(0.5);
             _dt.Tick += (e, c) => LrcRoll();

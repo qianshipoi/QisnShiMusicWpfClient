@@ -26,13 +26,20 @@ namespace QianShi.Music.Services
         public PlayService(IPlaylistService playlistService)
         {
             _mediaPlayer = new MediaPlayer();
-            _mediaPlayer.MediaOpened += (s, e) => { };
-            _mediaPlayer.MediaFailed += (s, e) => { };
+            _mediaPlayer.MediaOpened += (s, e) =>
+            {  };
+            _mediaPlayer.MediaFailed += (s, e) => 
+            {  };
             _mediaPlayer.MediaEnded += (s, e) => Next();
 
             _timer = new();
             _timer.Tick += (s, e) =>
-                ProgressChanged?.Invoke(this, new ProgressEventArgs(_mediaPlayer.Position.TotalMilliseconds, _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds));
+            {
+                if (_mediaPlayer.NaturalDuration.HasTimeSpan)
+                {
+                    ProgressChanged?.Invoke(this, new ProgressEventArgs(_mediaPlayer.Position.TotalMilliseconds, _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds));
+                }
+            };
 
             _timer.Interval = TimeSpan.FromMilliseconds(500);
 

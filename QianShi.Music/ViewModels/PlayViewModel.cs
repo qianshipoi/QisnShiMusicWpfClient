@@ -15,9 +15,12 @@ namespace QianShi.Music.ViewModels
 {
     public class PlayViewModel : NavigationViewModel
     {
+        public static PlayViewModel PlayViewModelDesign => App.Current.Container.Resolve<PlayViewModel>();
+
         private readonly IContainerProvider _containerProvider;
         private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
+        private readonly IPlayService _playService;
         private ObservableCollection<Lyric> _lyrics;
         private PlayView? _playView = null;
         private bool _display = false;
@@ -59,14 +62,58 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand CloseCommand { get; private set; }
 
+        private double _duration = 1d;
+        public double Duration
+        {
+            get { return _duration; }
+            set { SetProperty(ref _duration, value); }
+        }
+
+        private double _position = 0d;
+        public double Position
+        {
+            get { return _position; }
+            set { SetProperty(ref _position, value); }
+        }
+
+        private bool _isPlaying = false;
+        public bool IsPlaying
+        {
+            get { return _isPlaying; }
+            set { SetProperty(ref _isPlaying, value); }
+        }
+
+        private DelegateCommand _playCommand;
+        public DelegateCommand PlayCommand =>
+            _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
+
+        private DelegateCommand _pauseCommand;
+        public DelegateCommand PauseCommand =>
+            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
+
         public PlayViewModel(IContainerProvider provider,
-            IRegionManager regionManager, IPlaylistService playlistService) : base(provider)
+            IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService) : base(provider)
         {
             _lyrics = new ObservableCollection<Lyric>();
             _containerProvider = provider;
             _regionManager = regionManager;
             CloseCommand = new DelegateCommand(() => Display = false);
             _playlistService = playlistService;
+            _playService = playService;
+            _playService.ProgressChanged += (s, e) =>
+            {
+                Position = e.Value;
+                Duration = e.Total;
+            };
+            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.IsPlaying;
+            _playService.CurrentChanged += async (s, e) =>
+            {
+                if (e.NewSong != null)
+                {
+                    var lyric = await GetLyric(e.NewSong.Id);
+                    _playView?.Init("", lyric);
+                }
+            };
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
@@ -84,6 +131,17 @@ namespace QianShi.Music.ViewModels
             }
         }
 
+        private async Task<string> GetLyric(long songId)
+        {
+            var lyricResponse = await _playlistService.Lyric(songId);
+
+            if (lyricResponse.Code == 200)
+            {
+                return lyricResponse.Lrc.Lyric;
+            }
+            return string.Empty;
+        }
+
         private async Task Init()
         {
             if (_playView == null) return;
@@ -96,13 +154,22 @@ namespace QianShi.Music.ViewModels
             if (response.Code == 200)
             {
                 var url = response.Data[0].Url;
-                var lyricResponse = await _playlistService.Lyric(songId);
 
-                if (lyricResponse.Code == 200)
+                var lyric = await GetLyric(songId);
+
+                if (!string.IsNullOrEmpty(lyric))
                 {
-                    var lyricsString = lyricResponse.Lrc.Lyric;
-                    _playView.Init(url, lyricsString);
+                    lyric = "[00:00:00.000]无歌词";
                 }
+                _playView.Init(url, lyric);
+
+                //var lyricResponse = await _playlistService.Lyric(songId);
+
+                //if (lyricResponse.Code == 200)
+                //{
+                //    var lyricsString = lyricResponse.Lrc.Lyric;
+                //    _playView.Init(url, lyricsString);
+                //}
             }
         }
     }

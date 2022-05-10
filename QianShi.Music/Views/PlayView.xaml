@@ -7,8 +7,10 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
     d:DesignHeight="720"
-    d:DesignWidth="1280"
+    d:DesignWidth="1280" 
+    d:DataContext="{d:DesignData viewmodels:PlayViewModel.PlayViewModelDesign}"
     Visibility="{Binding Display, Converter={StaticResource BooleanToVisibilityConverter}}"
     mc:Ignorable="d">
     <Grid
@@ -81,7 +83,9 @@
                         DockPanel.Dock="Right"
                         Opacity=".58"
                         Text="4:02" />
-                    <Slider x:Name="PlayProgressControl" Margin="8,0" />
+                    <Slider x:Name="PlayProgressControl" Margin="8,0" 
+                            Value="{Binding Position}" 
+                            Maximum="{Binding Duration}" Minimum="0"/>
                 </DockPanel>
                 <StackPanel
                     Grid.Row="3"
@@ -110,14 +114,22 @@
                     </Button>
                     <Button
                         Width="48"
-                        Height="48"
-                        Click="Button_Click"
+                        Height="48" Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}"
+                        Command="{Binding PlayCommand}"
+                        Style="{StaticResource MaterialDesignIconButton}">
+                        <materialDesign:PackIcon
+                            Width="36"
+                            Height="36"
+                            Kind="Play" />
+                    </Button>
+                    <Button
+                        Width="48"  Command="{Binding PauseCommand}"
+                        Height="48" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
                         Style="{StaticResource MaterialDesignIconButton}">
                         <materialDesign:PackIcon
                             Width="36"
                             Height="36"
                             Kind="Pause" />
-                        <!--<materialDesign:PackIcon Kind="Play" Width="28" Height="28" />-->
                     </Button>
                     <Button
                         Width="38"
