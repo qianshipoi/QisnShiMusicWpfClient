@@ -183,16 +183,23 @@
                     </Grid>
                 </materialDesign:ColorZone>
                 <materialDesign:Card
-                    Height="64"
+                    Height="84"
                     Padding="16,8"
                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
                     materialDesign:ShadowAssist.ShadowEdges="Top"
                     DockPanel.Dock="Bottom">
-                    <UniformGrid
-                        MaxWidth="1280"
-                        Columns="3"
-                        Rows="1">
-                        <UniformGrid.Resources>
+                    <Grid
+                        MaxWidth="1280">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="20" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.Resources>
                             <ResourceDictionary>
                                 <Style
                                     x:Key="ControlButton"
@@ -206,8 +213,12 @@
                                     <Setter Property="Height" Value="26" />
                                 </Style>
                             </ResourceDictionary>
-                        </UniformGrid.Resources>
-                        <StackPanel Orientation="Horizontal">
+                        </Grid.Resources>
+                        <ProgressBar Grid.ColumnSpan="3" 
+                                     Maximum="{Binding SongDuration}" 
+                                     Minimum="0" 
+                                     Value="{Binding SongPosition}" />
+                        <StackPanel Orientation="Horizontal" Grid.Row="1">
                             <Image Source="https://p2.music.126.net/UcMffoyG9Bt71ebi5QhqKg==/109951167283675260.jpg?param=224y224" />
                             <UniformGrid Margin="10,0" Columns="1">
                                 <TextBlock
@@ -225,7 +236,7 @@
                                 <materialDesign:PackIcon Kind="CardsHeartOutline" />
                             </Button>
                         </StackPanel>
-                        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Orientation="Horizontal">
                             <Button Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon
                                     Width="26"
@@ -263,7 +274,7 @@
                                     Kind="SkipNext" />
                             </Button>
                         </StackPanel>
-                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal">
                             <Button Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon Kind="PlaylistMusic" Style="{StaticResource ControlIcon}" />
                             </Button>
@@ -289,7 +300,7 @@
                                 <materialDesign:PackIcon Kind="ChevronUp" Style="{StaticResource ControlIcon}" />
                             </Button>
                         </StackPanel>
-                    </UniformGrid>
+                    </Grid>
                 </materialDesign:Card>
                 <ContentControl Grid.Row="1" prism:RegionManager.RegionName="{x:Static ext:PrismManager.MainViewRegionName}" />
                 <!--<ContentControl Grid.Row="2" prism:RegionManager.RegionName="{x:Static ext:PrismManager.ControlsRegionName}" />-->

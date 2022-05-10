@@ -1,6 +1,7 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace QianShi.Music.Services
 {
@@ -8,10 +9,13 @@ namespace QianShi.Music.Services
     {
         private readonly MediaPlayer _mediaPlayer;
         private readonly IPlaylistService _playlistService;
+        private readonly DispatcherTimer _timer;
 
-        public event EventHandler<SongChangedEventArgs> CurrentChanged;
+        public event EventHandler<SongChangedEventArgs>? CurrentChanged;
 
-        public event EventHandler<IsPlayingChangedEventArgs> IsPlayingChanged;
+        public event EventHandler<IsPlayingChangedEventArgs>? IsPlayingChanged;
+
+        public event EventHandler<ProgressEventArgs>? ProgressChanged;
 
         public List<Song> ToPlay = new();
 
@@ -25,6 +29,13 @@ namespace QianShi.Music.Services
             _mediaPlayer.MediaOpened += (s, e) => { };
             _mediaPlayer.MediaFailed += (s, e) => { };
             _mediaPlayer.MediaEnded += (s, e) => Next();
+
+            _timer = new();
+            _timer.Tick += (s, e) =>
+                ProgressChanged?.Invoke(this, new ProgressEventArgs(_mediaPlayer.Position.TotalMilliseconds, _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds));
+
+            _timer.Interval = TimeSpan.FromMilliseconds(500);
+
             _playlistService = playlistService;
         }
 
@@ -50,13 +61,22 @@ namespace QianShi.Music.Services
         private bool _isPlaying;
         public bool IsPlaying
         {
-            get => _isPlaying; private set
+            get => _isPlaying;
+            private set
             {
                 if (value != _isPlaying)
                 {
                     IsPlayingChanged.Invoke(this, new IsPlayingChangedEventArgs(value));
                 }
                 _isPlaying = value;
+                if (_isPlaying)
+                {
+                    _timer.Start();
+                }
+                else
+                {
+                    _timer.Stop();
+                }
             }
         }
 
@@ -122,6 +142,13 @@ namespace QianShi.Music.Services
                 Next();
                 if (Current == null)
                     return;
+            }
+
+            if (_mediaPlayer.HasAudio)
+            {
+                _mediaPlayer.Play();
+                IsPlaying = true;
+                return;
             }
 
             var response = await _playlistService.SongUrl(new Common.Models.Request.SongUrlRequest

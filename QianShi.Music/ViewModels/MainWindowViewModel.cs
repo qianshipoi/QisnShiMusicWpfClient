@@ -90,6 +90,20 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _currentSong, value); }
         }
 
+        private double _songDuration = 1d;
+        public double SongDuration
+        {
+            get { return _songDuration; }
+            set { SetProperty(ref _songDuration, value); }
+        }
+
+        private double _songPosition = 0d;
+        public double SongPosition
+        {
+            get { return _songPosition; }
+            set { SetProperty(ref _songPosition, value); }
+        }
+
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService)
         {
@@ -116,6 +130,11 @@ namespace QianShi.Music.ViewModels
             _playService = playService;
             _playService.IsPlayingChanged += (s, e) => IsPlaying = e.IsPlaying;
             _playService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
+            _playService.ProgressChanged += (s, e) =>
+            {
+                SongPosition = e.Value;
+                SongDuration = e.Total;
+            };
         }
 
         private void Search(string searchText)

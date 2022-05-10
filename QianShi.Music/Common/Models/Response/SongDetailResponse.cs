@@ -2,6 +2,12 @@
 
 namespace QianShi.Music.Common.Models.Response
 {
+    public class SongDetailResponse
+    {
+        public int Code { get; set; }
+        public List<Song> Songs { get; set; } = new List<Song>();
+    }
+
     public class Privilege
     {
         [JsonPropertyName("cp")]
@@ -101,11 +107,5 @@ namespace QianShi.Music.Common.Models.Response
         public List<string> Tns { get; set; } = new();
         public int V { get; set; }
         public int Version { get; set; }
-    }
-
-    public class SongDetailResponse
-    {
-        public int Code { get; set; }
-        public List<Song> Songs { get; set; } = new List<Song>();
     }
 }

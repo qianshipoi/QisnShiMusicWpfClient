@@ -8,6 +8,8 @@ namespace QianShi.Music.Services
 
         event EventHandler<IsPlayingChangedEventArgs> IsPlayingChanged;
 
+        event EventHandler<ProgressEventArgs> ProgressChanged;
+
         /// <summary>
         /// 当前歌曲
         /// </summary>
@@ -59,6 +61,17 @@ namespace QianShi.Music.Services
         public IsPlayingChangedEventArgs( bool isPlaying)
         {
             IsPlaying = isPlaying;
+        }
+    }
+
+    public class ProgressEventArgs : EventArgs
+    {
+        public double Value { get; set; }
+        public double Total { get; set; }
+        public ProgressEventArgs(double value, double total)
+        {
+            Value = value;
+            Total = total;
         }
     }
 }
