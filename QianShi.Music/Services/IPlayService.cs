@@ -10,10 +10,17 @@ namespace QianShi.Music.Services
 
         event EventHandler<ProgressEventArgs> ProgressChanged;
 
+        event EventHandler<VolumeChangedEventArgs>? VolumeChanged;
+
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
         /// <summary>
         /// 当前歌曲
         /// </summary>
         Song? Current { get; }
+
+        double Volume { get; }
+
+        bool IsMuted { get; }
 
         bool IsPlaying { get; }
         /// <summary>
@@ -42,6 +49,9 @@ namespace QianShi.Music.Services
         void Clear();
 
         void JumpToQueue(Song song);
+
+        void SetVolume(double volume);
+        void SetMute(bool isMute);
     }
 
     public class SongChangedEventArgs : EventArgs
@@ -55,12 +65,25 @@ namespace QianShi.Music.Services
     }
 
     public class IsPlayingChangedEventArgs : EventArgs
-    { 
+    {
         public bool IsPlaying { get; private set; }
 
-        public IsPlayingChangedEventArgs( bool isPlaying)
+        public IsPlayingChangedEventArgs(bool isPlaying)
         {
             IsPlaying = isPlaying;
+        }
+    }
+
+    public class PropertyChangedEventArgs<T> : EventArgs
+    {
+        public T? NewValue { get; private set; }
+        
+        public T? OldValue { get; private set; }
+
+        public PropertyChangedEventArgs(T? newValue, T? oldValue)
+        {
+            NewValue = newValue;
+            OldValue = oldValue;
         }
     }
 
@@ -72,6 +95,15 @@ namespace QianShi.Music.Services
         {
             Value = value;
             Total = total;
+        }
+    }
+    public class VolumeChangedEventArgs : EventArgs
+    {
+        public double Value { get; set; }
+
+        public VolumeChangedEventArgs(double value)
+        {
+            Value = value;
         }
     }
 }

@@ -6,6 +6,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls">
     <Application.Resources>
         <ResourceDictionary>
@@ -96,6 +97,8 @@
             <SolidColorBrush x:Key="ActiveColor" Color="#EAEFFD" />
             <SolidColorBrush x:Key="MianColor" Color="#335EEA" />
             <converters:MathConverter x:Key="MathConverter" />
+            <s:Boolean x:Key="True">True</s:Boolean>
+            <s:Boolean x:Key="False">False</s:Boolean>
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

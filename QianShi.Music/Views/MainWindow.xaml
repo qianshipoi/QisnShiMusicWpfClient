@@ -8,6 +8,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
+    xmlns:extension="clr-namespace:QianShi.Music.Extensions"
     Title="{Binding Title}"
     Width="1080"
     Height="720"
@@ -219,18 +220,18 @@
                                      Minimum="0" 
                                      Value="{Binding SongPosition}" />
                         <StackPanel Orientation="Horizontal" Grid.Row="1">
-                            <Image Source="https://p2.music.126.net/UcMffoyG9Bt71ebi5QhqKg==/109951167283675260.jpg?param=224y224" />
+                            <Image Source="{Binding CurrentSong.Album.CoverImgUrl, StringFormat='{}{0}?param=224y224'}"/>
                             <UniformGrid Margin="10,0" Columns="1">
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontSize="16"
-                                    Opacity=".88"
-                                    Text="blah blah blah" />
+                                    Opacity=".88" Style="{StaticResource UnderlineTextBlock}"
+                                    Text="{Binding CurrentSong.Album.Name}" />
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontSize="12"
-                                    Opacity=".58"
-                                    Text="Reiley" />
+                                    Opacity=".58" Style="{StaticResource UnderlineTextBlock}"
+                                    Text="{Binding CurrentSong.Artists[0].Name}" Cursor="Hand" />
                             </UniformGrid>
                             <Button Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon Kind="CardsHeartOutline" />
@@ -284,15 +285,22 @@
                             <Button Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon Kind="ShuffleVariant" Style="{StaticResource ControlIcon}" />
                             </Button>
-                            <Button Style="{StaticResource ControlButton}">
+                            <Button Style="{StaticResource ControlButton}"
+                                    Visibility="{Binding IsMuted,Converter={StaticResource InverseBoolToVisConverter}}"
+                                    Command="{Binding SetMutedCommand}" CommandParameter="{StaticResource True}" > 
                                 <materialDesign:PackIcon Kind="VolumeHigh" Style="{StaticResource ControlIcon}" />
                             </Button>
+                            <Button Style="{StaticResource ControlButton}" 
+                                    Visibility="{Binding IsMuted, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Command="{Binding SetMutedCommand}" CommandParameter="{StaticResource False}"  Cursor="Hand">
+                                <materialDesign:PackIcon Kind="VolumeMute" Style="{StaticResource ControlIcon}" />
+                            </Button>
                             <Slider
-                                Width="80"
+                                Width="80" extension:SliderExtension.DragCompletedCommand="{Binding SetVolumeCommand}"
                                 VerticalAlignment="Center"
-                                Maximum="50"
+                                Maximum="1" x:Name="VolumeControl"
                                 Minimum="0"
-                                Value="35" />
+                                Value="{Binding Volume,Mode=OneWay}" />
                             <Button
                                 Command="{Binding OpenPlayViewCommand}"
                                 CommandParameter="{Binding ElementName=FullScreenRegionControl}"

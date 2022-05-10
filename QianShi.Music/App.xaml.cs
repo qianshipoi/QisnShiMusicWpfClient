@@ -1,7 +1,6 @@
 ﻿using Prism.Ioc;
 
 using QianShi.Music.Common;
-using QianShi.Music.Common.Data;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
@@ -10,9 +9,7 @@ using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 
 using System.IO;
-using System.Net;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Windows;
 
 namespace QianShi.Music

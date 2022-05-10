@@ -104,6 +104,42 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _songPosition, value); }
         }
 
+        private double _volume = 0.5;
+        public double Volume
+        {
+            get { return _volume; }
+            set { SetProperty(ref _volume, value); }
+        }
+
+        private DelegateCommand<double?> _setVolumeCommand;
+        public DelegateCommand<double?> SetVolumeCommand =>
+            _setVolumeCommand ?? (_setVolumeCommand = new DelegateCommand<double?>((value) =>
+            {
+                if (value.HasValue)
+                {
+                    _playService.SetVolume(value.Value);
+                }
+            }));
+
+        private bool _isMuted = false;
+        public bool IsMuted
+        {
+            get { return _isMuted; }
+            set { SetProperty(ref _isMuted, value); }
+        }
+
+        private DelegateCommand<bool?> _setMutedCommand;
+        public DelegateCommand<bool?> SetMutedCommand =>
+            _setMutedCommand ?? (_setMutedCommand = new DelegateCommand<bool?>(ExecuteSetMutedCommand));
+
+        void ExecuteSetMutedCommand(bool? parameter)
+        {
+            if (parameter.HasValue)
+            {
+                _playService.SetMute(parameter.Value);
+            }
+        }
+
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService)
         {
@@ -135,6 +171,9 @@ namespace QianShi.Music.ViewModels
                 SongPosition = e.Value;
                 SongDuration = e.Total;
             };
+            Volume = _playService.Volume;
+            _playService.VolumeChanged += (s, e) => Volume = e.Value;
+            _playService.IsMutedChanged += (s, e) => IsMuted = e.NewValue;
         }
 
         private void Search(string searchText)

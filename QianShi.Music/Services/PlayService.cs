@@ -17,6 +17,10 @@ namespace QianShi.Music.Services
 
         public event EventHandler<ProgressEventArgs>? ProgressChanged;
 
+        public event EventHandler<VolumeChangedEventArgs>? VolumeChanged;
+
+        public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+
         public List<Song> ToPlay = new();
 
         public List<Song> JumpPlay = new();
@@ -27,9 +31,9 @@ namespace QianShi.Music.Services
         {
             _mediaPlayer = new MediaPlayer();
             _mediaPlayer.MediaOpened += (s, e) =>
-            {  };
-            _mediaPlayer.MediaFailed += (s, e) => 
-            {  };
+            { };
+            _mediaPlayer.MediaFailed += (s, e) =>
+            { };
             _mediaPlayer.MediaEnded += (s, e) => Next();
 
             _timer = new();
@@ -58,7 +62,7 @@ namespace QianShi.Music.Services
                     _currentSong.IsPlaying = false;
                 }
                 if (_currentSong != value)
-                    CurrentChanged.Invoke(this, new SongChangedEventArgs(value));
+                    CurrentChanged?.Invoke(this, new SongChangedEventArgs(value));
                 _currentSong = value;
                 if (_currentSong != null)
                     _currentSong.IsPlaying = true;
@@ -73,7 +77,7 @@ namespace QianShi.Music.Services
             {
                 if (value != _isPlaying)
                 {
-                    IsPlayingChanged.Invoke(this, new IsPlayingChangedEventArgs(value));
+                    IsPlayingChanged?.Invoke(this, new IsPlayingChangedEventArgs(value));
                 }
                 _isPlaying = value;
                 if (_isPlaying)
@@ -87,11 +91,36 @@ namespace QianShi.Music.Services
             }
         }
 
-        public void Add(Song song)
+        public double Volume => _mediaPlayer.Volume;
+
+        public bool IsMuted => _mediaPlayer.IsMuted;
+
+        public void SetMute(bool isMute)
         {
-            if (Current == null) Current = song;
-            ToPlay.Add(song);
-            _playlist.Add(song);
+            if (isMute == _mediaPlayer.IsMuted) return;
+            _mediaPlayer.IsMuted = isMute;
+            IsMutedChanged?.Invoke(this, new PropertyChangedEventArgs<bool>(isMute, !isMute));
+        }
+
+        public void SetVolume(double volume)
+        {
+            if (volume > 1) volume = 1;
+            else if (volume < 0) volume = 0;
+            _mediaPlayer.Volume = volume;
+            VolumeChanged?.Invoke(this, new VolumeChangedEventArgs(volume));
+        }
+
+        public async void Add(Song song)
+        {
+            var response = await _playlistService.SongDetail(song.Id.ToString());
+
+            if (response.Code == 200)
+            {
+                song = response.Songs.First();
+                if (Current == null) Current = song;
+                ToPlay.Add(song);
+                _playlist.Add(song);
+            }
         }
 
         public void Add(IEnumerable<Song> songs)
