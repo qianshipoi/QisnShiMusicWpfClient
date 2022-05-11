@@ -2,6 +2,7 @@
 using Prism.Ioc;
 using Prism.Regions;
 
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
@@ -105,6 +106,13 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _lyricString, value); }
         }
 
+        private Song? _currentSong = default!;
+        public Song? CurrentSong
+        {
+            get { return _currentSong; }
+            set { SetProperty(ref _currentSong, value); }
+        }
+
         public PlayViewModel(IContainerProvider provider,
             IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService) : base(provider)
         {
@@ -124,6 +132,7 @@ namespace QianShi.Music.ViewModels
                 {
                     LyricString = await GetLyric(e.NewSong.Id);
                 }
+                CurrentSong = e.NewSong;
             };
         }
 

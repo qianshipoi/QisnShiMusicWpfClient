@@ -21,7 +21,7 @@
     <Grid
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        Background="SkyBlue">
+        d:Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition />
@@ -30,13 +30,20 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
+        <Image Source="{Binding CurrentSong.Album.CoverImgUrl}" Stretch="UniformToFill" Grid.ColumnSpan="2" Grid.RowSpan="2" >
+            <Image.Effect>
+                <BlurEffect RenderingBias="Quality"  KernelType="Box"  Radius="10" />
+            </Image.Effect>
+        </Image>
         <StackPanel
             Grid.Row="1"
             Width="388"
             Margin="0,-20,32,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center">
-            <Image Source="https://p2.music.126.net/PzVklWfH2G1gVuHd3a50Gg==/109951164984873532.jpg?param=1024y1024" />
+            <Image
+                Source="{Binding CurrentSong.Album.CoverImgUrl, StringFormat='{}{0}?param=1024y1024'}"
+                d:Source="https://p2.music.126.net/PzVklWfH2G1gVuHd3a50Gg==/109951164984873532.jpg?param=1024y1024" />
             <Grid Margin="0,24,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -51,15 +58,16 @@
                 <TextBlock
                     FontSize="22.4"
                     FontWeight="Bold"
-                    Text="万有引力" />
+                    Text="{Binding CurrentSong.Name}"
+                    d:Text="万有引力" />
                 <ContentControl
                     Grid.Row="1"
                     FontSize="16"
                     Opacity=".58">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="F*yy" />
+                        <TextBlock Text="{Binding CurrentSong.Artists[0].Name}" d:Text="F*yy" Style="{StaticResource UnderlineTextBlock}" />
                         <TextBlock Text="-" />
-                        <TextBlock Text="万有引力" />
+                        <TextBlock Text="{Binding CurrentSong.Album.Name}" d:Text="万有引力" Style="{StaticResource UnderlineTextBlock}" />
                     </StackPanel>
                 </ContentControl>
                 <materialDesign:PackIcon
@@ -88,7 +96,7 @@
                         DockPanel.Dock="Right"
                         Opacity=".58"
                         Text="{Binding Duration, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=01:00}" />
-                    <Slider x:Name="PlayProgressControl" Margin="8,0" 
+                    <Slider x:Name="PlayProgressControl" Margin="8,0" Focusable="True"
                             Value="{Binding Position, Mode=OneWay}" 
                             extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
                             Maximum="{Binding Duration}" Minimum="0"/>
@@ -158,7 +166,6 @@
                             Kind="ShuffleVariant" />
                     </Button>
                 </StackPanel>
-                <MediaElement Name="me" Visibility="Collapsed" />
             </Grid>
         </StackPanel>
         <uc:LrcView 

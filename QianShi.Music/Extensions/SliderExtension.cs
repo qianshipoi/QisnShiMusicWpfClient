@@ -29,14 +29,14 @@ namespace QianShi.Music.Extensions
 
         private static void SliderOnLoaded(object sender, RoutedEventArgs e)
         {
-            Slider slider = sender as Slider;
+            var slider = sender as Slider;
             if (slider == null)
             {
                 return;
             }
             slider.Loaded -= SliderOnLoaded;
 
-            Track track = slider.Template.FindName("PART_Track", slider) as Track;
+            var track = slider.Template.FindName("PART_Track", slider) as Track;
             if (track == null)
             {
                 return;
