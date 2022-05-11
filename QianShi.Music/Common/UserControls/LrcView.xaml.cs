@@ -9,16 +9,6 @@ using System.Windows.Threading;
 
 namespace QianShi.Music.Common.UserControls
 {
-    public class TimeChangedEventArgs : EventArgs
-    {
-        public TimeChangedEventArgs(double time)
-        {
-            Time = time;
-        }
-
-        public double Time { get; set; }
-    }
-
     /// <summary>
     /// LrcView.xaml 的交互逻辑
     /// </summary>
@@ -30,13 +20,54 @@ namespace QianShi.Music.Common.UserControls
         public int FoucsLrcLocation { get; set; } = -1;
 
         //添加当前焦点歌词变量
-        public LrcModel foucslrc { get; set; }
+        public LrcModel? foucslrc { get; set; }
 
         //非焦点歌词颜色
         public SolidColorBrush NoramlLrcColor = new SolidColorBrush(Colors.Black);
 
         //焦点歌词颜色
-        public SolidColorBrush FoucsLrcColor = new SolidColorBrush(Colors.OrangeRed);
+        public SolidColorBrush FoucsLrcColor = new SolidColorBrush(Colors.Red);
+
+        public string LyricString
+        {
+            get { return (string)GetValue(LyricStringProperty); }
+            set { SetValue(LyricStringProperty, value); }
+        }
+
+        public static readonly DependencyProperty LyricStringProperty =
+            DependencyProperty.Register(nameof(LyricString), typeof(string), typeof(LrcView), new PropertyMetadata(string.Empty, LyrucStringChanged));
+
+        private static void LyrucStringChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is LrcView view)
+            {
+                view.LoadLrc(e.NewValue.ToString() ?? string.Empty);
+            }
+        }
+
+        public double Position
+        {
+            get { return (double)GetValue(PositionProperty); }
+            set { SetValue(PositionProperty, value); }
+        }
+
+        public static readonly DependencyProperty PositionProperty =
+            DependencyProperty.Register(nameof(Position), typeof(double), typeof(LrcView), new PropertyMetadata(0d, (d, e) =>
+            {
+                if (d is LrcView view)
+                {
+                    view.LrcRoll((double)e.NewValue);
+                }
+            }));
+
+        public ICommand SetPositionCommand
+        {
+            get { return (ICommand)GetValue(SetPositionCommandProperty); }
+            set { SetValue(SetPositionCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty SetPositionCommandProperty =
+            DependencyProperty.Register(nameof(SetPositionCommand), typeof(ICommand), typeof(LrcView), new PropertyMetadata(null));
 
         private DispatcherTimer _dt;
         private bool _rolling = true;
@@ -52,8 +83,6 @@ namespace QianShi.Music.Common.UserControls
                 ResetLrcviewScroll();
             };
         }
-
-        public event EventHandler<TimeChangedEventArgs>? TimeChangedEvent;
 
         public void LoadLrc(string lyricsString)
         {
@@ -74,17 +103,7 @@ namespace QianShi.Music.Common.UserControls
                     textBlock.Margin = new Thickness(18);
                     textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
                     textBlock.Cursor = Cursors.Hand;
-                    textBlock.MouseLeftButtonUp += (s, e) =>
-                    {
-                        if (TimeChangedEvent != null)
-                        {
-                            var args = new TimeChangedEventArgs(time);
-                            TimeChangedEvent(this, args);
-                            _dt.Stop();
-                            _rolling = true;
-                            LrcRoll(time);
-                        }
-                    };
+                    textBlock.MouseLeftButtonUp += LrcClick;
                     var l = new LrcModel
                     {
                         LrcTb = textBlock,
@@ -96,6 +115,22 @@ namespace QianShi.Music.Common.UserControls
                     LrcItemsControl.Children.Add(textBlock);
                 }
             });
+        }
+
+        private void LrcClick(object s, MouseButtonEventArgs e)
+        {
+            if (s is TextBlock textControl)
+            {
+                var lrcModel = Lrcs.Where(x => x.Value.LrcTb == textControl).Select(x => x.Value).FirstOrDefault();
+                if (lrcModel != null)
+                {
+                    if (null != SetPositionCommand && SetPositionCommand.CanExecute(lrcModel.Time))
+                    {
+                        SetPositionCommand.Execute(lrcModel.Time);
+                        LrcRoll(lrcModel.Time);
+                    }
+                }
+            }
         }
 
         private void ResetLrcviewScroll()
@@ -153,12 +188,12 @@ namespace QianShi.Music.Common.UserControls
         /// <summary>
         /// 歌词所在控件
         /// </summary>
-        public TextBlock LrcTb { get; set; }
+        public TextBlock LrcTb { get; set; } = default!;
 
         /// <summary>
         /// 歌词字符串
         /// </summary>
-        public string LrcText { get; set; }
+        public string LrcText { get; set; } = String.Empty;
 
         /// <summary>
         /// 时间（读取格式参照网易云音乐歌词格式：xx:xx.xx，即分:秒.毫秒，秒小数点保留2位。如：00:28.64）

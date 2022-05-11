@@ -264,7 +264,10 @@ namespace QianShi.Music.ViewModels
             {
                 _journal = back.Context.NavigationService.Journal;
             });
-            _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
+
+            _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView", (result) =>
+            {
+            });
 
             _playService.Add(new Song
             {

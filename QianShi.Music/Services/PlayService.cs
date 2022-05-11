@@ -110,6 +110,15 @@ namespace QianShi.Music.Services
             VolumeChanged?.Invoke(this, new VolumeChangedEventArgs(volume));
         }
 
+        public void SetProgress(double value)
+        {
+            if (Current == null) return;
+            if (value < 0) value = 0;
+            if (value > _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds)
+                value = _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds;
+            _mediaPlayer.Position = TimeSpan.FromMilliseconds(value);
+        }
+
         public async void Add(Song song)
         {
             var response = await _playlistService.SongDetail(song.Id.ToString());

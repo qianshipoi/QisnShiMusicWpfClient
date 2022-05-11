@@ -9,6 +9,7 @@
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
     xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
+    xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
     d:DesignHeight="720"
     d:DesignWidth="1280" 
     d:DataContext="{d:DesignData viewmodels:PlayViewModel.PlayViewModelDesign}"
@@ -88,7 +89,8 @@
                         Opacity=".58"
                         Text="{Binding Duration, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=01:00}" />
                     <Slider x:Name="PlayProgressControl" Margin="8,0" 
-                            Value="{Binding Position}" 
+                            Value="{Binding Position, Mode=OneWay}" 
+                            extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
                             Maximum="{Binding Duration}" Minimum="0"/>
                 </DockPanel>
                 <StackPanel
@@ -159,7 +161,10 @@
                 <MediaElement Name="me" Visibility="Collapsed" />
             </Grid>
         </StackPanel>
-        <uc:LrcView
+        <uc:LrcView 
+            LyricString="{Binding LyricString}" 
+            Position="{Binding Position}"
+            SetPositionCommand="{Binding SetPositionCommand}"
             x:Name="LrcView"
             Grid.RowSpan="2"
             Grid.Column="1" />

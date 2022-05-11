@@ -52,6 +52,7 @@ namespace QianShi.Music.Services
 
         void SetVolume(double volume);
         void SetMute(bool isMute);
+        void SetProgress(double value);
     }
 
     public class SongChangedEventArgs : EventArgs

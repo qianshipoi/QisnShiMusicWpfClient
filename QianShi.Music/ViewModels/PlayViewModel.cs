@@ -1,13 +1,11 @@
 ﻿using Prism.Commands;
 using Prism.Ioc;
-using Prism.Mvvm;
 using Prism.Regions;
 
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
 
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -21,7 +19,6 @@ namespace QianShi.Music.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
-        private ObservableCollection<Lyric> _lyrics;
         private PlayView? _playView = null;
         private bool _display = false;
 
@@ -58,9 +55,9 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        public ObservableCollection<Lyric> Lyrics { get => _lyrics; set => SetProperty(ref _lyrics, value); }
-
-        public DelegateCommand CloseCommand { get; private set; }
+        private DelegateCommand _closeCommand = default!;
+        public DelegateCommand CloseCommand =>
+            _closeCommand ?? (_closeCommand = new DelegateCommand(() => Display = false));
 
         private double _duration = 1d;
         public double Duration
@@ -83,21 +80,36 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _isPlaying, value); }
         }
 
-        private DelegateCommand _playCommand;
+        private DelegateCommand _playCommand = default!;
         public DelegateCommand PlayCommand =>
             _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
 
-        private DelegateCommand _pauseCommand;
+        private DelegateCommand _pauseCommand = default!;
         public DelegateCommand PauseCommand =>
             _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
+
+        private DelegateCommand<double?> _setPositionCommand = default!;
+        public DelegateCommand<double?> SetPositionCommand =>
+            _setPositionCommand ?? (_setPositionCommand = new DelegateCommand<double?>((value) =>
+            {
+                if (value.HasValue)
+                {
+                    _playService.SetProgress(value.Value);
+                }
+            }));
+
+        private string _lyricString = string.Empty;
+        public string LyricString
+        {
+            get { return _lyricString; }
+            set { SetProperty(ref _lyricString, value); }
+        }
 
         public PlayViewModel(IContainerProvider provider,
             IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService) : base(provider)
         {
-            _lyrics = new ObservableCollection<Lyric>();
             _containerProvider = provider;
             _regionManager = regionManager;
-            CloseCommand = new DelegateCommand(() => Display = false);
             _playlistService = playlistService;
             _playService = playService;
             _playService.ProgressChanged += (s, e) =>
@@ -110,13 +122,12 @@ namespace QianShi.Music.ViewModels
             {
                 if (e.NewSong != null)
                 {
-                    var lyric = await GetLyric(e.NewSong.Id);
-                    _playView?.Init("", lyric);
+                    LyricString = await GetLyric(e.NewSong.Id);
                 }
             };
         }
 
-        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
             var region = _regionManager.Regions[PrismManager.FullScreenRegionName];
@@ -141,47 +152,5 @@ namespace QianShi.Music.ViewModels
             }
             return string.Empty;
         }
-
-        private async Task Init()
-        {
-            if (_playView == null) return;
-            var songId = 33894312;
-
-            var response = await _playlistService.SongUrl(new Common.Models.Request.SongUrlRequest
-            {
-                Ids = songId.ToString()
-            });
-            if (response.Code == 200)
-            {
-                var url = response.Data[0].Url;
-
-                var lyric = await GetLyric(songId);
-
-                if (!string.IsNullOrEmpty(lyric))
-                {
-                    lyric = "[00:00:00.000]无歌词";
-                }
-                _playView.Init(url, lyric);
-
-                //var lyricResponse = await _playlistService.Lyric(songId);
-
-                //if (lyricResponse.Code == 200)
-                //{
-                //    var lyricsString = lyricResponse.Lrc.Lyric;
-                //    _playView.Init(url, lyricsString);
-                //}
-            }
-        }
-    }
-
-    public class Lyric : BindableBase
-    {
-        public TimeSpan Time { get; set; }
-        public string Content { get; set; } = null!;
-
-        private bool _activating = false;
-        public bool Activating { get => _activating; set => SetProperty(ref _activating, value); }
-
-        public override string ToString() => Content;
     }
 }

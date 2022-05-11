@@ -296,9 +296,11 @@
                                 <materialDesign:PackIcon Kind="VolumeMute" Style="{StaticResource ControlIcon}" />
                             </Button>
                             <Slider
-                                Width="80" extension:SliderExtension.DragCompletedCommand="{Binding SetVolumeCommand}"
+                                Width="80" 
+                                x:Name="VolumeControl"
+                                extension:SliderExtension.DragCompletedCommand="{Binding SetVolumeCommand}"
                                 VerticalAlignment="Center"
-                                Maximum="1" x:Name="VolumeControl"
+                                Maximum="1" 
                                 Minimum="0"
                                 Value="{Binding Volume,Mode=OneWay}" />
                             <Button
