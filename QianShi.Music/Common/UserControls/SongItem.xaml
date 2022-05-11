@@ -44,7 +44,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="68" />
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="1.80*" />
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="60" />
                         </Grid.ColumnDefinitions>
@@ -63,7 +63,7 @@
                             </Image.Clip>
                         </Image>
 
-                        <StackPanel Grid.Column="1">
+                        <StackPanel Grid.Column="1" VerticalAlignment="Stretch">
                             <TextBlock
                                 x:Name="NameControl"
                                 Margin="0,0,20,0"
@@ -72,10 +72,11 @@
                                 Text="{Binding Name}"
                                 TextTrimming="CharacterEllipsis" />
                             <TextBlock
-                                Margin="0,0,20,0"
+                                Margin="0,6,20,0"
                                 FontSize="13"
                                 Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                                 Opacity=".68"
+                                Style="{StaticResource UnderlineTextBlock}"
                                 Text="{Binding Artists[0].Name}"
                                 TextTrimming="CharacterEllipsis" />
                         </StackPanel>
@@ -85,6 +86,7 @@
                             FontSize="16"
                             Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                             Opacity="0.88"
+                            Style="{StaticResource UnderlineTextBlock}"
                             Text="{Binding Album.Name}" />
                         <materialDesign:PackIcon
                             x:Name="LikeControl"

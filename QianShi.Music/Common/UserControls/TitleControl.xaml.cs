@@ -18,6 +18,15 @@ namespace QianShi.Music.Common.UserControls
         public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register(nameof(Title), typeof(string), typeof(TitleControl), new PropertyMetadata(string.Empty));
 
+        public double TitleFontSize
+        {
+            get { return (double)GetValue(TitleFontSizeProperty); }
+            set { SetValue(TitleFontSizeProperty, value); }
+        }
+
+        public static readonly DependencyProperty TitleFontSizeProperty =
+            DependencyProperty.Register(nameof(TitleFontSize), typeof(double), typeof(TitleControl), new PropertyMetadata(22d));
+
         public ICommand LookAllCammand
         {
             get { return (ICommand)GetValue(LookAllCammandProperty); }

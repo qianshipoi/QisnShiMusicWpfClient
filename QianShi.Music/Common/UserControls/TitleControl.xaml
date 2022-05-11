@@ -17,7 +17,7 @@
         <TextBlock
             VerticalAlignment="Center"
             DockPanel.Dock="Left"
-            FontSize="22"
+            FontSize="{Binding TitleFontSize}"
             FontWeight="Bold"
             Text="{Binding Title}" />
         <TextBlock

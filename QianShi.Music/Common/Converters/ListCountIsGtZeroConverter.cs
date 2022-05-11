@@ -7,9 +7,9 @@ namespace QianShi.Music.Common.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is IEnumerable<object> vals)
+            if (value is System.Collections.IList vals)
             {
-                return vals.Count() > 0;
+                return vals.Count > 0;
             }
 
             return true;

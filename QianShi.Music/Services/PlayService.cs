@@ -1,5 +1,6 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
+using System.Collections.ObjectModel;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -21,11 +22,11 @@ namespace QianShi.Music.Services
 
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
 
-        public List<Song> ToPlay = new();
+        public ObservableCollection<Song> ToPlay { get; private set; } = new();
 
-        public List<Song> JumpPlay = new();
+        public ObservableCollection<Song> JumpPlay { get; private set; } = new();
 
-        private List<Song> _playlist = new List<Song>(); // 播放列表
+        private List<Song> _playlist = new(); // 播放列表
 
         public PlayService(IPlaylistService playlistService)
         {
@@ -62,10 +63,36 @@ namespace QianShi.Music.Services
                     _currentSong.IsPlaying = false;
                 }
                 if (_currentSong != value)
+                {
+                    OnCurrentChanged(_currentSong, value);
                     CurrentChanged?.Invoke(this, new SongChangedEventArgs(value));
+                }
                 _currentSong = value;
                 if (_currentSong != null)
                     _currentSong.IsPlaying = true;
+            }
+        }
+
+        private void OnCurrentChanged(Song? oldValue, Song? newValue)
+        {
+            if (null != oldValue)
+            {
+                ToPlay.Add(oldValue);
+            }
+
+            if (null != newValue)
+            {
+                var jumpPlaySong = JumpPlay.Where(x => x.Equals(newValue)).FirstOrDefault();
+                if (null != jumpPlaySong)
+                {
+                    JumpPlay.Remove(jumpPlaySong);
+                    return;
+                }
+                var toPlaySong = ToPlay.Where(x => x.Equals(newValue)).FirstOrDefault();
+                if (null != toPlaySong)
+                {
+                    ToPlay.Remove(toPlaySong);
+                }
             }
         }
 
@@ -136,9 +163,9 @@ namespace QianShi.Music.Services
             if (response.Code == 200)
             {
                 song = response.Songs.First();
-                if (Current == null) Current = song;
                 ToPlay.Add(song);
                 _playlist.Add(song);
+                if (Current == null) Current = song;
             }
         }
 
@@ -174,7 +201,7 @@ namespace QianShi.Music.Services
             }
 
             var index = _playlist.IndexOf(_currentSong);
-            if (index == -1 || index == ToPlay.Count - 1)
+            if (index == -1 || index == _playlist.Count - 1)
             {
                 Current = _playlist.First();
             }
@@ -232,7 +259,7 @@ namespace QianShi.Music.Services
             }
 
             var index = _playlist.IndexOf(_currentSong);
-            if (index == -1 || index == ToPlay.Count - 1)
+            if (index == -1 || index == _playlist.Count - 1)
             {
                 Current = _playlist.First();
             }

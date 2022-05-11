@@ -1,0 +1,66 @@
+﻿<UserControl
+    x:Class="QianShi.Music.Views.PlayingListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    d:DataContext="{Binding DesignPlayingListViewModel, Source={StaticResource ViewModelLocator}}"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
+    mc:Ignorable="d">
+    <uc:ScrollViewerAnimation>
+        <StackPanel MaxWidth="1280" Background="White">
+            <uc:TitleControl
+                Title="正在播放"
+                Margin="18"
+                TitleFontSize="32" />
+            <uc:SongItem Margin="20,0" Item="{Binding CurrentSong}">
+                <uc:SongItem.Style>
+                    <Style TargetType="uc:SongItem">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentSong, Converter={StaticResource IsNullConverter}}" Value="False">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </uc:SongItem.Style>
+            </uc:SongItem>
+            <StackPanel>
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding JumpPlayeds, Converter={StaticResource ListCountIsGtZeroConverter}}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </StackPanel.Style>
+                <uc:TitleControl
+                    Title="插队播放"
+                    Margin="18"
+                    TitleFontSize="32" />
+                <ItemsControl Margin="20,0" ItemsSource="{Binding JumpPlayeds}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <uc:SongItem Item="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+            <uc:TitleControl
+                Title="即将播放"
+                Margin="18"
+                TitleFontSize="32" />
+            <ItemsControl Margin="20,0" ItemsSource="{Binding ToBePlayeds}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <uc:SongItem Item="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </uc:ScrollViewerAnimation>
+</UserControl>

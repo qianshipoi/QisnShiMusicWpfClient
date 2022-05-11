@@ -160,6 +160,24 @@ namespace QianShi.Music.ViewModels
             }
         }
 
+        private DelegateCommand _playingListSwichCommand = default!;
+        public DelegateCommand PlayingListSwichCommand =>
+            _playingListSwichCommand ?? (_playingListSwichCommand = new DelegateCommand(ExecutePlayingListSwichCommand));
+
+        void ExecutePlayingListSwichCommand()
+        {
+            var view = _regionManager.Regions[PrismManager.MainViewRegionName].ActiveViews?.FirstOrDefault();
+
+            if (view is PlayingListView playingListView)
+            {
+                _journal.GoBack();
+            }
+            else
+            {
+                _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(PlayingListView));
+            }
+        }
+
         public MainWindowViewModel(IContainerProvider containerProvider,
             IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService)
         {

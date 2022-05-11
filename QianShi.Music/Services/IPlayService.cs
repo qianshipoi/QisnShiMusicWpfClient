@@ -1,5 +1,7 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
+using System.Collections.ObjectModel;
+
 namespace QianShi.Music.Services
 {
     public interface IPlayService
@@ -13,6 +15,8 @@ namespace QianShi.Music.Services
         event EventHandler<VolumeChangedEventArgs>? VolumeChanged;
 
         event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+        ObservableCollection<Song> ToPlay { get; }
+        ObservableCollection<Song> JumpPlay { get; }
 
         /// <summary>
         /// 当前歌曲
