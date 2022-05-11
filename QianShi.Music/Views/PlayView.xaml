@@ -30,9 +30,12 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Image Source="{Binding CurrentSong.Album.CoverImgUrl}" Stretch="UniformToFill" Grid.ColumnSpan="2" Grid.RowSpan="2" >
+        <Image Source="{Binding CurrentSong.Album.CoverImgUrl}" Stretch="UniformToFill" 
+               VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
+               Grid.ColumnSpan="2" Grid.RowSpan="2" >
             <Image.Effect>
-                <BlurEffect RenderingBias="Quality"  KernelType="Box"  Radius="10" />
+                <BlurEffect RenderingBias="Quality"  KernelType="Gaussian"  Radius="60" />
             </Image.Effect>
         </Image>
         <StackPanel
@@ -41,9 +44,9 @@
             Margin="0,-20,32,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center">
-            <Image
-                Source="{Binding CurrentSong.Album.CoverImgUrl, StringFormat='{}{0}?param=1024y1024'}"
-                d:Source="https://p2.music.126.net/PzVklWfH2G1gVuHd3a50Gg==/109951164984873532.jpg?param=1024y1024" />
+            <Image 
+                Source="{Binding CurrentSong.Album.CoverImgUrl, StringFormat='{}{0}?param=512y512'}"
+                d:Source="https://p2.music.126.net/PzVklWfH2G1gVuHd3a50Gg==/109951164984873532.jpg?param=512y512" />
             <Grid Margin="0,24,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -97,8 +100,10 @@
                         Opacity=".58"
                         Text="{Binding Duration, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=01:00}" />
                     <Slider x:Name="PlayProgressControl" Margin="8,0" Focusable="True"
-                            Value="{Binding Position, Mode=OneWay}" 
+                            Value="{Binding Position, Mode=OneWay}"
+                            IsMoveToPointEnabled="True"
                             extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
+                            extensions:SliderExtension.DragStartedCommand="{Binding StartSetPositionCommand}"
                             Maximum="{Binding Duration}" Minimum="0"/>
                 </DockPanel>
                 <StackPanel

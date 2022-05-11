@@ -21,7 +21,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
         private PlayView? _playView = null;
-        private bool _display = false;
+        private bool _display = true;
 
         public bool Display
         {
@@ -71,7 +71,15 @@ namespace QianShi.Music.ViewModels
         public double Position
         {
             get { return _position; }
-            set { SetProperty(ref _position, value); }
+            set
+            {
+                if (!_settingUp)
+                    SetProperty(ref _position, value);
+                else
+                {
+                    _position = value;
+                }
+            }
         }
 
         private bool _isPlaying = false;
@@ -93,11 +101,23 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<double?> SetPositionCommand =>
             _setPositionCommand ?? (_setPositionCommand = new DelegateCommand<double?>((value) =>
             {
+                _settingUp = false;
                 if (value.HasValue)
                 {
                     _playService.SetProgress(value.Value);
                 }
             }));
+
+        private bool _settingUp = false;
+
+        private DelegateCommand<double?> _startSetPositionCommand = default!;
+        public DelegateCommand<double?> StartSetPositionCommand =>
+            _startSetPositionCommand ?? (_startSetPositionCommand = new DelegateCommand<double?>(ExecuteStartSetPositionCommand));
+
+        void ExecuteStartSetPositionCommand(double? value)
+        {
+            _settingUp = true;
+        }
 
         private string _lyricString = string.Empty;
         public string LyricString

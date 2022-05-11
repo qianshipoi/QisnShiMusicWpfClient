@@ -7,21 +7,23 @@ namespace QianShi.Music.Extensions
 {
     internal class SliderExtension
     {
-        public static readonly DependencyProperty DragCompletedCommandProperty = DependencyProperty.RegisterAttached(
-           "DragCompletedCommand",
-           typeof(ICommand),
-           typeof(SliderExtension),
-           new PropertyMetadata(default(ICommand), OnDragCompletedCommandChanged));
+        public static readonly DependencyProperty DragCompletedCommandProperty =
+            DependencyProperty.RegisterAttached("DragCompletedCommand", typeof(ICommand), typeof(SliderExtension), new PropertyMetadata(default(ICommand), OnDragCompletedCommandChanged));
+
+        public static readonly DependencyProperty DragStartedCommandProperty =
+            DependencyProperty.RegisterAttached("DragStartedCommand", typeof(ICommand), typeof(SliderExtension), new PropertyMetadata(default(ICommand), OnDragStartedCommandChanged));
+
+        private static void OnDragStartedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Slider slider && e.NewValue is ICommand command)
+            {
+                slider.Loaded += SliderOnLoaded;
+            }
+        }
 
         private static void OnDragCompletedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Slider slider = d as Slider;
-            if (slider == null)
-            {
-                return;
-            }
-
-            if (e.NewValue is ICommand)
+            if (d is Slider slider && e.NewValue is ICommand command)
             {
                 slider.Loaded += SliderOnLoaded;
             }
@@ -29,23 +31,24 @@ namespace QianShi.Music.Extensions
 
         private static void SliderOnLoaded(object sender, RoutedEventArgs e)
         {
-            var slider = sender as Slider;
-            if (slider == null)
+            if (sender is Slider slider)
             {
-                return;
-            }
-            slider.Loaded -= SliderOnLoaded;
+                slider.Loaded -= SliderOnLoaded;
+                if (slider.Template.FindName("PART_Track", slider) is Track track)
+                {
+                    track.Thumb.DragCompleted += (dragCompletedSender, dragCompletedArgs) =>
+                    {
+                        ICommand command = GetDragCompletedCommand(slider);
+                        command.Execute(track.Value);
+                    };
 
-            var track = slider.Template.FindName("PART_Track", slider) as Track;
-            if (track == null)
-            {
-                return;
+                    track.Thumb.DragStarted += (dragStartedSender, dragStartedArgs) =>
+                    {
+                        var command = GetDragStartedCommand(slider);
+                        command.Execute(track.Value);
+                    };
+                }
             }
-            track.Thumb.DragCompleted += (dragCompletedSender, dragCompletedArgs) =>
-            {
-                ICommand command = GetDragCompletedCommand(slider);
-                command.Execute(track.Value);
-            };
         }
 
         public static void SetDragCompletedCommand(DependencyObject element, ICommand value)
@@ -56,6 +59,16 @@ namespace QianShi.Music.Extensions
         public static ICommand GetDragCompletedCommand(DependencyObject element)
         {
             return (ICommand)element.GetValue(DragCompletedCommandProperty);
+        }
+
+        public static ICommand GetDragStartedCommand(DependencyObject obj)
+        {
+            return (ICommand)obj.GetValue(DragStartedCommandProperty);
+        }
+
+        public static void SetDragStartedCommand(DependencyObject obj, ICommand value)
+        {
+            obj.SetValue(DragStartedCommandProperty, value);
         }
     }
 }

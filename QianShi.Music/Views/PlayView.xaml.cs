@@ -21,7 +21,7 @@ namespace QianShi.Music.Views
         private void PlayView_Loaded(object sender, RoutedEventArgs e)
         {
             _targetWindow = Window.GetWindow(this);
-            Margin = new Thickness(0, _targetWindow.Height, 0, 0);
+            //Margin = new Thickness(0, _targetWindow.Height, 0, 0);
         }
 
         private void PlayView_MouseMove(object sender, MouseEventArgs e)
