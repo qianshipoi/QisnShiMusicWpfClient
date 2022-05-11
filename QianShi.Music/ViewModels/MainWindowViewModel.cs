@@ -69,22 +69,27 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand LoginCommand { get; private set; }
 
         private DelegateCommand _playCommand = default!;
+
         public DelegateCommand PlayCommand =>
             _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
 
         private DelegateCommand _pauseCommand = default!;
+
         public DelegateCommand PauseCommand =>
             _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
 
         private DelegateCommand _nextCommand = default!;
+
         public DelegateCommand NextCommand =>
             _nextCommand ?? (_nextCommand = new DelegateCommand(_playService.Next));
 
         private DelegateCommand _previousCommand = default!;
+
         public DelegateCommand PreviousCommand =>
             _previousCommand ?? (_previousCommand = new DelegateCommand(_playService.Previous));
 
         private bool _isPlaying = false;
+
         public bool IsPlaying
         {
             get { return _isPlaying; }
@@ -92,6 +97,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private Song? _currentSong = null;
+
         public Song? CurrentSong
         {
             get { return _currentSong; }
@@ -99,6 +105,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private double _songDuration = 1d;
+
         public double SongDuration
         {
             get { return _songDuration; }
@@ -106,6 +113,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private double _songPosition = 0d;
+
         public double SongPosition
         {
             get { return _songPosition; }
@@ -113,6 +121,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private double _volume = 0.5;
+
         public double Volume
         {
             get { return _volume; }
@@ -120,6 +129,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand<double?> _setVolumeCommand = default!;
+
         public DelegateCommand<double?> SetVolumeCommand =>
             _setVolumeCommand ?? (_setVolumeCommand = new DelegateCommand<double?>((value) =>
             {
@@ -130,6 +140,7 @@ namespace QianShi.Music.ViewModels
             }));
 
         private bool _isMuted = false;
+
         public bool IsMuted
         {
             get { return _isMuted; }
@@ -137,10 +148,11 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand<bool?> _setMutedCommand = default!;
+
         public DelegateCommand<bool?> SetMutedCommand =>
             _setMutedCommand ?? (_setMutedCommand = new DelegateCommand<bool?>(ExecuteSetMutedCommand));
 
-        void ExecuteSetMutedCommand(bool? parameter)
+        private void ExecuteSetMutedCommand(bool? parameter)
         {
             if (parameter.HasValue)
             {

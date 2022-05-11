@@ -62,18 +62,22 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand _closeCommand = default!;
+
         public DelegateCommand CloseCommand =>
             _closeCommand ?? (_closeCommand = new DelegateCommand(() => Display = false));
 
         private DelegateCommand _nextCommand = default!;
+
         public DelegateCommand NextCommand =>
             _nextCommand ?? (_nextCommand = new DelegateCommand(_playService.Next));
 
         private DelegateCommand _previousCommand = default!;
+
         public DelegateCommand PreviousCommand =>
             _previousCommand ?? (_previousCommand = new DelegateCommand(_playService.Previous));
 
         private double _duration = 1d;
+
         public double Duration
         {
             get { return _duration; }
@@ -81,6 +85,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private double _position = 0d;
+
         public double Position
         {
             get { return _position; }
@@ -96,6 +101,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private bool _isPlaying = false;
+
         public bool IsPlaying
         {
             get { return _isPlaying; }
@@ -103,14 +109,17 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand _playCommand = default!;
+
         public DelegateCommand PlayCommand =>
             _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
 
         private DelegateCommand _pauseCommand = default!;
+
         public DelegateCommand PauseCommand =>
             _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
 
         private DelegateCommand<double?> _setPositionCommand = default!;
+
         public DelegateCommand<double?> SetPositionCommand =>
             _setPositionCommand ?? (_setPositionCommand = new DelegateCommand<double?>((value) =>
             {
@@ -124,15 +133,17 @@ namespace QianShi.Music.ViewModels
         private bool _settingUp = false;
 
         private DelegateCommand<double?> _startSetPositionCommand = default!;
+
         public DelegateCommand<double?> StartSetPositionCommand =>
             _startSetPositionCommand ?? (_startSetPositionCommand = new DelegateCommand<double?>(ExecuteStartSetPositionCommand));
 
-        void ExecuteStartSetPositionCommand(double? value)
+        private void ExecuteStartSetPositionCommand(double? value)
         {
             _settingUp = true;
         }
 
         private string _lyricString = string.Empty;
+
         public string LyricString
         {
             get { return _lyricString; }
@@ -140,6 +151,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private Song? _currentSong = default!;
+
         public Song? CurrentSong
         {
             get { return _currentSong; }

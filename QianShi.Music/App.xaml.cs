@@ -19,10 +19,11 @@ namespace QianShi.Music
     /// </summary>
     public partial class App
     {
-        public static new App Current => (App)Application.Current;
+        public new static App Current => (App)Application.Current;
 
         private IPlaylistService _playlistService = default!;
         private readonly string _cookieSavePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cookie.json");
+
         protected override Window CreateShell()
         {
             _playlistService = Container.Resolve<IPlaylistService>();

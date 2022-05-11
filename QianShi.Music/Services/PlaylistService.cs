@@ -335,7 +335,6 @@ namespace QianShi.Music.Services
         public async Task<UserRecordResponse> UserRecord(UserRecordRequest parameters)
             => await Request<UserRecordResponse>("/user/record", parameters);
 
-       
         public async Task<SongUrlResponse> SongUrl(SongUrlRequest parameters)
             => await Request<SongUrlResponse>("/song/url", parameters);
 

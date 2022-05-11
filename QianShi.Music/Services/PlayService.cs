@@ -70,6 +70,7 @@ namespace QianShi.Music.Services
         }
 
         private bool _isPlaying;
+
         public bool IsPlaying
         {
             get => _isPlaying;
@@ -121,7 +122,6 @@ namespace QianShi.Music.Services
                     value = _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds;
                 _mediaPlayer.Position = TimeSpan.FromMilliseconds(value);
                 ProgressChanged?.Invoke(this, new ProgressEventArgs(_mediaPlayer.Position.TotalMilliseconds, _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds));
-
             }
             finally
             {
