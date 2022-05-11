@@ -102,6 +102,7 @@
                     <Slider x:Name="PlayProgressControl" Margin="8,0" Focusable="True"
                             Value="{Binding Position, Mode=OneWay}"
                             IsMoveToPointEnabled="True"
+                            extensions:SliderExtension.MouseLeftButtonUpCommand="{Binding SetPositionCommand}"
                             extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
                             extensions:SliderExtension.DragStartedCommand="{Binding StartSetPositionCommand}"
                             Maximum="{Binding Duration}" Minimum="0"/>

@@ -13,6 +13,9 @@ namespace QianShi.Music.Extensions
         public static readonly DependencyProperty DragStartedCommandProperty =
             DependencyProperty.RegisterAttached("DragStartedCommand", typeof(ICommand), typeof(SliderExtension), new PropertyMetadata(default(ICommand), OnDragStartedCommandChanged));
 
+        public static readonly DependencyProperty MouseLeftButtonUpCommandProperty =
+            DependencyProperty.RegisterAttached("MouseLeftButtonUpCommand", typeof(ICommand), typeof(SliderExtension), new PropertyMetadata(default(ICommand), OnMouseLeftButtonUpCommandChanged));
+
         private static void OnDragStartedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is Slider slider && e.NewValue is ICommand command)
@@ -22,6 +25,14 @@ namespace QianShi.Music.Extensions
         }
 
         private static void OnDragCompletedCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is Slider slider && e.NewValue is ICommand command)
+            {
+                slider.Loaded += SliderOnLoaded;
+            }
+        }
+
+        private static void OnMouseLeftButtonUpCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is Slider slider && e.NewValue is ICommand command)
             {
@@ -47,6 +58,12 @@ namespace QianShi.Music.Extensions
                         var command = GetDragStartedCommand(slider);
                         command.Execute(track.Value);
                     };
+
+                    track.MouseLeftButtonUp += (mouseLeftButtonUpSender, mouseLeftButtonUpArgs) =>
+                    {
+                        var command = GetMouseLeftButtonUpCommand(slider);
+                        command.Execute(track.Value);
+                    };
                 }
             }
         }
@@ -69,6 +86,16 @@ namespace QianShi.Music.Extensions
         public static void SetDragStartedCommand(DependencyObject obj, ICommand value)
         {
             obj.SetValue(DragStartedCommandProperty, value);
+        }
+
+        public static ICommand GetMouseLeftButtonUpCommand(DependencyObject obj)
+        {
+            return (ICommand)obj.GetValue(MouseLeftButtonUpCommandProperty);
+        }
+
+        public static void SetMouseLeftButtonUpCommand(DependencyObject obj, ICommand value)
+        {
+            obj.SetValue(MouseLeftButtonUpCommandProperty, value);
         }
     }
 }
