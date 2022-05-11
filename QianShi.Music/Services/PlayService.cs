@@ -113,10 +113,20 @@ namespace QianShi.Music.Services
         public void SetProgress(double value)
         {
             if (Current == null) return;
-            if (value < 0) value = 0;
-            if (value > _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds)
-                value = _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds;
-            _mediaPlayer.Position = TimeSpan.FromMilliseconds(value);
+            _timer.Stop();
+            try
+            {
+                if (value < 0) value = 0;
+                if (value > _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds)
+                    value = _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds;
+                _mediaPlayer.Position = TimeSpan.FromMilliseconds(value);
+                ProgressChanged?.Invoke(this, new ProgressEventArgs(_mediaPlayer.Position.TotalMilliseconds, _mediaPlayer.NaturalDuration.TimeSpan.TotalMilliseconds));
+
+            }
+            finally
+            {
+                _timer.Start();
+            }
         }
 
         public async void Add(Song song)
@@ -158,6 +168,8 @@ namespace QianShi.Music.Services
             if (_currentSong == null)
             {
                 Current = _playlist.First();
+                SetProgress(0);
+                Play();
                 return;
             }
 
@@ -165,12 +177,13 @@ namespace QianShi.Music.Services
             if (index == -1 || index == ToPlay.Count - 1)
             {
                 Current = _playlist.First();
-                return;
             }
             else
             {
                 Current = _playlist[index + 1];
             }
+            SetProgress(0);
+            Play();
         }
 
         public void Pause()
@@ -213,6 +226,8 @@ namespace QianShi.Music.Services
             if (_currentSong == null)
             {
                 Current = _playlist.Last();
+                SetProgress(0);
+                Play();
                 return;
             }
 
@@ -220,12 +235,13 @@ namespace QianShi.Music.Services
             if (index == -1 || index == ToPlay.Count - 1)
             {
                 Current = _playlist.First();
-                return;
             }
             else
             {
                 Current = _playlist[index - 1];
             }
+            SetProgress(0);
+            Play();
         }
 
         public void Remove(Song song)

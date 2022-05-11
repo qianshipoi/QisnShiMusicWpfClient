@@ -21,7 +21,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
         private PlayView? _playView = null;
-        private bool _display = true;
+        private bool _display = false;
 
         public bool Display
         {
@@ -35,14 +35,19 @@ namespace QianShi.Music.ViewModels
                     if (value)
                     {
                         SetProperty(ref _display, value);
-                        marginAnimation.From = new Thickness(0, window.Height, 0, 0);
+                        marginAnimation.From = new Thickness(0, window.ActualHeight, 0, 0);
                         marginAnimation.To = new Thickness(0);
+                        _playView.Visibility = Visibility.Visible;
                     }
                     else
                     {
                         marginAnimation.From = new Thickness(0);
-                        marginAnimation.To = new Thickness(0, window.Height, 0, 0);
-                        marginAnimation.Completed += (s, e) => SetProperty(ref _display, value);
+                        marginAnimation.To = new Thickness(0, window.ActualHeight, 0, 0);
+                        marginAnimation.Completed += (s, e) =>
+                        {
+                            SetProperty(ref _display, value);
+                            _playView.Visibility = Visibility.Collapsed;
+                        };
                     }
 
                     marginAnimation.Duration = TimeSpan.FromSeconds(0.5);
@@ -59,6 +64,14 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand _closeCommand = default!;
         public DelegateCommand CloseCommand =>
             _closeCommand ?? (_closeCommand = new DelegateCommand(() => Display = false));
+
+        private DelegateCommand _nextCommand = default!;
+        public DelegateCommand NextCommand =>
+            _nextCommand ?? (_nextCommand = new DelegateCommand(_playService.Next));
+
+        private DelegateCommand _previousCommand = default!;
+        public DelegateCommand PreviousCommand =>
+            _previousCommand ?? (_previousCommand = new DelegateCommand(_playService.Previous));
 
         private double _duration = 1d;
         public double Duration
@@ -166,7 +179,6 @@ namespace QianShi.Music.ViewModels
                 if (view != null)
                 {
                     _playView = view as PlayView;
-                    //await Init();
                 }
             }
         }

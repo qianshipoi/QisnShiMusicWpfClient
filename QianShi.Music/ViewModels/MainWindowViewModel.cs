@@ -68,13 +68,21 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<string> SearchCommand { get; private set; }
         public DelegateCommand LoginCommand { get; private set; }
 
-        private DelegateCommand _playCommand;
+        private DelegateCommand _playCommand = default!;
         public DelegateCommand PlayCommand =>
             _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
 
-        private DelegateCommand _pauseCommand;
+        private DelegateCommand _pauseCommand = default!;
         public DelegateCommand PauseCommand =>
             _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
+
+        private DelegateCommand _nextCommand = default!;
+        public DelegateCommand NextCommand =>
+            _nextCommand ?? (_nextCommand = new DelegateCommand(_playService.Next));
+
+        private DelegateCommand _previousCommand = default!;
+        public DelegateCommand PreviousCommand =>
+            _previousCommand ?? (_previousCommand = new DelegateCommand(_playService.Previous));
 
         private bool _isPlaying = false;
         public bool IsPlaying
@@ -111,7 +119,7 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _volume, value); }
         }
 
-        private DelegateCommand<double?> _setVolumeCommand;
+        private DelegateCommand<double?> _setVolumeCommand = default!;
         public DelegateCommand<double?> SetVolumeCommand =>
             _setVolumeCommand ?? (_setVolumeCommand = new DelegateCommand<double?>((value) =>
             {
@@ -128,7 +136,7 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _isMuted, value); }
         }
 
-        private DelegateCommand<bool?> _setMutedCommand;
+        private DelegateCommand<bool?> _setMutedCommand = default!;
         public DelegateCommand<bool?> SetMutedCommand =>
             _setMutedCommand ?? (_setMutedCommand = new DelegateCommand<bool?>(ExecuteSetMutedCommand));
 
@@ -271,7 +279,7 @@ namespace QianShi.Music.ViewModels
 
             _playService.Add(new Song
             {
-                Id = 33894312
+                Id = 493735159
             });
         }
     }

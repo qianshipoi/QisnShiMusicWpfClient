@@ -47,23 +47,30 @@ namespace QianShi.Music.Extensions
                 slider.Loaded -= SliderOnLoaded;
                 if (slider.Template.FindName("PART_Track", slider) is Track track)
                 {
-                    track.Thumb.DragCompleted += (dragCompletedSender, dragCompletedArgs) =>
+                    var dragCompletedCommand = GetDragCompletedCommand(slider);
+                    if (dragCompletedCommand != null)
                     {
-                        ICommand command = GetDragCompletedCommand(slider);
-                        command.Execute(track.Value);
-                    };
-
-                    track.Thumb.DragStarted += (dragStartedSender, dragStartedArgs) =>
+                        track.Thumb.DragCompleted += (dragCompletedSender, dragCompletedArgs) =>
+                        {
+                            dragCompletedCommand.Execute(track.Value);
+                        };
+                    }
+                    var dragStartedCommand = GetDragStartedCommand(slider);
+                    if (null != dragStartedCommand)
                     {
-                        var command = GetDragStartedCommand(slider);
-                        command.Execute(track.Value);
-                    };
-
-                    track.MouseLeftButtonUp += (mouseLeftButtonUpSender, mouseLeftButtonUpArgs) =>
+                        track.Thumb.DragStarted += (dragStartedSender, dragStartedArgs) =>
+                        {
+                            dragStartedCommand.Execute(track.Value);
+                        };
+                    }
+                    var mouseLeftButtonUpCommand = GetMouseLeftButtonUpCommand(slider);
+                    if (null != mouseLeftButtonUpCommand)
                     {
-                        var command = GetMouseLeftButtonUpCommand(slider);
-                        command.Execute(track.Value);
-                    };
+                        track.MouseLeftButtonUp += (mouseLeftButtonUpSender, mouseLeftButtonUpArgs) =>
+                        {
+                            mouseLeftButtonUpCommand.Execute(track.Value);
+                        };
+                    }
                 }
             }
         }

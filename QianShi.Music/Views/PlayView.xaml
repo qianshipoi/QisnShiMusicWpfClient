@@ -2,26 +2,27 @@
     x:Class="QianShi.Music.Views.PlayView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
-    xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
-    xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
-    d:DesignHeight="720"
-    d:DesignWidth="1280" 
     d:DataContext="{d:DesignData viewmodels:PlayViewModel.PlayViewModelDesign}"
-    Visibility="{Binding Display, Converter={StaticResource BooleanToVisibilityConverter}}"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
     mc:Ignorable="d">
+    <!--  Visibility="{Binding Display, Converter={StaticResource BooleanToVisibilityConverter}}"  -->
     <UserControl.Resources>
         <converters:MillisecondToTimeSpanConverter x:Key="MillisecondToTimeSpanConverter" />
     </UserControl.Resources>
     <Grid
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
-        d:Background="White">
+        d:Background="White"
+        Background="White">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition />
@@ -30,12 +31,19 @@
             <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <Image Source="{Binding CurrentSong.Album.CoverImgUrl}" Stretch="UniformToFill" 
-               VerticalAlignment="Stretch"
-               HorizontalAlignment="Stretch"
-               Grid.ColumnSpan="2" Grid.RowSpan="2" >
+        <Image
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Opacity=".38"
+            Source="{Binding CurrentSong.Album.CoverImgUrl}"
+            Stretch="UniformToFill">
             <Image.Effect>
-                <BlurEffect RenderingBias="Quality"  KernelType="Gaussian"  Radius="60" />
+                <BlurEffect
+                    KernelType="Gaussian"
+                    Radius="60"
+                    RenderingBias="Quality" />
             </Image.Effect>
         </Image>
         <StackPanel
@@ -44,9 +52,7 @@
             Margin="0,-20,32,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center">
-            <Image 
-                Source="{Binding CurrentSong.Album.CoverImgUrl, StringFormat='{}{0}?param=512y512'}"
-                d:Source="https://p2.music.126.net/PzVklWfH2G1gVuHd3a50Gg==/109951164984873532.jpg?param=512y512" />
+            <Image d:Source="https://p2.music.126.net/PzVklWfH2G1gVuHd3a50Gg==/109951164984873532.jpg?param=512y512" Source="{Binding CurrentSong.Album.CoverImgUrl, StringFormat='{}{0}?param=512y512'}" />
             <Grid Margin="0,24,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition />
@@ -59,31 +65,40 @@
                     <ColumnDefinition Width="80" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
+                    d:Text="万有引力"
                     FontSize="22.4"
                     FontWeight="Bold"
-                    Text="{Binding CurrentSong.Name}"
-                    d:Text="万有引力" />
+                    Text="{Binding CurrentSong.Name}" />
                 <ContentControl
                     Grid.Row="1"
                     FontSize="16"
                     Opacity=".58">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding CurrentSong.Artists[0].Name}" d:Text="F*yy" Style="{StaticResource UnderlineTextBlock}" />
+                        <TextBlock
+                            d:Text="F*yy"
+                            Style="{StaticResource UnderlineTextBlock}"
+                            Text="{Binding CurrentSong.Artists[0].Name}" />
                         <TextBlock Text="-" />
-                        <TextBlock Text="{Binding CurrentSong.Album.Name}" d:Text="万有引力" Style="{StaticResource UnderlineTextBlock}" />
+                        <TextBlock
+                            d:Text="万有引力"
+                            Style="{StaticResource UnderlineTextBlock}"
+                            Text="{Binding CurrentSong.Album.Name}" />
                     </StackPanel>
                 </ContentControl>
-                <materialDesign:PackIcon
-                    x:Name="LikeControl"
+                <Button
                     Grid.RowSpan="2"
                     Grid.Column="1"
-                    Width="20"
-                    Height="20"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Background="SkyBlue"
-                    Kind="CardsHeartOutline"
-                    Opacity=".58" />
+                    Style="{StaticResource MaterialDesignIconButton}">
+                    <materialDesign:PackIcon
+                        x:Name="LikeControl"
+                        Width="20"
+                        Height="20"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Cursor="Hand"
+                        Kind="CardsHeartOutline"
+                        Opacity=".58" />
+                </Button>
                 <DockPanel
                     Grid.Row="2"
                     Grid.ColumnSpan="2"
@@ -93,19 +108,23 @@
                         x:Name="CurrentTimeControl"
                         DockPanel.Dock="Left"
                         Opacity=".58"
-                        Text="{Binding Position, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=00:00}" />
+                        Text="{Binding Position, Converter={StaticResource MillisecondToTimeSpanConverter}, TargetNullValue=00:00}" />
                     <TextBlock
                         x:Name="TotalTimeControl"
                         DockPanel.Dock="Right"
                         Opacity=".58"
-                        Text="{Binding Duration, Converter={StaticResource MillisecondToTimeSpanConverter},TargetNullValue=01:00}" />
-                    <Slider x:Name="PlayProgressControl" Margin="8,0" Focusable="True"
-                            Value="{Binding Position, Mode=OneWay}"
-                            IsMoveToPointEnabled="True"
-                            extensions:SliderExtension.MouseLeftButtonUpCommand="{Binding SetPositionCommand}"
-                            extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
-                            extensions:SliderExtension.DragStartedCommand="{Binding StartSetPositionCommand}"
-                            Maximum="{Binding Duration}" Minimum="0"/>
+                        Text="{Binding Duration, Converter={StaticResource MillisecondToTimeSpanConverter}, TargetNullValue=01:00}" />
+                    <Slider
+                        x:Name="PlayProgressControl"
+                        Margin="8,0"
+                        extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
+                        extensions:SliderExtension.DragStartedCommand="{Binding StartSetPositionCommand}"
+                        extensions:SliderExtension.MouseLeftButtonUpCommand="{Binding SetPositionCommand}"
+                        Focusable="True"
+                        IsMoveToPointEnabled="True"
+                        Maximum="{Binding Duration}"
+                        Minimum="0"
+                        Value="{Binding Position, Mode=OneWay}" />
                 </DockPanel>
                 <StackPanel
                     Grid.Row="3"
@@ -126,6 +145,7 @@
                         Width="38"
                         Height="38"
                         Margin="16,0,8,0"
+                        Command="{Binding PreviousCommand}"
                         Style="{StaticResource MaterialDesignIconButton}">
                         <materialDesign:PackIcon
                             Width="26"
@@ -134,18 +154,21 @@
                     </Button>
                     <Button
                         Width="48"
-                        Height="48" Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}"
+                        Height="48"
                         Command="{Binding PlayCommand}"
-                        Style="{StaticResource MaterialDesignIconButton}">
+                        Style="{StaticResource MaterialDesignIconButton}"
+                        Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}">
                         <materialDesign:PackIcon
                             Width="36"
                             Height="36"
                             Kind="Play" />
                     </Button>
                     <Button
-                        Width="48"  Command="{Binding PauseCommand}"
-                        Height="48" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource MaterialDesignIconButton}">
+                        Width="48"
+                        Height="48"
+                        Command="{Binding PauseCommand}"
+                        Style="{StaticResource MaterialDesignIconButton}"
+                        Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <materialDesign:PackIcon
                             Width="36"
                             Height="36"
@@ -155,6 +178,7 @@
                         Width="38"
                         Height="38"
                         Margin="8,0,16,0"
+                        Command="{Binding NextCommand}"
                         Cursor="Hand"
                         Style="{StaticResource MaterialDesignIconButton}">
                         <materialDesign:PackIcon
@@ -174,13 +198,13 @@
                 </StackPanel>
             </Grid>
         </StackPanel>
-        <uc:LrcView 
-            LyricString="{Binding LyricString}" 
-            Position="{Binding Position}"
-            SetPositionCommand="{Binding SetPositionCommand}"
+        <uc:LrcView
             x:Name="LrcView"
             Grid.RowSpan="2"
-            Grid.Column="1" />
+            Grid.Column="1"
+            LyricString="{Binding LyricString}"
+            Position="{Binding Position}"
+            SetPositionCommand="{Binding SetPositionCommand}" />
         <Rectangle
             Grid.ColumnSpan="2"
             HorizontalAlignment="Stretch"
