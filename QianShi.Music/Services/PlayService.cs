@@ -77,7 +77,8 @@ namespace QianShi.Music.Services
         {
             if (null != oldValue)
             {
-                ToPlay.Add(oldValue);
+                if (!ToPlay.Contains(oldValue))
+                    ToPlay.Add(oldValue);
             }
 
             if (null != newValue)
@@ -140,7 +141,7 @@ namespace QianShi.Music.Services
 
         public void SetProgress(double value)
         {
-            if (Current == null) return;
+            if (Current == null || !_mediaPlayer.NaturalDuration.HasTimeSpan) return;
             _timer.Stop();
             try
             {
@@ -156,24 +157,22 @@ namespace QianShi.Music.Services
             }
         }
 
-        public async void Add(Song song)
+        public async Task Add(Song song)
         {
-            var response = await _playlistService.SongDetail(song.Id.ToString());
-
-            if (response.Code == 200)
-            {
-                song = response.Songs.First();
-                ToPlay.Add(song);
-                _playlist.Add(song);
-                if (Current == null) Current = song;
-            }
+            await GetSongUrl(new List<Song> { song });
+            if (string.IsNullOrEmpty(song.Url)) return;
+            ToPlay.Add(song);
+            _playlist.Add(song);
+            if (Current == null) Current = song;
         }
 
-        public void Add(IEnumerable<Song> songs)
+        public async Task Add(IEnumerable<Song> songs)
         {
-            if (Current == null) Current = songs.First();
-            ToPlay.AddRange(songs);
-            _playlist.AddRange(songs);
+            await GetSongUrl(songs);
+            var canPlaySongs = songs.Where(x => !string.IsNullOrWhiteSpace(x.Url));
+            ToPlay.AddRange(canPlaySongs);
+            _playlist.AddRange(canPlaySongs);
+            if (Current == null) Current = _playlist.First();
         }
 
         public void Clear()
@@ -194,6 +193,7 @@ namespace QianShi.Music.Services
         {
             if (_currentSong == null)
             {
+                Pause();
                 Current = _playlist.First();
                 SetProgress(0);
                 Play();
@@ -209,6 +209,7 @@ namespace QianShi.Music.Services
             {
                 Current = _playlist[index + 1];
             }
+            Pause();
             SetProgress(0);
             Play();
         }
@@ -219,7 +220,7 @@ namespace QianShi.Music.Services
             IsPlaying = false;
         }
 
-        public async void Play()
+        public void Play()
         {
             if (IsPlaying) return;
             if (Current == null)
@@ -229,29 +230,85 @@ namespace QianShi.Music.Services
                     return;
             }
 
-            if (_mediaPlayer.HasAudio)
+            if (string.IsNullOrEmpty(Current.Url))
             {
-                _mediaPlayer.Play();
-                IsPlaying = true;
+                Next();
                 return;
             }
 
+            if (null == _mediaPlayer.Source || _mediaPlayer.Source.OriginalString != Current.Url)
+            {
+                _mediaPlayer.Open(new Uri(Current.Url));
+                _mediaPlayer.Position = TimeSpan.Zero;
+            }
+            _mediaPlayer.Play();
+            IsPlaying = true;
+        }
+
+        private async Task GetSongUrl(IEnumerable<Song> songs)
+        {
             var response = await _playlistService.SongUrl(new Common.Models.Request.SongUrlRequest
             {
-                Ids = Current.Id.ToString()
+                Ids = string.Join(',', songs.Select(x => x.Id))
             });
-            if (response.Code == 200)
+            if (response.Code != 200)
             {
-                _mediaPlayer.Open(new Uri(response.Data.First().Url));
-                _mediaPlayer.Play();
-                IsPlaying = true;
+                throw new Exception("获取歌曲播放链接失败");
             }
+            else
+            {
+                var songUrls = response.Data.ToDictionary(x => x.Id, x => x.Url);
+
+                songs.ToList().ForEach(song =>
+                {
+                    if (songUrls.TryGetValue(song.Id, out var url))
+                    {
+                        song.Url = url;
+                    }
+                });
+            }
+        }
+
+        private Task GetSongUrl(Song song) => GetSongUrl(new List<Song> { song });
+
+        public async void Play(Song song)
+        {
+            var index = _playlist.IndexOf(song);
+            if (index == 0)
+            {
+                Next();
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(song.Url))
+            {
+                await GetSongUrl(song);
+                if (!string.IsNullOrWhiteSpace(song.Url))
+                    return;
+            }
+            Pause();
+            Current = song;
+            Play();
+        }
+
+        private long _playlistId;
+
+        public async void Play(long id, List<Song> songs)
+        {
+            if (id == _playlistId || songs.Count == 0) return;
+            _playlistId = id;
+
+            Pause();
+            Current = null;
+            Clear();
+            await Add(songs);
+            Play();
         }
 
         public void Previous()
         {
             if (_currentSong == null)
             {
+                Pause();
                 Current = _playlist.Last();
                 SetProgress(0);
                 Play();
@@ -263,10 +320,15 @@ namespace QianShi.Music.Services
             {
                 Current = _playlist.First();
             }
+            else if (index == 0)
+            {
+                Current = _playlist.Last();
+            }
             else
             {
                 Current = _playlist[index - 1];
             }
+            Pause();
             SetProgress(0);
             Play();
         }

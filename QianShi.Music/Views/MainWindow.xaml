@@ -225,7 +225,7 @@
                                     FontSize="16"
                                     Opacity=".88"
                                     Style="{StaticResource UnderlineTextBlock}"
-                                    Text="{Binding CurrentSong.Album.Name}" />
+                                    Text="{Binding CurrentSong.Name}" />
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     Cursor="Hand"
@@ -288,7 +288,10 @@
                             Grid.Column="2"
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
-                            <Button Command="{Binding PlayingListSwichCommand}" Style="{StaticResource ControlButton}" Cursor="Hand">
+                            <Button
+                                Command="{Binding PlayingListSwichCommand}"
+                                Cursor="Hand"
+                                Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon Kind="PlaylistMusic" Style="{StaticResource ControlIcon}" />
                             </Button>
                             <Button Style="{StaticResource ControlButton}">

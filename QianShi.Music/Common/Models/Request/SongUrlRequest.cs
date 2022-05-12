@@ -5,7 +5,7 @@ namespace QianShi.Music.Common.Models.Request
     public class SongUrlRequest
     {
         /// <summary>
-        /// 音乐 id
+        /// 音乐 ids
         /// </summary>
         [Description("id")]
         public string Ids { get; set; } = default!;

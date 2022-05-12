@@ -1,5 +1,4 @@
 ﻿using Prism.Ioc;
-using Prism.Regions;
 
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;

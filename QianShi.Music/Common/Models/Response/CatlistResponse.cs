@@ -18,7 +18,7 @@ namespace QianShi.Music.Common.Models.Response
         public class SongUrl
         {
             [JsonPropertyName("id")]
-            public int Id { get; set; }
+            public long Id { get; set; }
 
             [JsonPropertyName("url")]
             public string Url { get; set; }

@@ -34,24 +34,25 @@ namespace QianShi.Music.Services
         /// </summary>
         void Play();
 
+        void Play(Song song);
+        void Play(long id, List<Song> songs);
+
         /// <summary>
         /// 暂停
         /// </summary>
         void Pause();
-
         /// <summary>
         /// 下一曲
         /// </summary>
         void Next();
-
         /// <summary>
         /// 上一曲
         /// </summary>
         void Previous();
 
-        void Add(Song song);
+        Task Add(Song song);
 
-        void Add(IEnumerable<Song> songs);
+        Task Add(IEnumerable<Song> songs);
 
         void Remove(Song song);
 

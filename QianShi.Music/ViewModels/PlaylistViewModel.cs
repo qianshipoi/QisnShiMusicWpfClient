@@ -55,9 +55,10 @@ namespace QianShi.Music.ViewModels
     public class PlaylistViewModel : NavigationViewModel
     {
         private readonly IPlaylistService _playlistService;
+        private readonly IPlayService _playService;
         private readonly IContainerProvider _containerProvider;
-        private string _title;
-        private bool _loading;
+        private string _title = "加载中...";
+        private bool _loading = false;
         private ObservableCollection<Song> _playlists;
 
         public string Title
@@ -89,37 +90,53 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<Song?> PlayImmediatelyCommand { get; private set; }
 
         public PlaylistViewModel(IContainerProvider containerProvider,
-            IPlaylistService playlistService) : base(containerProvider)
+            IPlaylistService playlistService, IPlayService playService) : base(containerProvider)
         {
-            _title = string.Empty;
             _playlists = new ObservableCollection<Song>();
             PlayCommand = new DelegateCommand<Song?>(Play);
             PlayImmediatelyCommand = new DelegateCommand<Song?>(Play);
             _playlistService = playlistService;
             _containerProvider = containerProvider;
+            _playService = playService;
         }
 
         private void Play(Song? palylist)
         {
             if (palylist != null)
             {
-                Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
-                palylist.IsPlaying = true;
+                _playService.Play(palylist);
+                //_playService.Clear();
+                //_playService.Add(palylist);
+                //_playService.Add(Playlists.Where(x => !x.Equals(palylist)));
+                //if (_playService.Current != null)
+                //    _playService.Remove(_playService.Current);
+                //_playService.Next();
+
+                //Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
+                //palylist.IsPlaying = true;
             }
             else
             {
-                Playlists.First().IsPlaying = false;
+                _playService.Play(_playlistId, Playlists.ToList());
+                //_playService.Clear();
+                //_playService.Add(Playlists.Where(x => !x.Equals(palylist)));
+                //if (_playService.Current != null)
+                //    _playService.Remove(_playService.Current);
+                //_playService.Next();
+
+                //Playlists.First().IsPlaying = false;
             }
         }
+        private long _playlistId;
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var playlistId = navigationContext.Parameters.GetValue<long>("PlaylistId");
-            Title = playlistId.ToString();
-            if (Detail.Id != playlistId)
+            _playlistId = navigationContext.Parameters.GetValue<long>("PlaylistId");
+            Title = _playlistId.ToString();
+            if (Detail.Id != _playlistId)
             {
                 Loading = true;
-                var response = await _playlistService.GetPlaylistDetailAsync(playlistId);
+                var response = await _playlistService.GetPlaylistDetailAsync(_playlistId);
                 if (response.Code == 200)
                 {
                     Detail.Id = response.PlaylistDetail.Id;

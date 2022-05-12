@@ -42,6 +42,7 @@ namespace QianShi.Music.Common.UserControls
             if (d is LrcView view)
             {
                 view.LoadLrc(e.NewValue.ToString() ?? string.Empty);
+                view.ScrollViewerControl.ScrollToVerticalOffset(0);
             }
         }
 
@@ -86,35 +87,83 @@ namespace QianShi.Music.Common.UserControls
 
         public void LoadLrc(string lyricsString)
         {
+            void AddLyricControl(Match match, string format = @"mm\:ss\.fff")
+            {
+                var timeStr = match.Groups[1].ToString();
+                var lyricStr = match.Groups[2].ToString();
+
+                var textBlock = new TextBlock();
+                textBlock.Text = lyricStr;
+                textBlock.FontSize = 28;
+                textBlock.Opacity = .28;
+                textBlock.Margin = new Thickness(18);
+                textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
+
+                double time = 0d;
+                if (timeStr == "99:00.00")
+                {
+                    time = double.MaxValue;
+                }
+                else
+                {
+                    time = TimeSpan.ParseExact(timeStr, format, CultureInfo.CurrentCulture).TotalMilliseconds;
+                    textBlock.Cursor = Cursors.Hand;
+                    textBlock.MouseLeftButtonUp += LrcClick;
+                }
+
+                var l = new LrcModel
+                {
+                    LrcTb = textBlock,
+                    LrcText = lyricStr,
+                    Time = time,
+                };
+                if (Lrcs.ContainsKey(l.Time))
+                {
+                    Lrcs[l.Time].LrcText += "\\n" + lyricsString;
+                }
+                else
+                {
+                    Lrcs.Add(l.Time, l);
+                    LrcItemsControl.Children.Add(textBlock);
+                }
+            }
+            foucslrc = null;
+            Lrcs.Clear();
+            LrcItemsControl.Children.Clear();
+            foucslrc = null;
             lyricsString.Split("\n", StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(lyric =>
             {
                 var regex = new Regex(@"^\[(\d{2}\:\d{2}\.\d{3})\](.+)$");
                 var match = regex.Match(lyric);
                 if (match.Success)
                 {
-                    var timeStr = match.Groups[1].ToString();
-                    var lyricStr = match.Groups[2].ToString();
-                    var time = TimeSpan.ParseExact(timeStr, @"mm\:ss\.fff", CultureInfo.CurrentCulture).TotalMilliseconds;
-
-                    var textBlock = new TextBlock();
-                    textBlock.Text = lyricStr;
-                    textBlock.FontSize = 28;
-                    textBlock.Opacity = .28;
-                    textBlock.Margin = new Thickness(18);
-                    textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
-                    textBlock.Cursor = Cursors.Hand;
-                    textBlock.MouseLeftButtonUp += LrcClick;
-                    var l = new LrcModel
-                    {
-                        LrcTb = textBlock,
-                        LrcText = lyricStr,
-                        Time = time,
-                    };
-                    Lrcs.Add(l.Time, l);
-
-                    LrcItemsControl.Children.Add(textBlock);
+                    AddLyricControl(match);
+                }
+                var regex2 = new Regex(@"^\[(\d{2}\:\d{2}\.\d{2})\](.+)$");
+                var match2 = regex2.Match(lyric);
+                if (match2.Success)
+                {
+                    AddLyricControl(match2, @"mm\:ss\.ff");
                 }
             });
+
+            if (Lrcs.Count == 0)
+            {
+                var textBlock = new TextBlock();
+                textBlock.Text = lyricsString;
+                textBlock.FontSize = 28;
+                textBlock.Opacity = .28;
+                textBlock.Margin = new Thickness(18);
+                textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
+                var l = new LrcModel
+                {
+                    LrcTb = textBlock,
+                    LrcText = lyricsString,
+                    Time = double.MaxValue,
+                };
+                Lrcs.Add(l.Time, l);
+                LrcItemsControl.Children.Add(textBlock);
+            }
         }
 
         private void LrcClick(object s, MouseButtonEventArgs e)
@@ -152,6 +201,7 @@ namespace QianShi.Music.Common.UserControls
 
         public void LrcRoll(double nowTime)
         {
+            if (Lrcs.Values.Count == 0) return;
             if (foucslrc == null)
             {
                 foucslrc = Lrcs.Values.First();
