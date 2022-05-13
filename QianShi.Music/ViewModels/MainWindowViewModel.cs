@@ -183,7 +183,8 @@ namespace QianShi.Music.ViewModels
             IContainerProvider containerProvider,
             IRegionManager regionManager,
             IPlaylistService playlistService,
-            IPlayService playService, IPlayStoreService playStoreService)
+            IPlayService playService, 
+            IPlayStoreService playStoreService)
         {
             _regionManager = regionManager;
             _containerProvider = containerProvider;
@@ -207,7 +208,10 @@ namespace QianShi.Music.ViewModels
             _userData = UserData.Instance;
             _playService = playService;
             _playStoreService = playStoreService;
-            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.NewValue;
+            _playService.IsPlayingChanged += (s, e) =>
+            {
+                IsPlaying = e.NewValue;
+            };
             _playService.ProgressChanged += (s, e) =>
             {
                 SongPosition = e.Value;

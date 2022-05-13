@@ -6,7 +6,7 @@ namespace QianShi.Music.Services
 {
     public class PlayStoreService : IPlayStoreService
     {
-        private readonly MediaPlayerPlayService _playService;
+        private readonly IPlayService _playService;
         private readonly IPlaylistService _playlistService;
         private readonly List<Song> _source = new();
         private readonly List<Song> _playlist = new();
@@ -26,6 +26,10 @@ namespace QianShi.Music.Services
                 {
                     CurrentChanged?.Invoke(this, new(value));
                     _currentIndex = value == null ? -1 : _playlist.IndexOf(value);
+
+                    if (_current != null) _current.IsPlaying = false;
+                    if (value != null) value.IsPlaying = true;
+
                     _current = value;
                 }
             }
@@ -37,9 +41,9 @@ namespace QianShi.Music.Services
 
         public bool HasPrev => _playlist.Count > 0 && _currentIndex > 0;
 
-        public PlayStoreService(IPlaylistService playlistService)
+        public PlayStoreService(IPlaylistService playlistService, IPlayService playService)
         {
-            _playService = new MediaPlayerPlayService();
+            _playService = playService;
             _playService.PlayEnded += (s, e) =>
             {
                 _playService.SetProgress(0);
@@ -68,6 +72,7 @@ namespace QianShi.Music.Services
                         songList.Add(song);
                     }
                 });
+                return songList;
             }
             return null;
         }
@@ -94,6 +99,7 @@ namespace QianShi.Music.Services
             _source.AddRange(songs);
             _playlist.AddRange(songs);
             LaterPlaylist.AddRange(songs);
+            Current = songs.First();
         }
 
         public async Task AddJumpToQueueSongAsync(Song song)
@@ -135,6 +141,7 @@ namespace QianShi.Music.Services
                     Current = _playlist.First();
                 }
             }
+            _playService.SetProgress(0);
             Play();
         }
 
@@ -150,6 +157,7 @@ namespace QianShi.Music.Services
             {
                 Current = _playlist[_currentIndex - 1];
             }
+            _playService.SetProgress(0);
             Play();
         }
 

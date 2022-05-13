@@ -4,10 +4,10 @@ namespace QianShi.Music.Services
 {
     public interface IPlayService
     {
-        public event EventHandler<ProgressEventArgs>? ProgressChanged;
-        public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
-        public event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
-        public event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
+        event EventHandler<ProgressEventArgs>? ProgressChanged;
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+        event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
         event EventHandler? PlayEnded;
 
         double Volume { get; }

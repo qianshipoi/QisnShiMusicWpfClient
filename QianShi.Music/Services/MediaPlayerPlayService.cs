@@ -50,7 +50,7 @@ namespace QianShi.Music.Services
 
         public void Play()
         {
-            if (!IsPlaying || string.IsNullOrWhiteSpace(_mediaUrl)) return;
+            if (IsPlaying || string.IsNullOrWhiteSpace(_mediaUrl)) return;
             _mediaPlayer.Play();
             _timer.Start();
             IsPlaying = true;

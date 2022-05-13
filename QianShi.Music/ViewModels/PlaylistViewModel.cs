@@ -69,6 +69,11 @@ namespace QianShi.Music.ViewModels
             else
             {
                 await _playStoreService.AddPlaylistAsync(_playlistId, Playlists);
+                _playStoreService.Pause();
+                if (!_playService.IsPlaying)
+                {
+                    _playStoreService.Play();
+                }
             }
         }
 
