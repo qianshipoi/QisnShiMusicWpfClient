@@ -1,69 +1,24 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
-using System.Collections.ObjectModel;
-
 namespace QianShi.Music.Services
 {
     public interface IPlayService
     {
-        event EventHandler<SongChangedEventArgs> CurrentChanged;
-
-        event EventHandler<IsPlayingChangedEventArgs> IsPlayingChanged;
-
-        event EventHandler<ProgressEventArgs> ProgressChanged;
-
-        event EventHandler<VolumeChangedEventArgs>? VolumeChanged;
-
-        event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
-        ObservableCollection<Song> ToPlay { get; }
-        ObservableCollection<Song> JumpPlay { get; }
-
-        /// <summary>
-        /// 当前歌曲
-        /// </summary>
-        Song? Current { get; }
+        public event EventHandler<ProgressEventArgs>? ProgressChanged;
+        public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+        public event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
+        public event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
+        event EventHandler? PlayEnded;
 
         double Volume { get; }
-
         bool IsMuted { get; }
-
         bool IsPlaying { get; }
 
-        /// <summary>
-        /// 播放
-        /// </summary>
         void Play();
-
-        void Play(Song song);
-        void Play(long id, List<Song> songs);
-
-        /// <summary>
-        /// 暂停
-        /// </summary>
+        void Play(string url);
         void Pause();
-        /// <summary>
-        /// 下一曲
-        /// </summary>
-        void Next();
-        /// <summary>
-        /// 上一曲
-        /// </summary>
-        void Previous();
-
-        Task Add(Song song);
-
-        Task Add(IEnumerable<Song> songs);
-
-        void Remove(Song song);
-
-        void Clear();
-
-        void JumpToQueue(Song song);
-
         void SetVolume(double volume);
-
         void SetMute(bool isMute);
-
         void SetProgress(double value);
     }
 

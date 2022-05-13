@@ -7,6 +7,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 
 using QianShi.Music.Common;
+using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views.Dialogs;

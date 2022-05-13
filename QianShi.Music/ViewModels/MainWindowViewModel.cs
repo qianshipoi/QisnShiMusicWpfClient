@@ -23,6 +23,7 @@ namespace QianShi.Music.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
+        private readonly IPlayStoreService _playStoreService;
         private IRegionNavigationJournal _journal = null!;
 
         private UserData _userData = default!;
@@ -71,22 +72,22 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand _playCommand = default!;
 
         public DelegateCommand PlayCommand =>
-            _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
+            _playCommand ?? (_playCommand = new DelegateCommand(_playStoreService.Play));
 
         private DelegateCommand _pauseCommand = default!;
 
         public DelegateCommand PauseCommand =>
-            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
+            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playStoreService.Pause));
 
         private DelegateCommand _nextCommand = default!;
 
         public DelegateCommand NextCommand =>
-            _nextCommand ?? (_nextCommand = new DelegateCommand(_playService.Next));
+            _nextCommand ?? (_nextCommand = new DelegateCommand(_playStoreService.Next));
 
         private DelegateCommand _previousCommand = default!;
 
         public DelegateCommand PreviousCommand =>
-            _previousCommand ?? (_previousCommand = new DelegateCommand(_playService.Previous));
+            _previousCommand ?? (_previousCommand = new DelegateCommand(_playStoreService.Previous));
 
         private bool _isPlaying = false;
 
@@ -178,8 +179,11 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        public MainWindowViewModel(IContainerProvider containerProvider,
-            IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService)
+        public MainWindowViewModel(
+            IContainerProvider containerProvider,
+            IRegionManager regionManager,
+            IPlaylistService playlistService,
+            IPlayService playService, IPlayStoreService playStoreService)
         {
             _regionManager = regionManager;
             _containerProvider = containerProvider;
@@ -202,16 +206,17 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
             _userData = UserData.Instance;
             _playService = playService;
-            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.IsPlaying;
-            _playService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
+            _playStoreService = playStoreService;
+            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.NewValue;
             _playService.ProgressChanged += (s, e) =>
             {
                 SongPosition = e.Value;
                 SongDuration = e.Total;
             };
             Volume = _playService.Volume;
-            _playService.VolumeChanged += (s, e) => Volume = e.Value;
+            _playService.VolumeChanged += (s, e) => Volume = e.NewValue;
             _playService.IsMutedChanged += (s, e) => IsMuted = e.NewValue;
+            _playStoreService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
         }
 
         private void Search(string searchText)
@@ -307,10 +312,13 @@ namespace QianShi.Music.ViewModels
             {
             });
 
-            _playService.Add(new Song
+            var songResponse = await _playlistService.SongDetail(493735159.ToString());
+
+            if (songResponse.Code == 200)
             {
-                Id = 493735159
-            });
+                await _playStoreService.PlayAsync(songResponse.Songs.First());
+                _playStoreService.Pause();
+            }
         }
     }
 }

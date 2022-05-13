@@ -1,4 +1,4 @@
-﻿using QianShi.Music.ViewModels;
+﻿using QianShi.Music.Common.Models;
 
 using System.Windows;
 using System.Windows.Controls;

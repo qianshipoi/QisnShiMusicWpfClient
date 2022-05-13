@@ -10,6 +10,7 @@ namespace QianShi.Music.ViewModels
     public class PlayingListViewModel : NavigationViewModel
     {
         private readonly IPlayService _playService;
+        private readonly IPlayStoreService _playStoreService;
         private ObservableCollection<Song> _toBePlayeds;
         public ObservableCollection<Song> ToBePlayeds
         {
@@ -31,13 +32,17 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _currentSong, value); }
         }
 
-        public PlayingListViewModel(IContainerProvider containerProvider, IPlayService playService) : base(containerProvider)
+        public PlayingListViewModel(
+            IContainerProvider containerProvider,
+            IPlayService playService, IPlayStoreService playStoreService)
+            : base(containerProvider)
         {
             _playService = playService;
-            _toBePlayeds = _playService.ToPlay;
-            _jumpPlayeds = _playService.JumpPlay;
-            _currentSong = _playService.Current;
-            _playService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
+            _playStoreService = playStoreService;
+            _toBePlayeds = _playStoreService.LaterPlaylist;
+            _jumpPlayeds = _playStoreService.JumpTheQueuePlaylist;
+            _currentSong = _playStoreService.Current;
+            _playStoreService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
         }
     }
 }

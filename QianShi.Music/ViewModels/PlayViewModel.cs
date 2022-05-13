@@ -20,6 +20,7 @@ namespace QianShi.Music.ViewModels
         private readonly IRegionManager _regionManager;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
+        private readonly IPlayStoreService _playStoreService;
         private PlayView? _playView = null;
         private bool _display = false;
 
@@ -69,12 +70,12 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand _nextCommand = default!;
 
         public DelegateCommand NextCommand =>
-            _nextCommand ?? (_nextCommand = new DelegateCommand(_playService.Next));
+            _nextCommand ?? (_nextCommand = new DelegateCommand(_playStoreService.Next));
 
         private DelegateCommand _previousCommand = default!;
 
         public DelegateCommand PreviousCommand =>
-            _previousCommand ?? (_previousCommand = new DelegateCommand(_playService.Previous));
+            _previousCommand ?? (_previousCommand = new DelegateCommand(_playStoreService.Previous));
 
         private double _duration = 1d;
 
@@ -111,12 +112,12 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand _playCommand = default!;
 
         public DelegateCommand PlayCommand =>
-            _playCommand ?? (_playCommand = new DelegateCommand(_playService.Play));
+            _playCommand ?? (_playCommand = new DelegateCommand(_playStoreService.Play));
 
         private DelegateCommand _pauseCommand = default!;
 
         public DelegateCommand PauseCommand =>
-            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playService.Pause));
+            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playStoreService.Pause));
 
         private DelegateCommand<double?> _setPositionCommand = default!;
 
@@ -158,20 +159,25 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _currentSong, value); }
         }
 
-        public PlayViewModel(IContainerProvider provider,
-            IRegionManager regionManager, IPlaylistService playlistService, IPlayService playService) : base(provider)
+        public PlayViewModel(
+            IContainerProvider provider,
+            IRegionManager regionManager,
+            IPlaylistService playlistService,
+            IPlayService playService, IPlayStoreService playStoreService)
+            : base(provider)
         {
             _containerProvider = provider;
             _regionManager = regionManager;
             _playlistService = playlistService;
             _playService = playService;
+            _playStoreService = playStoreService;
             _playService.ProgressChanged += (s, e) =>
             {
                 Position = e.Value;
                 Duration = e.Total;
             };
-            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.IsPlaying;
-            _playService.CurrentChanged += async (s, e) =>
+            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.NewValue;
+            _playStoreService.CurrentChanged += async (s, e) =>
             {
                 if (e.NewSong != null)
                 {

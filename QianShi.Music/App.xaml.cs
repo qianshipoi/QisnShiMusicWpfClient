@@ -53,7 +53,8 @@ namespace QianShi.Music
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<IPlaylistService, PlaylistService>();
-            containerRegistry.RegisterSingleton<IPlayService, PlayService>();
+            containerRegistry.RegisterSingleton<IPlayService, MediaPlayerPlayService>();
+            containerRegistry.RegisterSingleton<IPlayStoreService, PlayStoreService>();
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
             //containerRegistry.RegisterDialog<LoadingDialog>();
