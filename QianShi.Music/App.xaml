@@ -102,6 +102,7 @@
             <s:Boolean x:Key="False">False</s:Boolean>
             <converters:IsNullConverter x:Key="IsNullConverter" />
             <converters:ListCountIsGtZeroConverter x:Key="ListCountIsGtZeroConverter" />
+            <converters:NumberConverter x:Key="NumberConverter" />
             <data:ViewModelLocator x:Key="ViewModelLocator" />
         </ResourceDictionary>
     </Application.Resources>

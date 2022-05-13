@@ -35,6 +35,4 @@ namespace QianShi.Music.Common.Models.Response
             public string Lyric { get; set; }
         }
     }
-
-
 }

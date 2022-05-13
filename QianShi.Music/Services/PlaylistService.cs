@@ -349,5 +349,15 @@ namespace QianShi.Music.Services
 
         private async Task<T> Request<T>(string route, object parameters) where T : new()
             => (await Get<T>(new RestRequest(route).AddQueryParameters(parameters))) ?? new T();
+
+        public async Task<MvDetailResponse> MvDetail(long mvid)
+        {
+            var request = new RestRequest("/mv/detail");
+            request.AddQueryParameter("mvid", mvid);
+            return await Get<MvDetailResponse>(request) ?? new MvDetailResponse();
+        }
+
+        public async Task<MvUrlResponse> MvUrl(MvUrlRequest parameters)
+            => await Request<MvUrlResponse>("/mv/url",parameters);
     }
 }
