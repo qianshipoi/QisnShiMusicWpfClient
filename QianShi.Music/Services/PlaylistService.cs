@@ -359,5 +359,12 @@ namespace QianShi.Music.Services
 
         public async Task<MvUrlResponse> MvUrl(MvUrlRequest parameters)
             => await Request<MvUrlResponse>("/mv/url",parameters);
+
+        public async Task<SimiMvResponse> SimiMv(long mvid)
+        {
+            var request = new RestRequest("/simi/mv");
+            request.AddQueryParameter("mvid", mvid);
+            return await Get<SimiMvResponse>(request) ?? new SimiMvResponse();
+        }
     }
 }

@@ -78,6 +78,17 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _movieVideo, value); }
         }
 
+        private DelegateCommand<MovieVideo> _jumpToMvPageCommand = default!;
+        public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
+            _jumpToMvPageCommand ?? (_jumpToMvPageCommand = new DelegateCommand<MovieVideo>((mv) => {
+                if (mv != null)
+                {
+                    var parameters = new NavigationParameters();
+                    parameters.Add(MvViewModel.MvIdParameter, mv.Id);
+                    _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(MvView), parameters);
+                }
+            }));
+
         private bool _loading;
 
         public bool Loading

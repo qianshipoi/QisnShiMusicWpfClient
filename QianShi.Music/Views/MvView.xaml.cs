@@ -18,7 +18,7 @@ namespace QianShi.Music.Views
     /// <summary>
     /// MvView.xaml 的交互逻辑
     /// </summary>
-    public partial class MvView : Page
+    public partial class MvView : UserControl
     {
         public MvView()
         {
