@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -22,11 +23,105 @@
             Padding="10"
             Background="White">
             <StackPanel>
-                <MediaElement
-                    HorizontalAlignment="Stretch"
-                    d:Height="400"
-                    d:Width="400"
-                    Source="{Binding Url}" />
+                <Grid Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" Background="Black">
+                    <!--<MediaElement
+                        x:Name="PlayControl"
+                        HorizontalAlignment="Stretch"
+                        d:Height="400"
+                        d:Width="400"
+                        extensions:MediaElementAttached.IsPlaying="{Binding IsPlaying}"
+                        extensions:MediaElementAttached.Progress="{Binding Progress, Mode=TwoWay}"
+                        extensions:MediaElementAttached.Volume="{Binding Volume}"
+                        IsMuted="{Binding IsMuted}"
+                        LoadedBehavior="Manual"
+                        Source="{Binding Url}" />-->
+                    <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding VideoControl}" />
+                    <Image
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Source="{Binding Detail.Cover}"
+                        Stretch="Uniform"
+                        Visibility="{Binding ShowCover, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Grid VerticalAlignment="Bottom" Background="#0fffffff">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="144" />
+                            <ColumnDefinition Width="144" />
+                        </Grid.ColumnDefinitions>
+                        <DockPanel LastChildFill="True">
+                            <Button
+                                Padding="2"
+                                Command="{Binding PlayCommand}"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <materialDesign:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Play" />
+                            </Button>
+                            <Button
+                                Padding="2"
+                                Command="{Binding PauseCommand}"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <materialDesign:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    Kind="Pause" />
+                            </Button>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                Foreground="White"
+                                Text="{Binding Position, Converter={StaticResource DoubleToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
+                            <Slider
+                                Margin="8,0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center"
+                                extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
+                                extensions:SliderExtension.DragStartedCommand="{Binding DragStartedCommand}"
+                                extensions:SliderExtension.MouseLeftButtonUpCommand="{Binding SetPositionCommand}"
+                                Maximum="{Binding Detail.Duration}"
+                                Value="{Binding Position, Mode=OneWay}" />
+                        </DockPanel>
+                        <DockPanel Grid.Column="1" LastChildFill="True">
+                            <Button
+                                Command="{Binding SetMutedCommand}"
+                                CommandParameter="{StaticResource True}"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Visibility="{Binding IsMuted, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <materialDesign:PackIcon Kind="VolumeHigh" />
+                            </Button>
+                            <Button
+                                Command="{Binding SetMutedCommand}"
+                                CommandParameter="{StaticResource False}"
+                                DockPanel.Dock="Left"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                Visibility="{Binding IsMuted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <materialDesign:PackIcon Kind="VolumeMute" />
+                            </Button>
+                            <Slider
+                                VerticalAlignment="Center"
+                                extensions:SliderExtension.DragCompletedCommand="{Binding SetVolumeCommand}"
+                                Maximum="1"
+                                Value="{Binding Volume, Mode=OneWay}" />
+                        </DockPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <Button Style="{StaticResource MaterialDesignIconButton}">
+                                <materialDesign:PackIcon Kind="Settings" />
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignIconButton}">
+                                <materialDesign:PackIcon Kind="Share" />
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignIconButton}">
+                                <materialDesign:PackIcon Kind="Fullscreen" />
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
                 <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
