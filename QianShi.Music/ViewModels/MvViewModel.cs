@@ -1,13 +1,11 @@
 ﻿using Prism.Commands;
 using Prism.Ioc;
-using Prism.Mvvm;
 using Prism.Regions;
 
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -37,6 +35,45 @@ namespace QianShi.Music.ViewModels
             get { return _url; }
             set { SetProperty(ref _url, value); }
         }
+
+        private Common.Models.MvUrl? _mvUrl = default!;
+        public Common.Models.MvUrl? MvUrl
+        {
+            get => _mvUrl;
+            set
+            {
+                if (value != _mvUrl) return;
+                if (null != _mvUrl) _mvUrl.IsActive = false;
+                if (null != value) value.IsActive = true;
+                SetProperty(ref _mvUrl, value);
+            }
+        }
+
+        private bool _showSwitchDialog = false;
+        public bool ShowSwitchDialog
+        {
+            get => _showSwitchDialog;
+            set => SetProperty(ref _showSwitchDialog, value);
+        }
+
+        private ObservableCollection<Common.Models.MvUrl> _mvUrls = new();
+        public ObservableCollection<Common.Models.MvUrl> MvUrls
+        {
+            get => _mvUrls;
+            set => SetProperty(ref _mvUrls, value);
+        }
+
+        private DelegateCommand<Common.Models.MvUrl> _switchBrCommand = default!;
+        public DelegateCommand<Common.Models.MvUrl> SwitchBrCommand =>
+            _switchBrCommand ?? (_switchBrCommand = new DelegateCommand<Common.Models.MvUrl>((mvUrl) =>
+            {
+                if (Url == mvUrl.Url) return;
+                PauseCommand.Execute();
+                Url = mvUrl.Url;
+                SetPositionCommand.Execute(0d);
+                ShowSwitchDialog = false;
+                PlayCommand.Execute();
+            }));
 
         private MvDetail? _detail;
         public MvDetail? Detail
@@ -173,13 +210,9 @@ namespace QianShi.Music.ViewModels
                 }
             });
 
-        private DelegateCommand<double?> _dragStartedCommand;
+        private DelegateCommand<double?> _dragStartedCommand = default!;
         public DelegateCommand<double?> DragStartedCommand =>
-            _dragStartedCommand ??= new((value) =>
-            {
-                _timer.Stop();
-            });
-
+            _dragStartedCommand ??= new((value) => _timer.Stop());
 
         private bool _showCover = true;
         public bool ShowCover
@@ -196,7 +229,7 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
             _videoControl.Volume = Volume;
             _videoControl.LoadedBehavior = MediaState.Manual;
-            _videoControl.SetBinding(MediaElement.SourceProperty, nameof(Url));
+            _videoControl.SetBinding(MediaElement.SourceProperty, nameof(MvUrl.Url));
 
             _timer = new()
             {
@@ -231,6 +264,7 @@ namespace QianShi.Music.ViewModels
             {
                 Detail = detailResponse.Data;
                 _urls.Clear();
+                _mvUrls.Clear();
                 foreach (var br in Detail.Brs)
                 {
                     var urlResponse = await _playlistService.MvUrl(new Common.Models.Request.MvUrlRequest
@@ -241,11 +275,22 @@ namespace QianShi.Music.ViewModels
                     if (urlResponse.Code == 200)
                     {
                         _urls.Add(br.Br, urlResponse.Data.Url);
+
                     }
                 }
+
                 if (_urls.Count > 0)
                 {
-                    Url = _urls[_urls.Max(x => x.Key)];
+                    var urls = _urls.OrderBy(x => x.Key).Select(x => new Common.Models.MvUrl
+                    {
+
+                        Br = x.Key,
+                        Url = x.Value,
+                        IsActive = false
+                    });
+
+                    MvUrls.AddRange(urls);
+                    MvUrl = MvUrls.Last();
                 }
             }
         }

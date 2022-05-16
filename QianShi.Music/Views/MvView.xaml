@@ -110,9 +110,31 @@
                                 Value="{Binding Volume, Mode=OneWay}" />
                         </DockPanel>
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
-                            <Button Style="{StaticResource MaterialDesignIconButton}">
+                            <ToggleButton x:Name="SettingControl" 
+                                          IsChecked="{Binding ShowSwitchDialog}"
+                                          Style="{StaticResource MaterialDesignIconButton}"
+                                          IsEnabled="{Binding RelativeSource={x:Static RelativeSource.Self},Path=IsChecked, Converter={StaticResource InvertBooleanConverter}}" >
                                 <materialDesign:PackIcon Kind="Settings" />
-                            </Button>
+                            </ToggleButton>
+                            <materialDesign:PopupEx Placement="Top" StaysOpen="False"  
+                                                    AllowsTransparency="True" 
+                                                    IsOpen="{Binding ElementName=SettingControl,Path=IsChecked}" 
+                                                    PlacementTarget="{Binding ElementName=SettingControl}">
+                                <materialDesign:Card UniformCornerRadius="12" Padding="8" Margin="4" Width="200" >
+                                    <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding MvUrls}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button 
+                                                    IsEnabled="{Binding IsActive, Converter={StaticResource InvertBooleanConverter}}"
+                                                    Content="{Binding Br}" 
+                                                        HorizontalAlignment="Stretch" Margin="2,4"
+                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=local:MvView},Path=DataContext.SwitchBrCommand}" 
+                                                        CommandParameter="{Binding}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </materialDesign:Card>
+                            </materialDesign:PopupEx>
                             <Button Style="{StaticResource MaterialDesignIconButton}">
                                 <materialDesign:PackIcon Kind="Share" />
                             </Button>
