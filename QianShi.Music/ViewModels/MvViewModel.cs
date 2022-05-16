@@ -29,20 +29,13 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _videoControl, value);
         }
 
-        private string _url = string.Empty;
-        public string Url
-        {
-            get { return _url; }
-            set { SetProperty(ref _url, value); }
-        }
-
         private Common.Models.MvUrl? _mvUrl = default!;
         public Common.Models.MvUrl? MvUrl
         {
             get => _mvUrl;
             set
             {
-                if (value != _mvUrl) return;
+                if (value == _mvUrl) return;
                 if (null != _mvUrl) _mvUrl.IsActive = false;
                 if (null != value) value.IsActive = true;
                 SetProperty(ref _mvUrl, value);
@@ -67,9 +60,9 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<Common.Models.MvUrl> SwitchBrCommand =>
             _switchBrCommand ?? (_switchBrCommand = new DelegateCommand<Common.Models.MvUrl>((mvUrl) =>
             {
-                if (Url == mvUrl.Url) return;
+                if (MvUrl == mvUrl) return;
                 PauseCommand.Execute();
-                Url = mvUrl.Url;
+                MvUrl = mvUrl;
                 SetPositionCommand.Execute(0d);
                 ShowSwitchDialog = false;
                 PlayCommand.Execute();
@@ -93,9 +86,13 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<MovieVideo> PlayMvCommand =>
             _playMvCommand ?? (_playMvCommand = new DelegateCommand<MovieVideo>(async (mv) =>
             {
-                if (mv != null)
+                if (mv != null && _mvId != mv.Id)
                 {
                     _mvId = mv.Id;
+                    PauseCommand.Execute();
+                    SetPositionCommand.Execute(0d);
+                    Position = 0d;
+                    ShowCover = true;
                     await GetMvDetail();
                     await GetSimiMv();
                 }
@@ -229,17 +226,13 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
             _videoControl.Volume = Volume;
             _videoControl.LoadedBehavior = MediaState.Manual;
-            _videoControl.SetBinding(MediaElement.SourceProperty, nameof(MvUrl.Url));
+            _videoControl.SetBinding(MediaElement.SourceProperty, $"{nameof(MvUrl)}.{nameof(MvUrl.Url)}");
 
             _timer = new()
             {
                 Interval = TimeSpan.FromMilliseconds(200)
             };
-
-            _timer.Tick += (_, _) =>
-            {
-                Position = _videoControl.Position.TotalMilliseconds;
-            };
+            _timer.Tick += (_, _) => Position = _videoControl.Position.TotalMilliseconds;
         }
 
         public bool KeepAlive => true;
@@ -258,13 +251,14 @@ namespace QianShi.Music.ViewModels
 
         private async Task GetMvDetail()
         {
+            MvUrl = null;
             var detailResponse = await _playlistService.MvDetail(_mvId);
 
             if (detailResponse.Code == 200)
             {
                 Detail = detailResponse.Data;
                 _urls.Clear();
-                _mvUrls.Clear();
+                MvUrls.Clear();
                 foreach (var br in Detail.Brs)
                 {
                     var urlResponse = await _playlistService.MvUrl(new Common.Models.Request.MvUrlRequest
@@ -275,7 +269,6 @@ namespace QianShi.Music.ViewModels
                     if (urlResponse.Code == 200)
                     {
                         _urls.Add(br.Br, urlResponse.Data.Url);
-
                     }
                 }
 
@@ -290,7 +283,7 @@ namespace QianShi.Music.ViewModels
                     });
 
                     MvUrls.AddRange(urls);
-                    MvUrl = MvUrls.Last();
+                    MvUrl = MvUrls[^1];
                 }
             }
         }

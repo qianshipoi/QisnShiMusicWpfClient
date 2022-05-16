@@ -24,17 +24,6 @@
             Background="White">
             <StackPanel>
                 <Grid Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" Background="Black">
-                    <!--<MediaElement
-                        x:Name="PlayControl"
-                        HorizontalAlignment="Stretch"
-                        d:Height="400"
-                        d:Width="400"
-                        extensions:MediaElementAttached.IsPlaying="{Binding IsPlaying}"
-                        extensions:MediaElementAttached.Progress="{Binding Progress, Mode=TwoWay}"
-                        extensions:MediaElementAttached.Volume="{Binding Volume}"
-                        IsMuted="{Binding IsMuted}"
-                        LoadedBehavior="Manual"
-                        Source="{Binding Url}" />-->
                     <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding VideoControl}" />
                     <Image
                         HorizontalAlignment="Stretch"
@@ -110,26 +99,37 @@
                                 Value="{Binding Volume, Mode=OneWay}" />
                         </DockPanel>
                         <StackPanel Grid.Column="2" Orientation="Horizontal">
-                            <ToggleButton x:Name="SettingControl" 
-                                          IsChecked="{Binding ShowSwitchDialog}"
-                                          Style="{StaticResource MaterialDesignIconButton}"
-                                          IsEnabled="{Binding RelativeSource={x:Static RelativeSource.Self},Path=IsChecked, Converter={StaticResource InvertBooleanConverter}}" >
+                            <ToggleButton
+                                x:Name="SettingControl"
+                                IsChecked="{Binding ShowSwitchDialog}"
+                                IsEnabled="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsChecked, Converter={StaticResource InvertBooleanConverter}}"
+                                Style="{StaticResource MaterialDesignIconButton}">
                                 <materialDesign:PackIcon Kind="Settings" />
                             </ToggleButton>
-                            <materialDesign:PopupEx Placement="Top" StaysOpen="False"  
-                                                    AllowsTransparency="True" 
-                                                    IsOpen="{Binding ElementName=SettingControl,Path=IsChecked}" 
-                                                    PlacementTarget="{Binding ElementName=SettingControl}">
-                                <materialDesign:Card UniformCornerRadius="12" Padding="8" Margin="4" Width="200" >
+                            <materialDesign:PopupEx
+                                AllowsTransparency="True"
+                                HorizontalOffset="-60"
+                                IsOpen="{Binding ElementName=SettingControl, Path=IsChecked}"
+                                Placement="Top"
+                                PlacementTarget="{Binding ElementName=SettingControl}"
+                                PopupAnimation="Slide"
+                                StaysOpen="False">
+                                <materialDesign:Card
+                                    Width="160"
+                                    Margin="4"
+                                    Padding="8"
+                                    Background="#0fffffff"
+                                    UniformCornerRadius="12">
                                     <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding MvUrls}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Button 
-                                                    IsEnabled="{Binding IsActive, Converter={StaticResource InvertBooleanConverter}}"
-                                                    Content="{Binding Br}" 
-                                                        HorizontalAlignment="Stretch" Margin="2,4"
-                                                        Command="{Binding RelativeSource={RelativeSource AncestorType=local:MvView},Path=DataContext.SwitchBrCommand}" 
-                                                        CommandParameter="{Binding}" />
+                                                <Button
+                                                    Margin="2,4"
+                                                    HorizontalAlignment="Stretch"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType=local:MvView}, Path=DataContext.SwitchBrCommand}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="{Binding Br}"
+                                                    IsEnabled="{Binding IsActive, Converter={StaticResource InvertBooleanConverter}}" />
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
