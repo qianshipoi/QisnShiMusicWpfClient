@@ -105,6 +105,7 @@
             <converters:NumberConverter x:Key="NumberConverter" />
             <converters:TimeSpanToDoubleConverter x:Key="TimeSpanToDoubleConverter" />
             <converters:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />
+            <FontFamily x:Key="SourceHan">/QianShi.Music;Component/Resources/#SourceHanSerifSC-VF</FontFamily>
             <data:ViewModelLocator x:Key="ViewModelLocator" />
         </ResourceDictionary>
     </Application.Resources>
