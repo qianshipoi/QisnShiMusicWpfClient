@@ -6,9 +6,6 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
 
 namespace QianShi.Music.ViewModels
 {
@@ -25,7 +22,7 @@ namespace QianShi.Music.ViewModels
 
         public object VideoControl => _videoPlayService.Control;
 
-        private Common.Models.MvUrl? _mvUrl = default!;
+        private Common.Models.MvUrl? _mvUrl;
         public Common.Models.MvUrl? MvUrl
         {
             get => _mvUrl;
@@ -58,7 +55,7 @@ namespace QianShi.Music.ViewModels
 
         private DelegateCommand<Common.Models.MvUrl> _switchBrCommand = default!;
         public DelegateCommand<Common.Models.MvUrl> SwitchBrCommand =>
-            _switchBrCommand ?? (_switchBrCommand = new DelegateCommand<Common.Models.MvUrl>((mvUrl) =>
+            _switchBrCommand ??= new((mvUrl) =>
             {
                 if (MvUrl == mvUrl) return;
                 PauseCommand.Execute();
@@ -66,7 +63,7 @@ namespace QianShi.Music.ViewModels
                 SetPositionCommand.Execute(0d);
                 ShowSwitchDialog = false;
                 PlayCommand.Execute();
-            }));
+            });
 
         private MvDetail? _detail;
         public MvDetail? Detail
@@ -162,6 +159,7 @@ namespace QianShi.Music.ViewModels
                 if (value.HasValue)
                 {
                     _videoPlayService.SetProgress(value.Value);
+                    _videoPlayService.Play();
                 }
             });
 
@@ -195,13 +193,10 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
             _videoPlayService = videoPlayService;
 
-            _videoPlayService.IsPlayingChanged += (s, e) =>
-            {
-                IsPlaying = e.NewValue;
-            };
+            _videoPlayService.IsPlayingChanged += (_, _) => IsPlaying = _videoPlayService.IsPlaying;
             _videoPlayService.VolumeChanged += (_, _) => Volume = _videoPlayService.Volume;
-            _videoPlayService.IsMutedChanged += (s_, _) => IsMuted = _videoPlayService.IsMuted;
-            _videoPlayService.ProgressChanged += (s, e) =>
+            _videoPlayService.IsMutedChanged += (_, _) => IsMuted = _videoPlayService.IsMuted;
+            _videoPlayService.ProgressChanged += (_, e) =>
             {
                 Position = e.Value;
                 TotalTime = e.Total;
