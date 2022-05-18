@@ -1,22 +1,31 @@
-﻿<Window x:Class="QianShi.Music.Views.VideoPlayWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:PrismDemo01.Views"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d" AllowsTransparency="True" WindowStyle="None"
-        Title="VideoPlayWindow" Height="450" Width="800">
+﻿<Window
+    x:Class="QianShi.Music.Views.VideoPlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:QianShi.Music"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    Title="VideoPlayWindow"
+    Width="800"
+    Height="450"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    AllowsTransparency="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="68" />
     </WindowChrome.WindowChrome>
     <Grid Background="Black">
-        <ToggleButton Click="SwitchWindowSize" 
-                      WindowChrome.IsHitTestVisibleInChrome="True" 
-                      VerticalAlignment="Top"  HorizontalAlignment="Right"
-                      Margin="10"/>
-        
-        <MediaElement  />
+        <ToggleButton
+            Margin="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="SwitchWindowSize"
+            WindowChrome.IsHitTestVisibleInChrome="True" />
+
+        <MediaElement />
 
         <Grid VerticalAlignment="Bottom" Background="#0fffffff">
             <Grid.ColumnDefinitions>
@@ -24,28 +33,50 @@
                 <ColumnDefinition Width="144" />
                 <ColumnDefinition Width="144" />
             </Grid.ColumnDefinitions>
-            <DockPanel LastChildFill="True" Margin="0,0,10,0">
-                <Button DockPanel.Dock="Left" Cursor="Hand" Style="{StaticResource MaterialDesignIconButton}"  >
-                    <materialDesign:PackIcon Kind="Play" Width="32" Height="32"  />
+            <DockPanel Margin="0,0,10,0" LastChildFill="True">
+                <Button
+                    Cursor="Hand"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource MaterialDesignIconButton}">
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Kind="Play" />
                 </Button>
-                <TextBlock DockPanel.Dock="Right" Text="12:12" VerticalAlignment="Center" FontSize="16"  />
-                <Slider VerticalAlignment="Center" Margin="6,0" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    FontSize="16"
+                    Text="12:12" />
+                <Slider Margin="6,0" VerticalAlignment="Center" />
             </DockPanel>
             <DockPanel Grid.Column="1" LastChildFill="True">
                 <Button DockPanel.Dock="Left" Style="{StaticResource MaterialDesignIconButton}">
-                    <materialDesign:PackIcon Kind="VolumeHigh" Width="32" Height="32" />
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Kind="VolumeHigh" />
                 </Button>
-                <Slider VerticalAlignment="Center" Margin="0,0,10,0" />
+                <Slider Margin="0,0,10,0" VerticalAlignment="Center" />
             </DockPanel>
             <UniformGrid Grid.Column="3" Rows="1">
-                <Button Style="{StaticResource MaterialDesignIconButton}" Cursor="Hand" >
-                    <materialDesign:PackIcon Kind="Settings" Width="32" Height="32" />
+                <Button Cursor="Hand" Style="{StaticResource MaterialDesignIconButton}">
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Kind="Settings" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignIconButton}" >
-                    <materialDesign:PackIcon Kind="Share" Width="32" Height="32" />
+                <Button Style="{StaticResource MaterialDesignIconButton}">
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Kind="Share" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignIconButton}" >
-                    <materialDesign:PackIcon Kind="WindowMaximize" Width="32" Height="32" />
+                <Button Style="{StaticResource MaterialDesignIconButton}">
+                    <materialDesign:PackIcon
+                        Width="32"
+                        Height="32"
+                        Kind="WindowMaximize" />
                 </Button>
             </UniformGrid>
 

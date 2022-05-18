@@ -6,6 +6,7 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -18,16 +19,11 @@ namespace QianShi.Music.ViewModels
 
 
         private readonly IPlaylistService _playlistService;
+        private readonly IVideoPlayService _videoPlayService;
         private readonly Dictionary<int, string> _urls = new();
-        private readonly DispatcherTimer _timer = default!;
         private long _mvId;
 
-        private MediaElement _videoControl = new();
-        public MediaElement VideoControl
-        {
-            get => _videoControl;
-            set => SetProperty(ref _videoControl, value);
-        }
+        public object VideoControl => _videoPlayService.Control;
 
         private Common.Models.MvUrl? _mvUrl = default!;
         public Common.Models.MvUrl? MvUrl
@@ -37,7 +33,11 @@ namespace QianShi.Music.ViewModels
             {
                 if (value == _mvUrl) return;
                 if (null != _mvUrl) _mvUrl.IsActive = false;
-                if (null != value) value.IsActive = true;
+                if (null != value)
+                {
+                    value.IsActive = true;
+                    _videoPlayService.Url = value.Url;
+                }
                 SetProperty(ref _mvUrl, value);
             }
         }
@@ -104,18 +104,8 @@ namespace QianShi.Music.ViewModels
             get => _isPlaying;
             set
             {
-                if (value == _isPlaying) return;
                 SetProperty(ref _isPlaying, value);
-                if (value)
-                {
-                    _videoControl.Play();
-                    _timer.Start();
-                }
-                else
-                {
-                    _videoControl.Pause();
-                    _timer.Stop();
-                }
+                if (_isPlaying && ShowCover) ShowCover = false;
             }
         }
 
@@ -123,22 +113,14 @@ namespace QianShi.Music.ViewModels
         public bool IsMuted
         {
             get => _isMuted;
-            set
-            {
-                SetProperty(ref _isMuted, value);
-                _videoControl.IsMuted = value;
-            }
+            set => SetProperty(ref _isMuted, value);
         }
 
         private double _volume = 0.5d;
         public double Volume
         {
             get => _volume;
-            set
-            {
-                SetProperty(ref _volume, value);
-                _videoControl.Volume = value;
-            }
+            set => SetProperty(ref _volume, value);
         }
 
         private double _position = 0d;
@@ -148,23 +130,20 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _position, value);
         }
 
+        private double _totalTime = 0d;
+        public double TotalTime
+        {
+            get => _totalTime;
+            set => SetProperty(ref _totalTime, value);
+        }
+
         private DelegateCommand _playCommand = default!;
         public DelegateCommand PlayCommand =>
-            _playCommand ??= new(() =>
-            {
-                if (!IsPlaying)
-                {
-                    IsPlaying = true;
-                    if (ShowCover) ShowCover = false;
-                }
-            });
+            _playCommand ??= new(_videoPlayService.Play);
 
         private DelegateCommand _pauseCommand = default!;
         public DelegateCommand PauseCommand =>
-            _pauseCommand ??= new(() =>
-            {
-                if (IsPlaying) IsPlaying = false;
-            });
+            _pauseCommand ??= new(_videoPlayService.Pause);
 
         private DelegateCommand<bool?> _setMutedCommand = default!;
         public DelegateCommand<bool?> SetMutedCommand =>
@@ -172,7 +151,7 @@ namespace QianShi.Music.ViewModels
             {
                 if (value.HasValue)
                 {
-                    IsMuted = value.Value;
+                    _videoPlayService.SetMute(value.Value);
                 }
             });
 
@@ -182,34 +161,23 @@ namespace QianShi.Music.ViewModels
             {
                 if (value.HasValue)
                 {
-                    try
-                    {
-                        _timer.Stop();
-                        _videoControl.Position = TimeSpan.FromMilliseconds(value.Value);
-                    }
-                    finally
-                    {
-                        if (IsPlaying)
-                        {
-                            _timer.Start();
-                        }
-                    }
+                    _videoPlayService.SetProgress(value.Value);
                 }
             });
 
         private DelegateCommand<double?> _setVolumeCommand = default!;
         public DelegateCommand<double?> SetVolumeCommand =>
-            _setVolumeCommand ??= new(value =>
+            _setVolumeCommand ??= new(val =>
             {
-                if (value.HasValue)
+                if (val.HasValue)
                 {
-                    Volume = value.Value;
+                    _videoPlayService.SetVolume(val.Value);
                 }
             });
 
         private DelegateCommand<double?> _dragStartedCommand = default!;
         public DelegateCommand<double?> DragStartedCommand =>
-            _dragStartedCommand ??= new((value) => _timer.Stop());
+            _dragStartedCommand ??= new(_ => _videoPlayService.Pause());
 
         private bool _showCover = true;
         public bool ShowCover
@@ -220,19 +188,24 @@ namespace QianShi.Music.ViewModels
 
         public MvViewModel(
             IContainerProvider containerProvider,
-            IPlaylistService playlistService)
+            IPlaylistService playlistService,
+            IVideoPlayService videoPlayService)
             : base(containerProvider)
         {
             _playlistService = playlistService;
-            _videoControl.Volume = Volume;
-            _videoControl.LoadedBehavior = MediaState.Manual;
-            _videoControl.SetBinding(MediaElement.SourceProperty, $"{nameof(MvUrl)}.{nameof(MvUrl.Url)}");
+            _videoPlayService = videoPlayService;
 
-            _timer = new()
+            _videoPlayService.IsPlayingChanged += (s, e) =>
             {
-                Interval = TimeSpan.FromMilliseconds(200)
+                IsPlaying = e.NewValue;
             };
-            _timer.Tick += (_, _) => Position = _videoControl.Position.TotalMilliseconds;
+            _videoPlayService.VolumeChanged += (_, _) => Volume = _videoPlayService.Volume;
+            _videoPlayService.IsMutedChanged += (s_, _) => IsMuted = _videoPlayService.IsMuted;
+            _videoPlayService.ProgressChanged += (s, e) =>
+            {
+                Position = e.Value;
+                TotalTime = e.Total;
+            };
         }
 
         public bool KeepAlive => true;

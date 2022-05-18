@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
+    xmlns:helpers="clr-namespace:QianShi.Music.Common.Helpers"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -17,7 +18,7 @@
     d:DesignWidth="1280"
     mc:Ignorable="d">
 
-    <uc:ScrollViewerAnimation>
+    <uc:ScrollViewerAnimation ScrollChanged="ScrollViewer_OnScrollChanged">
         <Border
             MaxWidth="1280"
             Padding="10"
@@ -107,6 +108,7 @@
                                 <materialDesign:PackIcon Kind="Settings" />
                             </ToggleButton>
                             <materialDesign:PopupEx
+                                x:Name="SettingPopup"
                                 AllowsTransparency="True"
                                 HorizontalOffset="-60"
                                 IsOpen="{Binding ElementName=SettingControl, Path=IsChecked}"
