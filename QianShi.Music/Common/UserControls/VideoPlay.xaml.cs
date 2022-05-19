@@ -14,14 +14,24 @@ namespace QianShi.Music.Common.UserControls
     {
         public static readonly DependencyProperty PlayControlProperty =
             DependencyProperty.Register(nameof(PlayControl), typeof(FrameworkElement), typeof(VideoPlay), new PropertyMetadata(null));
+        public static readonly DependencyProperty MvUrlsProperty =
+            DependencyProperty.Register(nameof(MvUrls), typeof(ObservableCollection<MvUrl>), typeof(VideoPlay), new PropertyMetadata(default(ObservableCollection<MvUrl>)));
         public static readonly DependencyProperty CoverProperty =
-            DependencyProperty.Register(nameof(Cover), typeof(string), typeof(VideoPlay), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register(nameof(Cover), typeof(string), typeof(VideoPlay), new PropertyMetadata(null));
         public static readonly DependencyProperty ShowCoverProperty =
             DependencyProperty.Register(nameof(ShowCover), typeof(bool), typeof(VideoPlay), new PropertyMetadata(false));
         public static readonly DependencyProperty IsPlayingProperty =
             DependencyProperty.Register(nameof(IsPlaying), typeof(bool), typeof(VideoPlay), new PropertyMetadata(false));
         public static readonly DependencyProperty IsMutedProperty =
             DependencyProperty.Register(nameof(IsMuted), typeof(bool), typeof(VideoPlay), new PropertyMetadata(false));
+        public static readonly DependencyProperty PositionProperty =
+            DependencyProperty.Register(nameof(Position), typeof(double), typeof(VideoPlay), new PropertyMetadata(0d));
+        public static readonly DependencyProperty DurationProperty =
+            DependencyProperty.Register(nameof(Duration), typeof(double), typeof(VideoPlay), new PropertyMetadata(0d));
+        public static readonly DependencyProperty VolumeProperty =
+            DependencyProperty.Register(nameof(Volume), typeof(double), typeof(VideoPlay), new PropertyMetadata(0d));
+        public static readonly DependencyProperty ShowSwitchDialogProperty =
+            DependencyProperty.Register(nameof(ShowSwitchDialog), typeof(bool), typeof(VideoPlay), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
         public static readonly DependencyProperty SwitchBrCommandProperty =
             DependencyProperty.Register(nameof(SwitchBrCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
         public static readonly DependencyProperty PlayCommandProperty =
@@ -30,17 +40,12 @@ namespace QianShi.Music.Common.UserControls
             DependencyProperty.Register(nameof(PauseCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
         public static readonly DependencyProperty SetMutedCommandProperty =
             DependencyProperty.Register(nameof(SetMutedCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
-        public static readonly DependencyProperty MvUrlsProperty =
-            DependencyProperty.Register(nameof(MvUrls), typeof(ObservableCollection<MvUrl>), typeof(VideoPlay), new PropertyMetadata(default(ObservableCollection<MvUrl>)));
-        public static readonly DependencyProperty PositionProperty =
-            DependencyProperty.Register(nameof(Position), typeof(double), typeof(VideoPlay), new PropertyMetadata(0d));
-        public static readonly DependencyProperty DurationProperty =
-            DependencyProperty.Register(nameof(Duration), typeof(double), typeof(VideoPlay), new PropertyMetadata(0d));
-        public static readonly DependencyProperty VolumeProperty =
-            DependencyProperty.Register(nameof(Volume), typeof(double), typeof(VideoPlay), new PropertyMetadata(0d));
-        public static readonly DependencyProperty ShowSwitchDialogProperty =
-            DependencyProperty.Register(nameof(ShowSwitchDialog), typeof(bool), typeof(VideoPlay), new PropertyMetadata(false));
-
+        public static readonly DependencyProperty SetPositionCommandProperty =
+            DependencyProperty.Register(nameof(SetPositionCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
+        public static readonly DependencyProperty DragStartedCommandProperty =
+            DependencyProperty.Register(nameof(DragStartedCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
+        public static readonly DependencyProperty SetVolumeCommandProperty =
+            DependencyProperty.Register(nameof(SetVolumeCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
         public FrameworkElement? PlayControl
         {
             get => (FrameworkElement?)GetValue(PlayControlProperty);
@@ -65,26 +70,6 @@ namespace QianShi.Music.Common.UserControls
         {
             get => (bool)GetValue(IsMutedProperty);
             set => SetValue(IsMutedProperty, value);
-        }
-        public ICommand SwitchBrCommand
-        {
-            get => (ICommand)GetValue(SwitchBrCommandProperty);
-            set => SetValue(SwitchBrCommandProperty, value);
-        }
-        public ICommand PlayCommand
-        {
-            get => (ICommand)GetValue(PlayCommandProperty);
-            set => SetValue(PlayCommandProperty, value);
-        }
-        public ICommand PauseCommand
-        {
-            get => (ICommand)GetValue(PauseCommandProperty);
-            set => SetValue(PauseCommandProperty, value);
-        }
-        public ICommand SetMutedCommand
-        {
-            get => (ICommand)GetValue(SetMutedCommandProperty);
-            set => SetValue(SetMutedCommandProperty, value);
         }
         public ObservableCollection<MvUrl> MvUrls
         {
@@ -111,6 +96,43 @@ namespace QianShi.Music.Common.UserControls
             get => (bool)GetValue(ShowSwitchDialogProperty);
             set => SetValue(ShowSwitchDialogProperty, value);
         }
+        public ICommand SwitchBrCommand
+        {
+            get => (ICommand)GetValue(SwitchBrCommandProperty);
+            set => SetValue(SwitchBrCommandProperty, value);
+        }
+        public ICommand PlayCommand
+        {
+            get => (ICommand)GetValue(PlayCommandProperty);
+            set => SetValue(PlayCommandProperty, value);
+        }
+        public ICommand PauseCommand
+        {
+            get => (ICommand)GetValue(PauseCommandProperty);
+            set => SetValue(PauseCommandProperty, value);
+        }
+        public ICommand SetMutedCommand
+        {
+            get => (ICommand)GetValue(SetMutedCommandProperty);
+            set => SetValue(SetMutedCommandProperty, value);
+        }
+        public ICommand SetPositionCommand
+        {
+            get => (ICommand)GetValue(SetPositionCommandProperty);
+            set => SetValue(SetPositionCommandProperty, value);
+        }
+        public ICommand DragStartedCommand
+        {
+            get => (ICommand)GetValue(DragStartedCommandProperty);
+            set => SetValue(DragStartedCommandProperty, value);
+        }
+        public ICommand SetVolumeCommand
+        {
+            get => (ICommand)GetValue(SetVolumeCommandProperty);
+            set => SetValue(SetVolumeCommandProperty, value);
+        }
+
+
 
         public VideoPlay()
         {

@@ -24,19 +24,29 @@
             Padding="10"
             Background="White">
             <StackPanel>
-                <uc:VideoPlay 
-                    PlayCommand="{Binding PlayCommand}"
-                    PauseCommand="{Binding PauseCommand}"
-                    SetMutedCommand="{Binding SetMutedCommand}"
-                    SwitchBrCommand="{Binding SwitchBrCommand}"
-                    PlayControl="{Binding VideoControl}"
+                <uc:VideoPlay
+                    x:Name="VideoPlay"
+                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}"
+                    Background="Black"
                     Cover="{Binding Detail.Cover}"
+                    DragStartedCommand="{Binding DragStartedCommand}"
+                    IsMuted="{Binding IsMuted}"
+                    IsPlaying="{Binding IsPlaying}"
+                    MvUrls="{Binding MvUrls}"
+                    PauseCommand="{Binding PauseCommand}"
+                    PlayCommand="{Binding PlayCommand}"
+                    PlayControl="{Binding VideoControl}"
+                    Position="{Binding Position}"
+                    SetMutedCommand="{Binding SetMutedCommand}"
+                    SetPositionCommand="{Binding SetPositionCommand}"
+                    SetVolumeCommand="{Binding SetVolumeCommand}"
                     ShowCover="{Binding ShowCover}"
                     ShowSwitchDialog="{Binding ShowSwitchDialog}"
-                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" />
+                    SwitchBrCommand="{Binding SwitchBrCommand}"
+                    Volume="{Binding Volume}"
+                    Duration="{Binding Detail.Duration}" />
 
-
-                <Grid Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" Background="Black">
+                <!--<Grid Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" Background="Black">
                     <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding VideoControl}" />
                     <Image
                         HorizontalAlignment="Stretch"
@@ -157,7 +167,9 @@
                             </Button>
                         </StackPanel>
                     </Grid>
-                </Grid>
+                </Grid>-->
+
+
                 <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">

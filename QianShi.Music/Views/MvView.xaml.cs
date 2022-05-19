@@ -14,8 +14,10 @@ namespace QianShi.Music.Views
 
         private void ScrollViewer_OnScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            if (SettingControl.IsChecked ?? false)
-                SettingPopup.IsOpen = false;
+            if (VideoPlay.ShowSwitchDialog)
+            {
+                VideoPlay.ShowSwitchDialog = false;
+            }
         }
     }
 }

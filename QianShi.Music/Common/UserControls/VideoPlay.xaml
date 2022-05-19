@@ -1,22 +1,38 @@
-﻿<UserControl x:Class="QianShi.Music.Common.UserControls.VideoPlay"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
-             xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
-             xmlns:models="clr-namespace:QianShi.Music.Common.Models"
-             mc:Ignorable="d"
-             d:DesignHeight="720" d:DesignWidth="1280">
+﻿<UserControl
+    x:Class="QianShi.Music.Common.UserControls.VideoPlay"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
+    xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:QianShi.Music.Common.Models"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
+    mc:Ignorable="d">
     <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:VideoPlay}}}">
         <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding PlayControl}" />
         <Image
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Source="{Binding Cover}"
-                        Stretch="Uniform"
-                        Visibility="{Binding ShowCover, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Stretch="Uniform">
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding ShowCover}" Value="{StaticResource True}" />
+                                <Condition Binding="{Binding Cover, Converter={StaticResource IsNullConverter}}" Value="{StaticResource False}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="Source" Value="{Binding Cover}" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
         <Grid VerticalAlignment="Bottom" Background="#0fffffff">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -25,97 +41,100 @@
             </Grid.ColumnDefinitions>
             <DockPanel LastChildFill="True">
                 <Button
-                                Padding="2"
-                                Command="{Binding PlayCommand}"
-                                DockPanel.Dock="Left"
-                                Style="{StaticResource MaterialDesignIconButton}"
-                                Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}">
+                    Padding="2"
+                    Command="{Binding PlayCommand}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    Visibility="{Binding IsPlaying, Converter={StaticResource InverseBoolToVisConverter}}">
                     <materialDesign:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    Kind="Play" />
+                        Width="32"
+                        Height="32"
+                        Kind="Play" />
                 </Button>
                 <Button
-                                Padding="2"
-                                Command="{Binding PauseCommand}"
-                                DockPanel.Dock="Left"
-                                Style="{StaticResource MaterialDesignIconButton}"
-                                Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    Padding="2"
+                    Command="{Binding PauseCommand}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <materialDesign:PackIcon
-                                    Width="32"
-                                    Height="32"
-                                    Kind="Pause" />
+                        Width="32"
+                        Height="32"
+                        Kind="Pause" />
                 </Button>
                 <TextBlock
-                                VerticalAlignment="Center"
-                                DockPanel.Dock="Right"
-                                Foreground="White"
-                                Text="{Binding Position, Converter={StaticResource DoubleToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    Foreground="White"
+                    Text="{Binding Position, Converter={StaticResource DoubleToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
                 <Slider
-                                Margin="8,0"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Center"
-                                extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
-                                extensions:SliderExtension.DragStartedCommand="{Binding DragStartedCommand}"
-                                extensions:SliderExtension.MouseLeftButtonUpCommand="{Binding SetPositionCommand}"
-                                Maximum="{Binding Duration}"
-                                Value="{Binding Position, Mode=OneWay}" />
+                    Margin="8,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    extensions:SliderExtension.DragCompletedCommand="{Binding SetPositionCommand}"
+                    extensions:SliderExtension.DragStartedCommand="{Binding DragStartedCommand}"
+                    extensions:SliderExtension.MouseLeftButtonUpCommand="{Binding SetPositionCommand}"
+                    Maximum="{Binding Duration}"
+                    Value="{Binding Position, Mode=OneWay}" />
             </DockPanel>
             <DockPanel Grid.Column="1" LastChildFill="True">
                 <Button
-                                Command="{Binding SetMutedCommand}"
-                                CommandParameter="{StaticResource True}"
-                                DockPanel.Dock="Left"
-                                Style="{StaticResource MaterialDesignIconButton}"
-                                Visibility="{Binding IsMuted, Converter={StaticResource InverseBoolToVisConverter}}" Cursor="Hand">
+                    Command="{Binding SetMutedCommand}"
+                    CommandParameter="{StaticResource True}"
+                    Cursor="Hand"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    Visibility="{Binding IsMuted, Converter={StaticResource InverseBoolToVisConverter}}">
                     <materialDesign:PackIcon Kind="VolumeHigh" />
                 </Button>
                 <Button
-                                Command="{Binding SetMutedCommand}"
-                                CommandParameter="{StaticResource False}"
-                                DockPanel.Dock="Left"
-                                Style="{StaticResource MaterialDesignIconButton}"
-                                Visibility="{Binding IsMuted, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    Command="{Binding SetMutedCommand}"
+                    CommandParameter="{StaticResource False}"
+                    DockPanel.Dock="Left"
+                    Style="{StaticResource MaterialDesignIconButton}"
+                    Visibility="{Binding IsMuted, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <materialDesign:PackIcon Kind="VolumeMute" />
                 </Button>
                 <Slider
-                                VerticalAlignment="Center"
-                                extensions:SliderExtension.DragCompletedCommand="{Binding SetVolumeCommand}"
-                                Maximum="1"
-                                Value="{Binding Volume, Mode=OneWay}" />
+                    VerticalAlignment="Center"
+                    extensions:SliderExtension.DragCompletedCommand="{Binding SetVolumeCommand}"
+                    Maximum="1"
+                    Value="{Binding Volume, Mode=OneWay}" />
             </DockPanel>
             <StackPanel Grid.Column="2" Orientation="Horizontal">
                 <ToggleButton
-                                x:Name="SettingControl"
-                                IsChecked="{Binding ShowSwitchDialog}"
-                                IsEnabled="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsChecked, Converter={StaticResource InvertBooleanConverter}}"
-                                Style="{StaticResource MaterialDesignIconButton}">
+                    x:Name="SettingControl"
+                    Cursor="Hand"
+                    IsChecked="{Binding ShowSwitchDialog}"
+                    IsEnabled="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsChecked, Converter={StaticResource InvertBooleanConverter}}"
+                    Style="{StaticResource MaterialDesignIconButton}">
                     <materialDesign:PackIcon Kind="Settings" />
                 </ToggleButton>
                 <materialDesign:PopupEx
-                                x:Name="SettingPopup"
-                                AllowsTransparency="True"
-                                HorizontalOffset="-60"
-                                IsOpen="{Binding ElementName=SettingControl, Path=IsChecked}"
-                                Placement="Top"
-                                PlacementTarget="{Binding ElementName=SettingControl}"
-                                PopupAnimation="Slide"
-                                StaysOpen="False">
+                    x:Name="SettingPopup"
+                    AllowsTransparency="True"
+                    HorizontalOffset="-60"
+                    IsOpen="{Binding ElementName=SettingControl, Path=IsChecked}"
+                    Placement="Top"
+                    PlacementTarget="{Binding ElementName=SettingControl}"
+                    PopupAnimation="Slide"
+                    StaysOpen="False">
                     <materialDesign:Card
-                                    Width="160"
-                                    Margin="4"
-                                    Padding="8"
-                                    Background="#0fffffff"
-                                    UniformCornerRadius="12">
+                        Width="160"
+                        Margin="4"
+                        Padding="8"
+                        Background="#0fffffff"
+                        UniformCornerRadius="12">
                         <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding MvUrls}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:MvUrl}">
-                                    <Button Margin="2,4"
-                                            HorizontalAlignment="Stretch"
-                                            Command="{Binding RelativeSource={RelativeSource AncestorType=local:VideoPlay}, Path=SwitchBrCommand}"
-                                            CommandParameter="{Binding}"
-                                            Content="{Binding Br}"
-                                            IsEnabled="{Binding IsActive, Converter={StaticResource InvertBooleanConverter}}" />
+                                    <Button
+                                        Margin="2,4"
+                                        HorizontalAlignment="Stretch"
+                                        Command="{Binding RelativeSource={RelativeSource AncestorType=local:VideoPlay}, Path=SwitchBrCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding Br}"
+                                        IsEnabled="{Binding IsActive, Converter={StaticResource InvertBooleanConverter}}" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
