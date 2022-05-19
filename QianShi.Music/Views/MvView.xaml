@@ -24,6 +24,18 @@
             Padding="10"
             Background="White">
             <StackPanel>
+                <uc:VideoPlay 
+                    PlayCommand="{Binding PlayCommand}"
+                    PauseCommand="{Binding PauseCommand}"
+                    SetMutedCommand="{Binding SetMutedCommand}"
+                    SwitchBrCommand="{Binding SwitchBrCommand}"
+                    PlayControl="{Binding VideoControl}"
+                    Cover="{Binding Detail.Cover}"
+                    ShowCover="{Binding ShowCover}"
+                    ShowSwitchDialog="{Binding ShowSwitchDialog}"
+                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" />
+
+
                 <Grid Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}" Background="Black">
                     <ContentControl HorizontalContentAlignment="Stretch" Content="{Binding VideoControl}" />
                     <Image
