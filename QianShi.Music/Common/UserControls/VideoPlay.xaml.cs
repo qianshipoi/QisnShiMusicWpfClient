@@ -46,6 +46,10 @@ namespace QianShi.Music.Common.UserControls
             DependencyProperty.Register(nameof(DragStartedCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
         public static readonly DependencyProperty SetVolumeCommandProperty =
             DependencyProperty.Register(nameof(SetVolumeCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(null));
+
+
+        public static readonly DependencyProperty FullScreenCommandProperty =
+            DependencyProperty.Register(nameof(FullScreenCommand), typeof(ICommand), typeof(VideoPlay), new PropertyMetadata(default));
         public FrameworkElement? PlayControl
         {
             get => (FrameworkElement?)GetValue(PlayControlProperty);
@@ -131,8 +135,11 @@ namespace QianShi.Music.Common.UserControls
             get => (ICommand)GetValue(SetVolumeCommandProperty);
             set => SetValue(SetVolumeCommandProperty, value);
         }
-
-
+        public ICommand FullScreenCommand
+        {
+            get => (ICommand)GetValue(FullScreenCommandProperty);
+            set => SetValue(FullScreenCommandProperty, value);
+        }
 
         public VideoPlay()
         {

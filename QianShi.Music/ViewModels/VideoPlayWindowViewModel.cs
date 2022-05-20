@@ -1,26 +1,17 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
+﻿using System.Collections.ObjectModel;
 
-using QianShi.Music.Common.Models.Response;
+using Prism.Commands;
+using Prism.Mvvm;
+
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 namespace QianShi.Music.ViewModels
 {
-    public class MvViewModel : NavigationViewModel, IRegionMemberLifetime
+    public class VideoPlayWindowViewModel : BindableBase
     {
-        public MvViewModel() : base(App.Current.Container.Resolve<IContainerProvider>()) { }
-        public const string MvIdParameter = nameof(MvIdParameter);
-
-
-        private readonly IPlaylistService _playlistService;
         private readonly IVideoPlayService _videoPlayService;
-        private readonly Dictionary<int, string> _urls = new();
-        private long _mvId;
-
         private object? _videoControl;
+
         public object? VideoControl
         {
             get => _videoControl;
@@ -69,36 +60,6 @@ namespace QianShi.Music.ViewModels
                 ShowSwitchDialog = false;
                 PlayCommand.Execute();
             });
-
-        private MvDetail? _detail;
-        public MvDetail? Detail
-        {
-            get { return _detail; }
-            set { SetProperty(ref _detail, value); }
-        }
-
-        private ObservableCollection<MovieVideo> _movieVideos = new();
-        public ObservableCollection<MovieVideo> MovieVideos
-        {
-            get { return _movieVideos; }
-            set { SetProperty(ref _movieVideos, value); }
-        }
-
-        private DelegateCommand<MovieVideo> _playMvCommand = default!;
-        public DelegateCommand<MovieVideo> PlayMvCommand =>
-            _playMvCommand ?? (_playMvCommand = new DelegateCommand<MovieVideo>(async (mv) =>
-            {
-                if (mv != null && _mvId != mv.Id)
-                {
-                    _mvId = mv.Id;
-                    PauseCommand.Execute();
-                    SetPositionCommand.Execute(0d);
-                    Position = 0d;
-                    ShowCover = true;
-                    await GetMvDetail();
-                    await GetSimiMv();
-                }
-            }));
 
         private bool _isPlaying = false;
         public bool IsPlaying
@@ -200,93 +161,29 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _showCover, value);
         }
 
-        public MvViewModel(
-            IContainerProvider containerProvider,
-            IPlaylistService playlistService,
-            IVideoPlayService videoPlayService)
-            : base(containerProvider)
+        public VideoPlayWindowViewModel(IVideoPlayService videoPlayService)
         {
-            _playlistService = playlistService;
             _videoPlayService = videoPlayService;
+            Volume = _videoPlayService.Volume;
+            IsPlaying = _videoPlayService.IsPlaying;
+            IsMuted = _videoPlayService.IsMuted;
+            Cover = _videoPlayService.Cover;
             VideoControl = _videoPlayService.Control;
-            _videoPlayService.IsPlayingChanged += (_, _) => IsPlaying = _videoPlayService.IsPlaying;
-            _videoPlayService.VolumeChanged += (_, _) => Volume = _videoPlayService.Volume;
-            _videoPlayService.IsMutedChanged += (_, _) => IsMuted = _videoPlayService.IsMuted;
-            _videoPlayService.CoverChanged += (_, _) => Cover = _videoPlayService.Cover;
+            TotalTime = _videoPlayService.Total;
+            Position = _videoPlayService.Position;
             _videoPlayService.IsFullScreenChanged += (_, e) =>
             {
-                VideoControl = e.NewValue ? null : _videoPlayService.Control;
+                VideoControl = e.NewValue ? _videoPlayService.Control : null;
             };
+            _videoPlayService.IsPlayingChanged += (_, e) => IsPlaying = e.NewValue;
+            _videoPlayService.VolumeChanged += (_, e) => Volume = e.NewValue;
+            _videoPlayService.IsMutedChanged += (_, e) => IsMuted = e.NewValue;
+            _videoPlayService.CoverChanged += (_, e) => Cover = e.NewValue;
             _videoPlayService.ProgressChanged += (_, e) =>
             {
                 Position = e.Value;
                 TotalTime = e.Total;
             };
-        }
-
-        public bool KeepAlive => true;
-
-        public override async void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            base.OnNavigatedTo(navigationContext);
-
-            if (navigationContext.Parameters.ContainsKey(MvIdParameter))
-            {
-                _mvId = navigationContext.Parameters.GetValue<long>(MvIdParameter);
-                await GetMvDetail();
-                await GetSimiMv();
-            }
-        }
-
-        private async Task GetMvDetail()
-        {
-            MvUrl = null;
-            var detailResponse = await _playlistService.MvDetail(_mvId);
-
-            if (detailResponse.Code == 200)
-            {
-                Detail = detailResponse.Data;
-                _videoPlayService.Cover = Detail.Cover;
-                _urls.Clear();
-                MvUrls.Clear();
-                foreach (var br in Detail.Brs)
-                {
-                    var urlResponse = await _playlistService.MvUrl(new Common.Models.Request.MvUrlRequest
-                    {
-                        Id = _mvId,
-                        R = br.Br
-                    });
-                    if (urlResponse.Code == 200)
-                    {
-                        _urls.Add(br.Br, urlResponse.Data.Url);
-                    }
-                }
-
-                if (_urls.Count > 0)
-                {
-                    var urls = _urls.OrderBy(x => x.Key).Select(x => new Common.Models.MvUrl
-                    {
-
-                        Br = x.Key,
-                        Url = x.Value,
-                        IsActive = false
-                    });
-
-                    MvUrls.AddRange(urls);
-                    MvUrl = MvUrls[^1];
-                }
-            }
-        }
-
-        private async Task GetSimiMv()
-        {
-            var response = await _playlistService.SimiMv(_mvId);
-
-            if (response.Code == 200)
-            {
-                MovieVideos.Clear();
-                MovieVideos.AddRange(response.Mvs);
-            }
         }
     }
 }

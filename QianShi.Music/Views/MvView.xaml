@@ -30,6 +30,7 @@
                     Background="Black"
                     Cover="{Binding Detail.Cover}"
                     DragStartedCommand="{Binding DragStartedCommand}"
+                    FullScreenCommand="{Binding FullScreenCommand}"
                     IsMuted="{Binding IsMuted}"
                     IsPlaying="{Binding IsPlaying}"
                     MvUrls="{Binding MvUrls}"

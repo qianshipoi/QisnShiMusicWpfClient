@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace QianShi.Music.Services
 {
@@ -13,13 +8,19 @@ namespace QianShi.Music.Services
         event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
         event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
         event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+        event EventHandler<PropertyChangedEventArgs<string>>? CoverChanged;
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsFullScreenChanged;
         event EventHandler? PlayEnded;
 
         FrameworkElement Control { get; }
+        string? Cover { get; set; }
         bool IsPlaying { get; }
         bool IsMuted { get; }
         double Volume { get; }
+        double Total { get; }
+        double Position { get; }
         string Url { get; set; }
+        bool IsFullScreen { get; }
 
         void Play(string url);
         void Play();
@@ -27,5 +28,6 @@ namespace QianShi.Music.Services
         void SetVolume(double value);
         void SetProgress(double value);
         void SetMute(bool isMute);
+        void FullScreen();
     }
 }

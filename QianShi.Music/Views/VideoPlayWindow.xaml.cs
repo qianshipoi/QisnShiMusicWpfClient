@@ -13,6 +13,12 @@ namespace QianShi.Music.Views
         public VideoPlayWindow()
         {
             InitializeComponent();
+            Loaded += VideoPlayWindow_Loaded;
+        }
+
+        private void VideoPlayWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            FullScreenHelper.StartFullScreen(this);
         }
 
         private void SwitchWindowSize(object sender, RoutedEventArgs e)

@@ -1,6 +1,7 @@
 ﻿using QianShi.Music.Services;
 
 using System.Windows;
+using Prism.Ioc;
 
 namespace QianShi.Music.Views
 {
@@ -10,8 +11,9 @@ namespace QianShi.Music.Views
     public partial class MainWindow : Window
     {
         private readonly IPlaylistService _playlistService;
+        private readonly IContainerProvider _containerProvider; 
 
-        public MainWindow(IPlaylistService playlistService)
+        public MainWindow(IPlaylistService playlistService, IContainerProvider containerProvider)
         {
             InitializeComponent();
 
@@ -35,10 +37,13 @@ namespace QianShi.Music.Views
                this.Close();
            };
             _playlistService = playlistService;
+            _containerProvider = containerProvider;
         }
 
         protected override void OnClosed(EventArgs e)
         {
+            var videoPlayWindow = _containerProvider.Resolve<VideoPlayWindow>();
+            videoPlayWindow.Close();
             base.OnClosed(e);
         }
     }

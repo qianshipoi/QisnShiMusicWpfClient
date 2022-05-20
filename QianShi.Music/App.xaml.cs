@@ -58,6 +58,8 @@ namespace QianShi.Music
             containerRegistry.RegisterSingleton<IVideoPlayService, MediaElementPlayService>();
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
+            containerRegistry.Register<VideoPlayWindow>();
+
             //containerRegistry.RegisterDialog<LoadingDialog>();
             containerRegistry.RegisterForNavigation<DescriptionDialog, DescriptionDialogViewModel>();
             containerRegistry.RegisterForNavigation<IndexView, IndexViewModel>();
@@ -74,6 +76,7 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<PlayingListView, PlayingListViewModel>();
             containerRegistry.RegisterForNavigation<MvView, MvViewModel>();
             //containerRegistry.RegisterForNavigation<SearchView, DesignSearchViewModel>();
+
         }
 
         protected override void OnExit(ExitEventArgs e)

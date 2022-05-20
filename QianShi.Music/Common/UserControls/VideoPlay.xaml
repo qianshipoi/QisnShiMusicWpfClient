@@ -143,7 +143,7 @@
                 <Button Style="{StaticResource MaterialDesignIconButton}">
                     <materialDesign:PackIcon Kind="Share" />
                 </Button>
-                <Button Style="{StaticResource MaterialDesignIconButton}">
+                <Button Command="{Binding FullScreenCommand}" Style="{StaticResource MaterialDesignIconButton}">
                     <materialDesign:PackIcon Kind="Fullscreen" />
                 </Button>
             </StackPanel>

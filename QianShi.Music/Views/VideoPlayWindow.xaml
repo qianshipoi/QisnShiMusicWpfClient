@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
+    xmlns:userControls="clr-namespace:QianShi.Music.Common.UserControls"
     Title="VideoPlayWindow"
     Width="800"
     Height="450"
@@ -24,62 +25,27 @@
             VerticalAlignment="Top"
             Click="SwitchWindowSize"
             WindowChrome.IsHitTestVisibleInChrome="True" />
-
-        <MediaElement />
-
-        <Grid VerticalAlignment="Bottom" Background="#0fffffff">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="144" />
-                <ColumnDefinition Width="144" />
-            </Grid.ColumnDefinitions>
-            <DockPanel Margin="0,0,10,0" LastChildFill="True">
-                <Button
-                    Cursor="Hand"
-                    DockPanel.Dock="Left"
-                    Style="{StaticResource MaterialDesignIconButton}">
-                    <materialDesign:PackIcon
-                        Width="32"
-                        Height="32"
-                        Kind="Play" />
-                </Button>
-                <TextBlock
-                    VerticalAlignment="Center"
-                    DockPanel.Dock="Right"
-                    FontSize="16"
-                    Text="12:12" />
-                <Slider Margin="6,0" VerticalAlignment="Center" />
-            </DockPanel>
-            <DockPanel Grid.Column="1" LastChildFill="True">
-                <Button DockPanel.Dock="Left" Style="{StaticResource MaterialDesignIconButton}">
-                    <materialDesign:PackIcon
-                        Width="32"
-                        Height="32"
-                        Kind="VolumeHigh" />
-                </Button>
-                <Slider Margin="0,0,10,0" VerticalAlignment="Center" />
-            </DockPanel>
-            <UniformGrid Grid.Column="3" Rows="1">
-                <Button Cursor="Hand" Style="{StaticResource MaterialDesignIconButton}">
-                    <materialDesign:PackIcon
-                        Width="32"
-                        Height="32"
-                        Kind="Settings" />
-                </Button>
-                <Button Style="{StaticResource MaterialDesignIconButton}">
-                    <materialDesign:PackIcon
-                        Width="32"
-                        Height="32"
-                        Kind="Share" />
-                </Button>
-                <Button Style="{StaticResource MaterialDesignIconButton}">
-                    <materialDesign:PackIcon
-                        Width="32"
-                        Height="32"
-                        Kind="WindowMaximize" />
-                </Button>
-            </UniformGrid>
-
-        </Grid>
+        <userControls:VideoPlay
+            x:Name="VideoPlay"
+            Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}"
+            Background="Black"
+            Cover="{Binding Cover}"
+            DragStartedCommand="{Binding DragStartedCommand}"
+            FullScreenCommand="{Binding FullScreenCommand}"
+            IsMuted="{Binding IsMuted}"
+            IsPlaying="{Binding IsPlaying}"
+            MvUrls="{Binding MvUrls}"
+            PauseCommand="{Binding PauseCommand}"
+            PlayCommand="{Binding PlayCommand}"
+            PlayControl="{Binding VideoControl}"
+            Position="{Binding Position}"
+            SetMutedCommand="{Binding SetMutedCommand}"
+            SetPositionCommand="{Binding SetPositionCommand}"
+            SetVolumeCommand="{Binding SetVolumeCommand}"
+            ShowCover="{Binding ShowCover}"
+            ShowSwitchDialog="{Binding ShowSwitchDialog}"
+            SwitchBrCommand="{Binding SwitchBrCommand}"
+            Volume="{Binding Volume}"
+            Duration="{Binding TotalTime}" />
     </Grid>
 </Window>
