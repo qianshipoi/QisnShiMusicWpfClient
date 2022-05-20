@@ -1,0 +1,51 @@
+﻿<Window
+    x:Class="QianShi.Music.Views.VideoPlayWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:QianShi.Music"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="http://prismlibrary.com/"
+    xmlns:userControls="clr-namespace:QianShi.Music.Common.UserControls"
+    Title="VideoPlayWindow"
+    Width="800"
+    Height="450"
+    prism:ViewModelLocator.AutoWireViewModel="True"
+    AllowsTransparency="True"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="68" />
+    </WindowChrome.WindowChrome>
+    <Grid Background="Black">
+        <ToggleButton
+            Margin="10"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Click="SwitchWindowSize"
+            WindowChrome.IsHitTestVisibleInChrome="True" />
+        <userControls:VideoPlay
+            x:Name="VideoPlay"
+            Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}"
+            Background="Black"
+            Cover="{Binding Cover}"
+            DragStartedCommand="{Binding DragStartedCommand}"
+            FullScreenCommand="{Binding FullScreenCommand}"
+            IsMuted="{Binding IsMuted}"
+            IsPlaying="{Binding IsPlaying}"
+            MvUrls="{Binding MvUrls}"
+            PauseCommand="{Binding PauseCommand}"
+            PlayCommand="{Binding PlayCommand}"
+            PlayControl="{Binding VideoControl}"
+            Position="{Binding Position}"
+            SetMutedCommand="{Binding SetMutedCommand}"
+            SetPositionCommand="{Binding SetPositionCommand}"
+            SetVolumeCommand="{Binding SetVolumeCommand}"
+            ShowCover="{Binding ShowCover}"
+            ShowSwitchDialog="{Binding ShowSwitchDialog}"
+            SwitchBrCommand="{Binding SwitchBrCommand}"
+            Volume="{Binding Volume}"
+            Duration="{Binding TotalTime}" />
+    </Grid>
+</Window>

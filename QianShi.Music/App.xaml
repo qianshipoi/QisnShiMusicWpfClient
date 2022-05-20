@@ -102,6 +102,10 @@
             <s:Boolean x:Key="False">False</s:Boolean>
             <converters:IsNullConverter x:Key="IsNullConverter" />
             <converters:ListCountIsGtZeroConverter x:Key="ListCountIsGtZeroConverter" />
+            <converters:NumberConverter x:Key="NumberConverter" />
+            <converters:TimeSpanToDoubleConverter x:Key="TimeSpanToDoubleConverter" />
+            <converters:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />
+            <FontFamily x:Key="SourceHan">/QianShi.Music;Component/Resources/#SourceHanSerifSC-VF</FontFamily>
             <data:ViewModelLocator x:Key="ViewModelLocator" />
         </ResourceDictionary>
     </Application.Resources>

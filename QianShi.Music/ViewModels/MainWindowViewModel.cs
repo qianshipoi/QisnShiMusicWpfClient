@@ -72,22 +72,22 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand _playCommand = default!;
 
         public DelegateCommand PlayCommand =>
-            _playCommand ?? (_playCommand = new DelegateCommand(_playStoreService.Play));
+            _playCommand ??= new DelegateCommand(_playStoreService.Play);
 
         private DelegateCommand _pauseCommand = default!;
 
         public DelegateCommand PauseCommand =>
-            _pauseCommand ?? (_pauseCommand = new DelegateCommand(_playStoreService.Pause));
+            _pauseCommand ??= new DelegateCommand(_playStoreService.Pause);
 
         private DelegateCommand _nextCommand = default!;
 
         public DelegateCommand NextCommand =>
-            _nextCommand ?? (_nextCommand = new DelegateCommand(_playStoreService.Next));
+            _nextCommand ??= new DelegateCommand(_playStoreService.Next);
 
         private DelegateCommand _previousCommand = default!;
 
         public DelegateCommand PreviousCommand =>
-            _previousCommand ?? (_previousCommand = new DelegateCommand(_playStoreService.Previous));
+            _previousCommand ??= new DelegateCommand(_playStoreService.Previous);
 
         private bool _isPlaying = false;
 

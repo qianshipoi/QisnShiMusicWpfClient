@@ -141,6 +141,6 @@ namespace QianShi.Music.Common.Models.Response
         public string Alg { get; set; } = string.Empty;
 
         public string Info { get; set; } = default!;
-        public int MvSize { get; set; }
+        public int? MvSize { get; set; }
     }
 }

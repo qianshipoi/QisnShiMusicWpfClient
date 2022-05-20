@@ -3,7 +3,7 @@ using System.Windows.Data;
 
 namespace QianShi.Music.Common.Converters
 {
-    internal class TimestampConverter : IValueConverter
+    public class TimestampConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

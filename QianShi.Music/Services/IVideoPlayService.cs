@@ -1,0 +1,33 @@
+﻿using System.Windows;
+
+namespace QianShi.Music.Services
+{
+    public interface IVideoPlayService
+    {
+        event EventHandler<ProgressEventArgs>? ProgressChanged;
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
+        event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+        event EventHandler<PropertyChangedEventArgs<string>>? CoverChanged;
+        event EventHandler<PropertyChangedEventArgs<bool>>? IsFullScreenChanged;
+        event EventHandler? PlayEnded;
+
+        FrameworkElement Control { get; }
+        string? Cover { get; set; }
+        bool IsPlaying { get; }
+        bool IsMuted { get; }
+        double Volume { get; }
+        double Total { get; }
+        double Position { get; }
+        string Url { get; set; }
+        bool IsFullScreen { get; }
+
+        void Play(string url);
+        void Play();
+        void Pause();
+        void SetVolume(double value);
+        void SetProgress(double value);
+        void SetMute(bool isMute);
+        void FullScreen();
+    }
+}

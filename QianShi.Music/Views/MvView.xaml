@@ -1,0 +1,123 @@
+﻿<UserControl
+    x:Class="QianShi.Music.Views.MvView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:extensions="clr-namespace:QianShi.Music.Extensions"
+    xmlns:helpers="clr-namespace:QianShi.Music.Common.Helpers"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:QianShi.Music.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
+    d:Background="White"
+    d:DataContext="{d:DesignInstance Type=viewmodels:MvViewModel}"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
+    mc:Ignorable="d">
+
+    <uc:ScrollViewerAnimation ScrollChanged="ScrollViewer_OnScrollChanged">
+        <Border
+            MaxWidth="1280"
+            Padding="10"
+            Background="White">
+            <StackPanel>
+                <uc:VideoPlay
+                    x:Name="VideoPlay"
+                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}"
+                    Background="Black"
+                    Cover="{Binding Detail.Cover}"
+                    DragStartedCommand="{Binding DragStartedCommand}"
+                    FullScreenCommand="{Binding FullScreenCommand}"
+                    IsMuted="{Binding IsMuted}"
+                    IsPlaying="{Binding IsPlaying}"
+                    MvUrls="{Binding MvUrls}"
+                    PauseCommand="{Binding PauseCommand}"
+                    PlayCommand="{Binding PlayCommand}"
+                    PlayControl="{Binding VideoControl}"
+                    Position="{Binding Position}"
+                    SetMutedCommand="{Binding SetMutedCommand}"
+                    SetPositionCommand="{Binding SetPositionCommand}"
+                    SetVolumeCommand="{Binding SetVolumeCommand}"
+                    ShowCover="{Binding ShowCover}"
+                    ShowSwitchDialog="{Binding ShowSwitchDialog}"
+                    SwitchBrCommand="{Binding SwitchBrCommand}"
+                    Volume="{Binding Volume}"
+                    Duration="{Binding Detail.Duration}" />
+                <StackPanel Margin="0,20,0,0" Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="24" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock d:Text="李荣浩" Text="{Binding Detail.Artists[0].Name}" />
+                    <TextBlock Margin="4,0" Text="-" />
+                    <TextBlock d:Text="脱胎换骨" Text="{Binding Detail.Name}" />
+                    <materialDesign:PackIcon
+                        Margin="10,0"
+                        VerticalAlignment="Center"
+                        Foreground="#673AB7"
+                        Kind="HeartOutline" />
+                </StackPanel>
+                <StackPanel Margin="0,12" Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="12" />
+                            <Setter Property="Opacity" Value=".68" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock d:Text="74.6万 Views · " Text="{Binding Detail.PlayCount, Converter={StaticResource NumberConverter}, StringFormat='{}{0} Views · '}" />
+                    <TextBlock d:Text="2022-03-11" Text="{Binding Detail.PublishTime}" />
+                </StackPanel>
+                <uc:TitleControl Title="更多视频" Margin="0,30,0,10" />
+                <ItemsControl ItemsSource="{Binding MovieVideos}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="5" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type response:MovieVideo}">
+                            <StackPanel Margin="4,8">
+                                <uc:FilletImage
+                                    x:Name="ImageControl"
+                                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*9)}"
+                                    CornerRadius="12"
+                                    Cursor="Hand"
+                                    ImageSource="{Binding CoverImgUrl}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.PlayMvCommand, RelativeSource={RelativeSource AncestorType=local:MvView}}" CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </uc:FilletImage>
+                                <TextBlock
+                                    MaxHeight="48"
+                                    Margin="0,6,0,0"
+                                    FontSize="16"
+                                    FontWeight="Bold"
+                                    Style="{StaticResource UnderlineTextBlock}"
+                                    Text="{Binding Name}"
+                                    TextTrimming="WordEllipsis"
+                                    TextWrapping="Wrap">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.PlayMvCommand, RelativeSource={RelativeSource AncestorType=local:MvView}}" CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
+                                <TextBlock
+                                    FontSize="12"
+                                    Opacity=".68"
+                                    Text="{Binding ArtistName}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Border>
+    </uc:ScrollViewerAnimation>
+</UserControl>

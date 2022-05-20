@@ -5,6 +5,7 @@
     xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="clr-namespace:QianShi.Music.Views.Dialogs"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -174,7 +175,13 @@
                                 CornerRadius="12"
                                 Cursor="Hand"
                                 DockPanel.Dock="Left"
-                                ImageSource="{Binding MovieVideo.CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}" />
+                                ImageSource="{Binding MovieVideo.CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                        <i:InvokeCommandAction Command="{Binding JumpToMvPageCommand}" CommandParameter="{Binding MovieVideo}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </uc:FilletImage>
                             <StackPanel Margin="24,0" VerticalAlignment="Center">
                                 <TextBlock
                                     Margin="0,0,0,8"
@@ -254,7 +261,13 @@
                                     Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
                                     CornerRadius="12"
                                     Cursor="Hand"
-                                    ImageSource="{Binding CoverImgUrl}" />
+                                    ImageSource="{Binding CoverImgUrl}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                                            <i:InvokeCommandAction Command="{Binding DataContext.JumpToMvPageCommand, RelativeSource={RelativeSource AncestorType=local:ArtistView}}" CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </uc:FilletImage>
                                 <TextBlock
                                     MaxHeight="48"
                                     Margin="0,6,0,0"

@@ -260,5 +260,26 @@ namespace QianShi.Music.Services
         /// <param name="id">音乐 id</param>
         /// <returns></returns>
         Task<LyricResponse> Lyric(long id);
+
+        /// <summary>
+        /// 获取 mv 数据
+        /// </summary>
+        /// <param name="mvid">mv 的 id</param>
+        /// <returns></returns>
+        Task<MvDetailResponse> MvDetail(long mvid);
+
+        /// <summary>
+        /// mv 地址
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<MvUrlResponse> MvUrl(MvUrlRequest parameters);
+
+        /// <summary>
+        /// 相似 mv
+        /// </summary>
+        /// <param name="mvid"> mv id</param>
+        /// <returns></returns>
+        Task<SimiMvResponse> SimiMv(long mvid);
     }
 }
