@@ -32,16 +32,6 @@ namespace QianShi.Music.Services
         }
     }
 
-    public class IsPlayingChangedEventArgs : EventArgs
-    {
-        public bool IsPlaying { get; private set; }
-
-        public IsPlayingChangedEventArgs(bool isPlaying)
-        {
-            IsPlaying = isPlaying;
-        }
-    }
-
     public class PropertyChangedEventArgs<T> : EventArgs
     {
         public T? NewValue { get; private set; }
@@ -64,16 +54,6 @@ namespace QianShi.Music.Services
         {
             Value = value;
             Total = total;
-        }
-    }
-
-    public class VolumeChangedEventArgs : EventArgs
-    {
-        public double Value { get; set; }
-
-        public VolumeChangedEventArgs(double value)
-        {
-            Value = value;
         }
     }
 }

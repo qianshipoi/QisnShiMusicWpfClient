@@ -14,12 +14,12 @@ namespace QianShi.Music.Services
 
         FrameworkElement Control { get; }
         string? Cover { get; set; }
+        string Url { get; set; }
         bool IsPlaying { get; }
         bool IsMuted { get; }
         double Volume { get; }
         double Total { get; }
         double Position { get; }
-        string Url { get; set; }
         bool IsFullScreen { get; }
 
         void Play(string url);

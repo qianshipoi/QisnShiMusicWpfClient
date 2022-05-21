@@ -8,8 +8,8 @@ namespace QianShi.Music.Common.Models.Response
 
         public bool IsPlaying
         {
-            get { return _isPlaying; }
-            set { SetProperty(ref _isPlaying, value); }
+            get => _isPlaying;
+            set => SetProperty(ref _isPlaying, value);
         }
 
         public string? Url { get; set; }
