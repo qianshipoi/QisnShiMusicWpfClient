@@ -42,7 +42,7 @@
             SetMutedCommand="{Binding SetMutedCommand}"
             SetPositionCommand="{Binding SetPositionCommand}"
             SetVolumeCommand="{Binding SetVolumeCommand}"
-            ShowCover="{Binding ShowCover}"
+            ShowCover="{StaticResource False}"
             ShowSwitchDialog="{Binding ShowSwitchDialog}"
             SwitchBrCommand="{Binding SwitchBrCommand}"
             Volume="{Binding Volume}"

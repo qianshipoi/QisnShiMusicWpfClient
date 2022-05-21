@@ -8,12 +8,10 @@ namespace QianShi.Music.Services
         event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
         event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
         event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
-        event EventHandler<PropertyChangedEventArgs<string>>? CoverChanged;
         event EventHandler<PropertyChangedEventArgs<bool>>? IsFullScreenChanged;
         event EventHandler? PlayEnded;
 
         FrameworkElement Control { get; }
-        string? Cover { get; set; }
         string Url { get; set; }
         bool IsPlaying { get; }
         bool IsMuted { get; }

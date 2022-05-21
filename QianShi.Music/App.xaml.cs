@@ -56,6 +56,7 @@ namespace QianShi.Music
             containerRegistry.RegisterSingleton<IPlayService, MediaPlayerPlayService>();
             containerRegistry.RegisterSingleton<IPlayStoreService, PlayStoreService>();
             containerRegistry.RegisterSingleton<IVideoPlayService, MediaElementPlayService>();
+            containerRegistry.RegisterSingleton<IVideoPlayStoreService, VideoPlayStoreService>();
             containerRegistry.Register<IDialogHostService, DialogHostService>();
 
             containerRegistry.Register<VideoPlayWindow>();

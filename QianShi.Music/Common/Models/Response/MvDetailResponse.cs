@@ -58,7 +58,7 @@ namespace QianShi.Music.Common.Models.Response
         public string Name { get; set; } = default!;
         public int ArtistId { get; set; }
         public string ArtistName { get; set; } = default!;
-        public string BriefDesc { get; set; } = String.Empty;
+        public string BriefDesc { get; set; } = string.Empty;
         public object? Desc { get; set; }
         public string Cover { get; set; } = default!;
         [JsonPropertyName("coverId_str")]

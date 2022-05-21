@@ -16,7 +16,6 @@ namespace QianShi.Music.Services
         private string _url = string.Empty;
         private bool _isPlaying;
         private double _position;
-        private string? _cover;
         private bool _isFullScreen = false;
         private VideoPlayWindow? _window;
 
@@ -24,22 +23,10 @@ namespace QianShi.Music.Services
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
         public event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
-        public event EventHandler<PropertyChangedEventArgs<string>>? CoverChanged;
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsFullScreenChanged;
         public event EventHandler? PlayEnded;
 
         public FrameworkElement Control => _mediaElement;
-        public string? Cover
-        {
-            get => _cover;
-            set
-            {
-                if (_cover == value) return;
-                var oldVal = _cover;
-                _cover = value;
-                CoverChanged?.Invoke(this, new(_cover, oldVal));
-            }
-        }
         public double Position
         {
             get => _position;
