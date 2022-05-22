@@ -11,6 +11,7 @@ namespace QianShi.Music.Services
     public class MediaElementPlayService : IVideoPlayService
     {
         private readonly IContainerProvider _containerProvider;
+        private readonly IPlayService _palyService;
         private readonly MediaElement _mediaElement;
         private readonly DispatcherTimer _timer;
         private string _url = string.Empty;
@@ -48,6 +49,11 @@ namespace QianShi.Music.Services
             set
             {
                 if (_isPlaying == value) return;
+                if (value && _palyService.IsPlaying)
+                {
+                    _palyService.Pause();
+                }
+
                 _isPlaying = value;
                 IsPlayingChanged?.Invoke(this, new(value, !value));
             }
@@ -84,9 +90,10 @@ namespace QianShi.Music.Services
             if (cache) Play();
         }
 
-        public MediaElementPlayService(IContainerProvider containerProvider)
+        public MediaElementPlayService(IContainerProvider containerProvider, IPlayService palyService)
         {
             _containerProvider = containerProvider;
+            _palyService = palyService;
             _mediaElement = new();
             _mediaElement.LoadedBehavior = MediaState.Manual;
             _mediaElement.MediaOpened += (s, e) =>

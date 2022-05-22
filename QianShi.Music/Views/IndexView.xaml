@@ -16,54 +16,11 @@
             MaxWidth="1280"
             VerticalAlignment="Stretch"
             Background="White">
-            <!--<TextBlock
-                Margin="20,0"
-                FontSize="28"
-                FontWeight="Bold"
-                Text="by Apple Music" />
-            <ItemsControl Margin="0,20" ItemsSource="{Binding ApplyMusic}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <uc:IsometricPanel />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel>
-                            <uc:MusicCard
-                                Title="{Binding Title}"
-                                Margin="20,0"
-                                Cover="{Binding Cover}"
-                                Description="{Binding Description}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>-->
-            <DockPanel
-                Margin="20,0"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <TextBlock
-                    DockPanel.Dock="Left"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Text="推荐歌单" />
-                <TextBlock
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Cursor="Hand"
-                    FontSize="13"
-                    FontWeight="Bold"
-                    Opacity=".65"
-                    Text="查看全部">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseLeftButtonUp">
-                            <i:InvokeCommandAction Command="{Binding JumpFoundCommand}" CommandParameter="推荐" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TextBlock>
-            </DockPanel>
-            <ItemsControl Margin="0,20" ItemsSource="{Binding RecommendPlayList}">
+            <uc:TitleControl Title="推荐歌单" TitleFontSize="28" Margin="20,20,20,0" 
+                             ShowLookAll="True"
+                             LookAllCammand="{Binding JumpFoundCommand}" 
+                             LookAllCommandParameter="推荐" />
+            <ItemsControl Margin="10,20" ItemsSource="{Binding RecommendPlayList}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="5" />
@@ -73,8 +30,8 @@
                     <DataTemplate>
                         <StackPanel>
                             <uc:PlaylistCard
-                                Title="{Binding Name}"
-                                Margin="20,10"
+                                Title="{Binding Name}" 
+                                Margin="10"
                                 Cover="{Binding CoverImgUrl}"
                                 Description="{Binding Copywriter}"
                                 OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
@@ -83,11 +40,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <TextBlock
-                Margin="20,0"
-                FontSize="28"
-                FontWeight="Bold"
-                Text="For You" />
+            <uc:TitleControl Title="For You" TitleFontSize="28" Margin="20,20,20,0" ></uc:TitleControl>
             <UniformGrid
                 MinHeight="200"
                 Margin="20"
@@ -173,11 +126,7 @@
                     </Grid>
                 </materialDesign:Card>
             </UniformGrid>
-            <TextBlock
-                Margin="20,0"
-                FontSize="28"
-                FontWeight="Bold"
-                Text="推荐艺人" />
+            <uc:TitleControl Title="推荐艺人" TitleFontSize="28" Margin="20,20,20,0" />
             <ItemsControl Margin="0,20" ItemsSource="{Binding RecommendSingerList}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -187,7 +136,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Margin="20,0" HorizontalAlignment="Stretch">
-                            <uc:PlaylistCover CornerRadius="100" ImageSource="{Binding CoverImgUrl}">
+                            <uc:PlaylistCover CornerRadius="1000" ImageSource="{Binding CoverImgUrl}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="ImageClick">
                                         <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}, Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding}" />
@@ -198,39 +147,25 @@
                                 Margin="0,10,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontSize="16"
+                                FontSize="16" Cursor="Hand" Style="{StaticResource UnderlineTextBlock}"
                                 FontWeight="Bold"
                                 Opacity=".65"
-                                Text="{Binding Name}" />
+                                Text="{Binding Name}" >
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}, Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </TextBlock>
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <DockPanel
-                Margin="20,0"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <TextBlock
-                    DockPanel.Dock="Left"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Text="新专速递" />
-                <TextBlock
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Cursor="Hand"
-                    FontSize="13"
-                    FontWeight="Bold"
-                    Opacity=".65"
-                    Text="查看全部">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseLeftButtonUp">
-                            <i:InvokeCommandAction Command="{Binding JumpFoundCommand}" CommandParameter="新专速递" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TextBlock>
-            </DockPanel>
-            <ItemsControl Margin="0,20" ItemsSource="{Binding NewAlbumList}">
+            <uc:TitleControl Title="新专速递" TitleFontSize="28" Margin="20,20,20,0" 
+                             ShowLookAll="True"
+                             LookAllCammand="{Binding JumpFoundCommand}" 
+                             LookAllCommandParameter="新专速递" />
+            <ItemsControl Margin="10,20" ItemsSource="{Binding NewAlbumList}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="5" />
@@ -241,40 +176,23 @@
                         <StackPanel>
                             <uc:PlaylistCard
                                 Title="{Binding Name}"
-                                Margin="20,10"
+                                Margin="10"
                                 Cover="{Binding CoverImgUrl}"
                                 Description="{Binding Artist.Name}"
                                 OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
+                                DescriptionCommand="{Binding DataContext.OpenArtistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
+                                DescriptionCommandParameter="{Binding Artist}"
+                                DescriptionCanClick="True"
                                 Playlist="{Binding}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <DockPanel
-                Margin="20,0"
-                HorizontalAlignment="Stretch"
-                LastChildFill="True">
-                <TextBlock
-                    DockPanel.Dock="Left"
-                    FontSize="28"
-                    FontWeight="Bold"
-                    Text="排行榜" />
-                <TextBlock
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Cursor="Hand"
-                    FontSize="13"
-                    FontWeight="Bold"
-                    Opacity=".65"
-                    Text="查看全部">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseLeftButtonUp">
-                            <i:InvokeCommandAction Command="{Binding JumpFoundCommand}" CommandParameter="排行榜" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TextBlock>
-            </DockPanel>
-            <ItemsControl Margin="0,20" ItemsSource="{Binding RankingList}">
+            <uc:TitleControl Title="排行榜" TitleFontSize="28" Margin="20,20,20,0" 
+                             ShowLookAll="True"
+                             LookAllCammand="{Binding JumpFoundCommand}" 
+                             LookAllCommandParameter="排行榜" />
+            <ItemsControl Margin="10,20" ItemsSource="{Binding RankingList}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="5" />
@@ -285,7 +203,7 @@
                         <StackPanel>
                             <uc:PlaylistCard
                                 Title="{Binding Name}"
-                                Margin="20,10"
+                                Margin="10"
                                 Cover="{Binding CoverImgUrl}"
                                 Description="{Binding UpdateFrequency}"
                                 OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"

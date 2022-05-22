@@ -9,6 +9,7 @@ using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 using System.Windows;
+using QianShi.Music.Common.Models.Response;
 
 namespace QianShi.Music.ViewModels
 {
@@ -51,7 +52,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
 
         public DelegateCommand<IPlaylist> OpenArtistCommand =>
-            _openArtistCommand ?? (_openArtistCommand = new DelegateCommand<IPlaylist>(ExecuteOpenArtistCommand));
+            _openArtistCommand ??= new(ExecuteOpenArtistCommand);
 
         private void ExecuteOpenArtistCommand(IPlaylist playlist)
         {

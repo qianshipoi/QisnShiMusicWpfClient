@@ -94,6 +94,7 @@ namespace QianShi.Music.ViewModels
                     Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
                     Detail.Count = response.PlaylistDetail.TrackCount;
                     Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
+                    Detail.CreatorId = response.PlaylistDetail.Creator?.UserId??0;
                     _playlists.Clear();
 
                     // 获取所有歌曲

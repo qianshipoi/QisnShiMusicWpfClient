@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace QianShi.Music.Views
@@ -27,5 +29,22 @@ namespace QianShi.Music.Views
                     parent.RaiseEvent(eventArg);
             }
         }
+
+        private void UIElement_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = CreatorUrlControl.Text,
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (Exception )
+            {
+            }
+        }
+        
     }
 }

@@ -11,7 +11,7 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <DockPanel
-        d:Background="White"
+        d:Background="White" 
         DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:TitleControl}}}"
         LastChildFill="False">
         <TextBlock
@@ -21,12 +21,12 @@
             FontWeight="Bold"
             Text="{Binding Title}" />
         <TextBlock
-            VerticalAlignment="Center"
+            VerticalAlignment="Bottom"
             Cursor="Hand"
             DockPanel.Dock="Right"
             FontSize="13"
             MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"
-            Opacity=".68"
+            Opacity=".68" FontWeight="Bold"
             Text="查看全部"
             Visibility="{Binding ShowLookAll, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TextBlock.Style>
@@ -38,11 +38,6 @@
                     </Style.Triggers>
                 </Style>
             </TextBlock.Style>
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseLeftButtonUp">
-                    <i:InvokeCommandAction Command="{Binding LookAllCommandParameter}" CommandParameter="adasd" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
         </TextBlock>
     </DockPanel>
 </UserControl>

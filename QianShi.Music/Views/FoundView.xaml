@@ -20,8 +20,7 @@
             <ItemsPanelTemplate x:Key="StackPanel">
                 <StackPanel />
             </ItemsPanelTemplate>
-            <Style
-                x:Key="SelectionCatButton"
+            <Style x:Key="SelectionCatButton"
                 BasedOn="{StaticResource MaterialDesignRaisedButton}"
                 TargetType="Button">
                 <Setter Property="Opacity" Value=".65" />
@@ -48,8 +47,7 @@
                     Content="···"
                     Style="{StaticResource SelectionCatButton}" />
             </DataTemplate>
-            <Style
-                x:Key="SelectedCatBtn"
+            <Style x:Key="SelectedCatBtn"
                 BasedOn="{StaticResource MaterialDesignRaisedButton}"
                 TargetType="Button">
                 <Style.Triggers>
@@ -68,7 +66,7 @@
                     Title="{Binding Name}"
                     MinWidth="160"
                     MaxWidth="240"
-                    Margin="20"
+                    Margin="10"
                     HorizontalAlignment="Stretch"
                     AmountOfPlay="{Binding PlayCount}"
                     Cover="{Binding CoverImgUrl}"
@@ -80,7 +78,7 @@
                     Title="{Binding Name}"
                     MinWidth="160"
                     MaxWidth="240"
-                    Margin="20"
+                    Margin="10"
                     HorizontalAlignment="Stretch"
                     AmountOfPlay="{Binding PlayCount}"
                     Cover="{Binding CoverImgUrl}"
@@ -93,7 +91,7 @@
                     Title="{Binding Name}"
                     MinWidth="160"
                     MaxWidth="240"
-                    Margin="20"
+                    Margin="10"
                     HorizontalAlignment="Stretch"
                     Cover="{Binding CoverImgUrl}"
                     Description="{Binding UpdateFrequency}"
@@ -171,7 +169,7 @@
                 </Border>
                 <ItemsControl
                     x:Name="PlaylistControl"
-                    Grid.Row="1"
+                    Grid.Row="1" Margin="10,0"
                     HorizontalAlignment="Center"
                     HorizontalContentAlignment="Center"
                     ItemTemplateSelector="{StaticResource PlaylistDataTemplateSelector}"

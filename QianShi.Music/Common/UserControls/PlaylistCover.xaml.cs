@@ -20,8 +20,8 @@ namespace QianShi.Music.Common.UserControls
 
         public CornerRadius CornerRadius
         {
-            get { return (CornerRadius)GetValue(CornerRadiusCornerRadiusProperty); }
-            set { SetValue(CornerRadiusCornerRadiusProperty, value); }
+            get => (CornerRadius)GetValue(CornerRadiusCornerRadiusProperty);
+            set => SetValue(CornerRadiusCornerRadiusProperty, value);
         }
 
         public static readonly DependencyProperty CornerRadiusCornerRadiusProperty =
@@ -29,8 +29,8 @@ namespace QianShi.Music.Common.UserControls
 
         public string ImageSource
         {
-            get { return (string)GetValue(ImageSourceProperty); }
-            set { SetValue(ImageSourceProperty, value); }
+            get => (string)GetValue(ImageSourceProperty);
+            set => SetValue(ImageSourceProperty, value);
         }
 
         public static readonly DependencyProperty ImageSourceProperty =
@@ -39,8 +39,8 @@ namespace QianShi.Music.Common.UserControls
 
         public ICommand PlayCommand
         {
-            get { return (ICommand)GetValue(PlayCommandProperty); }
-            set { SetValue(PlayCommandProperty, value); }
+            get => (ICommand)GetValue(PlayCommandProperty);
+            set => SetValue(PlayCommandProperty, value);
         }
 
         public static readonly DependencyProperty PlayCommandProperty =
@@ -48,8 +48,8 @@ namespace QianShi.Music.Common.UserControls
 
         public ICommand OpenPlaylistCommand
         {
-            get { return (ICommand)GetValue(OpenPlaylistCommandProperty); }
-            set { SetValue(OpenPlaylistCommandProperty, value); }
+            get => (ICommand)GetValue(OpenPlaylistCommandProperty);
+            set => SetValue(OpenPlaylistCommandProperty, value);
         }
 
         public static readonly DependencyProperty OpenPlaylistCommandProperty =
@@ -57,8 +57,8 @@ namespace QianShi.Music.Common.UserControls
 
         public object OpenPlaylistCommandParameter
         {
-            get { return (object)GetValue(OpenPlaylistCommandParameterProperty); }
-            set { SetValue(OpenPlaylistCommandParameterProperty, value); }
+            get => (object)GetValue(OpenPlaylistCommandParameterProperty);
+            set => SetValue(OpenPlaylistCommandParameterProperty, value);
         }
 
         public static readonly DependencyProperty OpenPlaylistCommandParameterProperty =

@@ -11,8 +11,8 @@ namespace QianShi.Music.Common.UserControls
     {
         public string Title
         {
-            get { return (string)GetValue(TitleProperty); }
-            set { SetValue(TitleProperty, value); }
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
         }
 
         public static readonly DependencyProperty TitleProperty =
@@ -20,8 +20,8 @@ namespace QianShi.Music.Common.UserControls
 
         public double TitleFontSize
         {
-            get { return (double)GetValue(TitleFontSizeProperty); }
-            set { SetValue(TitleFontSizeProperty, value); }
+            get => (double)GetValue(TitleFontSizeProperty);
+            set => SetValue(TitleFontSizeProperty, value);
         }
 
         public static readonly DependencyProperty TitleFontSizeProperty =
@@ -29,8 +29,8 @@ namespace QianShi.Music.Common.UserControls
 
         public long AmountOfPlay
         {
-            get { return (long)GetValue(AmountOfPlayProperty); }
-            set { SetValue(AmountOfPlayProperty, value); }
+            get => (long)GetValue(AmountOfPlayProperty);
+            set => SetValue(AmountOfPlayProperty, value);
         }
 
         public static readonly DependencyProperty AmountOfPlayProperty =
@@ -44,8 +44,8 @@ namespace QianShi.Music.Common.UserControls
 
         public string Cover
         {
-            get { return (string)GetValue(CoverProperty); }
-            set { SetValue(CoverProperty, value); }
+            get => (string)GetValue(CoverProperty);
+            set => SetValue(CoverProperty, value);
         }
 
         public static readonly DependencyProperty CoverProperty =
@@ -53,8 +53,8 @@ namespace QianShi.Music.Common.UserControls
 
         public string Description
         {
-            get { return (string)GetValue(DescriptionProperty); }
-            set { SetValue(DescriptionProperty, value); }
+            get => (string)GetValue(DescriptionProperty);
+            set => SetValue(DescriptionProperty, value);
         }
 
         public static readonly DependencyProperty DescriptionProperty =
@@ -66,10 +66,37 @@ namespace QianShi.Music.Common.UserControls
                 }
             }));
 
+        public bool DescriptionCanClick
+        {
+            get => (bool)GetValue(DescriptionCanClickProperty);
+            set => SetValue(DescriptionCanClickProperty, value);
+        }
+
+        public static readonly DependencyProperty DescriptionCanClickProperty =
+            DependencyProperty.Register(nameof(DescriptionCanClick), typeof(bool), typeof(PlaylistCard), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+
+        public ICommand DescriptionCommand
+        {
+            get => (ICommand)GetValue(DescriptionCommandProperty);
+            set => SetValue(DescriptionCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty DescriptionCommandProperty =
+            DependencyProperty.Register(nameof(DescriptionCommand), typeof(ICommand), typeof(PlaylistCard), new PropertyMetadata(default));
+
+        public object DescriptionCommandParameter
+        {
+            get => (object)GetValue(DescriptionCommandParameterProperty);
+            set => SetValue(DescriptionCommandParameterProperty, value);
+        }
+
+        public static readonly DependencyProperty DescriptionCommandParameterProperty =
+            DependencyProperty.Register(nameof(DescriptionCommandParameter), typeof(object), typeof(PlaylistCard), new PropertyMetadata(default));
+
         public IPlaylist Playlist
         {
-            get { return (IPlaylist)GetValue(PlaylistProperty); }
-            set { SetValue(PlaylistProperty, value); }
+            get => (IPlaylist)GetValue(PlaylistProperty);
+            set => SetValue(PlaylistProperty, value);
         }
 
         public static readonly DependencyProperty PlaylistProperty =
@@ -77,8 +104,8 @@ namespace QianShi.Music.Common.UserControls
 
         public ICommand OpenPlaylistCommand
         {
-            get { return (ICommand)GetValue(OpenPlaylistCommandProperty); }
-            set { SetValue(OpenPlaylistCommandProperty, value); }
+            get => (ICommand)GetValue(OpenPlaylistCommandProperty);
+            set => SetValue(OpenPlaylistCommandProperty, value);
         }
 
         public static readonly DependencyProperty OpenPlaylistCommandProperty =

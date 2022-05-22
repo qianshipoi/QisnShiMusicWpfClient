@@ -21,8 +21,6 @@
     </UserControl.Resources>
     <Image
         x:Name="ImageControl"
-        Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth}"
-        MaxHeight="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FilletImage}}, Path=ActualHeight}"
         HorizontalAlignment="Stretch"
         DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FilletImage}}}"
         Source="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FilletImage}}, Path=ImageSource}"

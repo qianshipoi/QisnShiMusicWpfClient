@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:QianShi.Music.Views"
     d:DesignHeight="280"
     d:DesignWidth="210"
     mc:Ignorable="d">
@@ -16,10 +17,9 @@
             <conver:NumberConverter x:Key="NumberConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border
+    <Border 
         Background="White"
         BorderThickness="0"
-        ClipToBounds="True"
         CornerRadius="10">
         <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistCard}}}">
             <local:PlaylistCover
@@ -32,25 +32,54 @@
                 Opacity="0.58"
                 Visibility="Collapsed">
                 <materialDesign:PackIcon Kind="Play" />
-                <TextBlock FontSize="12" Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=AmountOfPlay, Converter={StaticResource NumberConverter}}" />
+                <TextBlock FontSize="12" Text="{Binding AmountOfPlay, Converter={StaticResource NumberConverter}}" />
             </WrapPanel>
             <TextBlock
-                MaxHeight="40"
+                MaxHeight="42"
                 Margin="2,0"
-                Cursor="Hand"
-                FontSize="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=TitleFontSize}"
-                FontWeight="Bold"
-                Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Title}"
-                TextWrapping="WrapWithOverflow" />
+                Cursor="Hand" 
+                Style="{StaticResource UnderlineTextBlock}"
+                FontSize="{Binding TitleFontSize}"
+                FontWeight="Bold" 
+                Text="{Binding Title}"
+                TextWrapping="WrapWithOverflow" >
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding OpenPlaylistCommand}" 
+                                               CommandParameter="{Binding Playlist}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
             <TextBlock
                 x:Name="DescriptionControl"
                 MaxHeight="40"
                 Margin="2,2,0,0"
                 FontSize="12px"
-                Opacity=".68"
-                Text="{Binding RelativeSource={RelativeSource AncestorType=local:PlaylistCard}, Path=Description}"
+                Opacity=".68" 
+                Text="{Binding Description}"
                 TextTrimming="CharacterEllipsis"
-                Visibility="Collapsed" />
+                Visibility="Collapsed" >
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RelativeSource={x:Static RelativeSource.Self},Path=IsMouseOver}"  Value="True"></Condition>
+                                    <Condition Binding="{Binding DescriptionCanClick}" Value="True"></Condition>
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="TextDecorations" Value="Underline"></Setter>
+                                <Setter Property="Cursor" Value="Hand"></Setter>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                        <i:InvokeCommandAction Command="{Binding DescriptionCommand}" 
+                                               CommandParameter="{Binding DescriptionCommandParameter}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
         </StackPanel>
     </Border>
 </UserControl>
