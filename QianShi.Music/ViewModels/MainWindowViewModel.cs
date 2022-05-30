@@ -11,6 +11,7 @@ using QianShi.Music.Services;
 using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
@@ -30,19 +31,19 @@ namespace QianShi.Music.ViewModels
 
         public UserData UserData
         {
-            get { return _userData; }
-            set { SetProperty(ref _userData, value); }
+            get => _userData;
+            set => SetProperty(ref _userData, value);
         }
 
         public string Title
         {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
+            get => _title;
+            set => SetProperty(ref _title, value);
         }
 
         public ObservableCollection<MenuBar> MenuBars
         {
-            get { return menuBars; }
+            get => menuBars;
             set { menuBars = value; RaisePropertyChanged(); }
         }
 
@@ -93,65 +94,65 @@ namespace QianShi.Music.ViewModels
 
         public bool IsPlaying
         {
-            get { return _isPlaying; }
-            set { SetProperty(ref _isPlaying, value); }
+            get => _isPlaying;
+            set => SetProperty(ref _isPlaying, value);
         }
 
         private Song? _currentSong = null;
 
         public Song? CurrentSong
         {
-            get { return _currentSong; }
-            set { SetProperty(ref _currentSong, value); }
+            get => _currentSong;
+            set => SetProperty(ref _currentSong, value);
         }
 
         private double _songDuration = 1d;
 
         public double SongDuration
         {
-            get { return _songDuration; }
-            set { SetProperty(ref _songDuration, value); }
+            get => _songDuration;
+            set => SetProperty(ref _songDuration, value);
         }
 
         private double _songPosition = 0d;
 
         public double SongPosition
         {
-            get { return _songPosition; }
-            set { SetProperty(ref _songPosition, value); }
+            get => _songPosition;
+            set => SetProperty(ref _songPosition, value);
         }
 
         private double _volume = 0.5;
 
         public double Volume
         {
-            get { return _volume; }
-            set { SetProperty(ref _volume, value); }
+            get => _volume;
+            set => SetProperty(ref _volume, value);
         }
 
         private DelegateCommand<double?> _setVolumeCommand = default!;
 
         public DelegateCommand<double?> SetVolumeCommand =>
-            _setVolumeCommand ?? (_setVolumeCommand = new DelegateCommand<double?>((value) =>
+            _setVolumeCommand ??= new((value) =>
             {
                 if (value.HasValue)
                 {
                     _playService.SetVolume(value.Value);
                 }
-            }));
+            });
 
         private bool _isMuted = false;
 
         public bool IsMuted
         {
-            get { return _isMuted; }
-            set { SetProperty(ref _isMuted, value); }
+            get => _isMuted;
+            set => SetProperty(ref _isMuted, value);
         }
 
         private DelegateCommand<bool?> _setMutedCommand = default!;
 
         public DelegateCommand<bool?> SetMutedCommand =>
-            _setMutedCommand ?? (_setMutedCommand = new DelegateCommand<bool?>(ExecuteSetMutedCommand));
+            _setMutedCommand ??= new(ExecuteSetMutedCommand);
 
         private void ExecuteSetMutedCommand(bool? parameter)
         {
@@ -161,29 +162,27 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private DelegateCommand _playingListSwichCommand = default!;
-        public DelegateCommand PlayingListSwichCommand =>
-            _playingListSwichCommand ?? (_playingListSwichCommand = new DelegateCommand(ExecutePlayingListSwichCommand));
-
-        void ExecutePlayingListSwichCommand()
-        {
-            var view = _regionManager.Regions[PrismManager.MainViewRegionName].ActiveViews?.FirstOrDefault();
-
-            if (view is PlayingListView playingListView)
+        private DelegateCommand _playingListSwitchCommand = default!;
+        public DelegateCommand PlayingListSwitchCommand =>
+            _playingListSwitchCommand ??= new(() =>
             {
-                _journal.GoBack();
-            }
-            else
-            {
-                _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(PlayingListView));
-            }
-        }
+                var view = _regionManager.Regions[PrismManager.MainViewRegionName].ActiveViews?.FirstOrDefault();
+
+                if (view is PlayingListView playingListView)
+                {
+                    _journal.GoBack();
+                }
+                else
+                {
+                    _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(PlayingListView));
+                }
+            });
 
         public MainWindowViewModel(
             IContainerProvider containerProvider,
             IRegionManager regionManager,
             IPlaylistService playlistService,
-            IPlayService playService, 
+            IPlayService playService,
             IPlayStoreService playStoreService)
         {
             _regionManager = regionManager;
@@ -262,15 +261,25 @@ namespace QianShi.Music.ViewModels
         {
             MenuBars.Add(new MenuBar() { Icon = "Home", Title = "首页", NameSpace = "IndexView" });
             MenuBars.Add(new MenuBar() { Icon = "NotebookOutline", Title = "发现", NameSpace = "FoundView" });
-            MenuBars.Add(new MenuBar() { Icon = "NotebookPlus", Title = "音乐库", NameSpace = "LibraryView" });
+            MenuBars.Add(new MenuBar() { Icon = "NotebookPlus", Title = "音乐库", NameSpace = "LibraryView", Auth = true });
         }
 
         private void Navigate(MenuBar obj)
         {
-            if (obj == null || string.IsNullOrWhiteSpace(obj.NameSpace))
+            if (string.IsNullOrWhiteSpace(obj.NameSpace))
                 return;
+            var region = _regionManager.Regions[PrismManager.MainViewRegionName];
+            //if (obj.Auth && !UserData.IsLogin)
+            //{
+            //    region.RequestNavigate(LoginViewModel.NavigationName,
+            //        new NavigationParameters
+            //        {
+            //            { LoginViewModel.ParameterRedirectUri, obj.NameSpace }
+            //        });
+            //    return;
+            //}
 
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(obj.NameSpace);
+            region.RequestNavigate(obj.NameSpace);
         }
 
         private void NavigationService_Navigated(object? sender, RegionNavigationEventArgs e)

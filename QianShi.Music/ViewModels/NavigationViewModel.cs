@@ -5,7 +5,7 @@ using Prism.Regions;
 
 namespace QianShi.Music.ViewModels
 {
-    public class NavigationViewModel : BindableBase, INavigationAware
+    public class NavigationViewModel : BindableBase, IConfirmNavigationRequest
     {
         private readonly IContainerProvider _containerProvider;
 
@@ -24,6 +24,11 @@ namespace QianShi.Music.ViewModels
 
         public virtual void OnNavigatedFrom(NavigationContext navigationContext)
         {
+        }
+
+        public virtual void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
+        {
+            continuationCallback(true);
         }
 
         public virtual void OnNavigatedTo(NavigationContext navigationContext)

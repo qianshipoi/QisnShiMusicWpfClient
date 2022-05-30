@@ -5,23 +5,11 @@ using System.Text.Json;
 
 namespace QianShi.Music.Services
 {
-    public class LoginChangedEventArgs : EventArgs
-    {
-        public bool OldVal { get; set; }
-        public bool NewVal { get; set; }
-
-        public LoginChangedEventArgs(bool newVal, bool oldVal)
-        {
-            NewVal = newVal;
-            OldVal = oldVal;
-        }
-    }
-
     public class UserData : BindableBase
     {
         public const string SettingFileName = "Setting.json";
         private static UserData? _instance;
-        public static UserData Instance => _instance ?? (_instance = Create());
+        public static UserData Instance => _instance ??= Create();
 
         public static UserData Create()
         {
@@ -36,7 +24,7 @@ namespace QianShi.Music.Services
             return new UserData();
         }
 
-        public event EventHandler<LoginChangedEventArgs>? LoginChanged;
+        public event EventHandler<PropertyChangedEventArgs<bool>>? LoginChanged;
 
         private bool _isLogin;
 
@@ -47,7 +35,7 @@ namespace QianShi.Music.Services
             {
                 if (_isLogin != value && LoginChanged != null)
                 {
-                    LoginChanged.Invoke(this, new LoginChangedEventArgs(value, _isLogin));
+                    LoginChanged.Invoke(this, new PropertyChangedEventArgs<bool>(value, _isLogin));
                 }
                 SetProperty(ref _isLogin, value);
             }
@@ -66,6 +54,8 @@ namespace QianShi.Music.Services
             Cover = null;
             NickName = null;
             Cookie = null;
+            Id = 0;
+            VipType = 0;
         }
 
         public void Save()

@@ -289,7 +289,7 @@
                             HorizontalAlignment="Right"
                             Orientation="Horizontal">
                             <Button
-                                Command="{Binding PlayingListSwichCommand}"
+                                Command="{Binding PlayingListSwitchCommand}"
                                 Cursor="Hand"
                                 Style="{StaticResource ControlButton}">
                                 <materialDesign:PackIcon Kind="PlaylistMusic" Style="{StaticResource ControlIcon}" />

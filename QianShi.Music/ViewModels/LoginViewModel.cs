@@ -11,17 +11,22 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using QianShi.Music.Views;
 
 namespace QianShi.Music.ViewModels
 {
     public class LoginViewModel : NavigationViewModel, IRegionMemberLifetime
     {
+        public const string NavigationName = nameof(LoginView);
+        public const string ParameterRedirectUri = "RedirectUri";
+
         private readonly IPlaylistService _playlistService;
         private readonly IRegionManager _regionManager;
         private readonly UserData _userData;
         private IRegionNavigationJournal _journal = default!;
         private string? _qrKey;
         private DispatcherTimer? _dispatcherTimer;
+        private string? _redirectUri;
 
         private LoginMode _loginMode = LoginMode.QrCode;
 
@@ -34,7 +39,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
 
         public DelegateCommand<LoginMode?> SwitchLoginModeCommand =>
-            _switchLoginModeCommand ?? (_switchLoginModeCommand = new DelegateCommand<LoginMode?>(ExecuteSwitchLoginModeCommand));
+            _switchLoginModeCommand ??= new(ExecuteSwitchLoginModeCommand);
 
         private void ExecuteSwitchLoginModeCommand(LoginMode? mode)
         {
@@ -77,8 +82,10 @@ namespace QianShi.Music.ViewModels
         private void StartCheck()
         {
             EndCheck();
-            _dispatcherTimer = new DispatcherTimer();
-            _dispatcherTimer.Interval = TimeSpan.FromSeconds(5);
+            _dispatcherTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(5)
+            };
             _dispatcherTimer.Tick += async (s, e) =>
             {
                 if (!string.IsNullOrWhiteSpace(_qrKey))
@@ -98,6 +105,8 @@ namespace QianShi.Music.ViewModels
                         {
                             _userData.NickName = statusResponse.Data.Profile?.Nickname;
                             _userData.Cover = statusResponse.Data.Profile?.AvatarUrl;
+                            _userData.Id = statusResponse.Data.Account?.Id ?? 0;
+                            _userData.VipType = statusResponse.Data.Account?.VipType ?? 0;
                         }
                         _userData.Save();
                         Back();
@@ -127,6 +136,17 @@ namespace QianShi.Music.ViewModels
         {
             base.OnNavigatedTo(navigationContext);
             _journal = navigationContext.NavigationService.Journal;
+
+            var parameters = navigationContext.Parameters;
+            if (parameters.ContainsKey(NavigationName))
+            {
+                _redirectUri = parameters.GetValue<string>(ParameterRedirectUri);
+            }
+        }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            base.OnNavigatedFrom(navigationContext);
         }
 
         private ImageSource? _qrCodeSource;

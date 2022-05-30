@@ -8,9 +8,7 @@ using QianShi.Music.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-using static QianShi.Music.Common.Models.Response.MvSublistResponse;
 using static QianShi.Music.Common.Models.Response.UserCloudResponse;
-using static QianShi.Music.Common.Models.Response.UserRecordResponse;
 
 namespace QianShi.Music.ViewModels
 {
@@ -24,63 +22,63 @@ namespace QianShi.Music.ViewModels
         private ObservableCollection<MovieVideoSubject> _movieVideos;
         public ObservableCollection<MovieVideoSubject> MovieVideos
         {
-            get { return _movieVideos; }
-            set { SetProperty(ref _movieVideos, value); }
+            get => _movieVideos;
+            set => SetProperty(ref _movieVideos, value);
         }
 
         private ObservableCollection<Album> _albums;
         public ObservableCollection<Album> Albums
         {
-            get { return _albums; }
-            set { SetProperty(ref _albums, value); }
+            get => _albums;
+            set => SetProperty(ref _albums, value);
         }
 
         private ObservableCollection<Artist> _artists;
         public ObservableCollection<Artist> Artists
         {
-            get { return _artists; }
-            set { SetProperty(ref _artists, value); }
+            get => _artists;
+            set => SetProperty(ref _artists, value);
         }
         private Playlist _likePlaylist;
         public Playlist LikePlaylist
         {
-            get { return _likePlaylist; }
-            set { SetProperty(ref _likePlaylist, value); }
+            get => _likePlaylist;
+            set => SetProperty(ref _likePlaylist, value);
         }
 
         private ObservableCollection<Playlist> _playlists;
         public ObservableCollection<Playlist> Playlists
         {
-            get { return _playlists; }
-            set { SetProperty(ref _playlists, value); }
+            get => _playlists;
+            set => SetProperty(ref _playlists, value);
         }
 
         private ObservableCollection<CloudItem> _cloudItems;
         public ObservableCollection<CloudItem> CloudItems
         {
-            get { return _cloudItems; }
-            set { SetProperty(ref _cloudItems, value); }
+            get => _cloudItems;
+            set => SetProperty(ref _cloudItems, value);
         }
 
         private ObservableCollection<PlayRecord> _allRecord;
         public ObservableCollection<PlayRecord> AllRecord
         {
-            get { return _allRecord; }
-            set { SetProperty(ref _allRecord, value); }
+            get => _allRecord;
+            set => SetProperty(ref _allRecord, value);
         }
 
         private ObservableCollection<PlayRecord> _weekRecord;
         public ObservableCollection<PlayRecord> WeekRecord
         {
-            get { return _weekRecord; }
-            set { SetProperty(ref _weekRecord, value); }
+            get => _weekRecord;
+            set => SetProperty(ref _weekRecord, value);
         }
 
         private ObservableCollection<Song> _songs;
         public ObservableCollection<Song> Songs
         {
-            get { return _songs; }
-            set { SetProperty(ref _songs, value); }
+            get => _songs;
+            set => SetProperty(ref _songs, value);
         }
 
         public LibraryViewModel(IContainerProvider containerProvider, IPlaylistService playlistService) : base(containerProvider)
@@ -96,30 +94,31 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
         }
 
-        public override bool IsNavigationTarget(NavigationContext navigationContext)
-        {
-            if (!UserData.Instance.IsLogin)
-            {
-                MessageBox.Show("未登录无法使用音乐库");
-                return false;
-            }
-            return base.IsNavigationTarget(navigationContext);
-        }
+        private bool _isFirstJoin = true;
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            base.OnNavigatedTo(navigationContext);
-            if (Playlists.Count == 0)
+            if (!UserData.Instance.IsLogin || UserData.Instance.Id == 0)
+            {
+                if (_isFirstJoin)
+                {
+                    _isFirstJoin = false;
+                    navigationContext.NavigationService.Region.RequestNavigate(LoginViewModel.NavigationName);
+                    return;
+                }
+            }
+
+            if (Playlists.Count == 0 && UserData.Instance.Id != 0)
             {
                 await GetMyPlaylists();
-
                 await GetMyAlbums();
                 await GetMyAritsts();
                 await GetMyMvs();
                 await GetMyCloud();
-                await GetMyRecord();
-                await GetMyRecord(1);
+                await GetMyRecord(UserData.Instance.Id);
+                await GetMyRecord(UserData.Instance.Id, 1);
             }
+            base.OnNavigatedTo(navigationContext);
         }
 
         T FormatCover<T>(T playlist) where T : IPlaylist
@@ -193,7 +192,7 @@ namespace QianShi.Music.ViewModels
             });
             if (response.Code == 200)
             {
-                MovieVideos.AddRange(response.Data.Select(x=>
+                MovieVideos.AddRange(response.Data.Select(x =>
                 {
                     x.CoverImgUrl += "?param=232y130";
                     return x;
@@ -218,13 +217,13 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyRecord(sbyte type = 0)
+        async Task GetMyRecord(long userId, sbyte type = 0)
         {
             var allResponse = await _playlistService.UserRecord(new Common.Models.Request.UserRecordRequest
             {
                 Limit = 200,
                 Type = type,
-                Uid = UserData.Instance.Id
+                Uid = userId
             });
 
             if (allResponse.Code == 200)
