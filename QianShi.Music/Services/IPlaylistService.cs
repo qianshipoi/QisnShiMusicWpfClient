@@ -281,5 +281,12 @@ namespace QianShi.Music.Services
         /// <param name="mvid"> mv id</param>
         /// <returns></returns>
         Task<SimiMvResponse> SimiMv(long mvid);
+
+        /// <summary>
+        /// 邮箱登录
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<LoginResponse> Login(LoginRequest parameters);
     }
 }

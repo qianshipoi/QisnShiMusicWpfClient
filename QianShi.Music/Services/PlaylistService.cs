@@ -65,7 +65,7 @@ namespace QianShi.Music.Services
 
         public async Task<CatlistResponse> GetCatlistAsync()
             => await Get<CatlistResponse>(new RestRequest("/playlist/catlist"))
-            ?? new CatlistResponse();
+               ?? new CatlistResponse();
 
         public CookieCollection? GetCookieCollection() => _cookieContainer.GetAllCookies();
 
@@ -113,7 +113,8 @@ namespace QianShi.Music.Services
             return await Get<TopPlaylistResponse>(request);
         }
 
-        public async Task<TopPlaylistHighqualityResponse> GetTopPlaylistHighqualityAsnyc(TopPlaylistHighqualityRequest parameter)
+        public async Task<TopPlaylistHighqualityResponse> GetTopPlaylistHighqualityAsnyc(
+            TopPlaylistHighqualityRequest parameter)
         {
             var request = new RestRequest("/top/playlist/highquality");
 
@@ -242,7 +243,8 @@ namespace QianShi.Music.Services
 
             if (type == null) throw new ArgumentException("type is not correct.");
 
-            var method = GetType().GetMethod("Get", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            var method = GetType().GetMethod("Get",
+                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 
             var responseType = typeof(SearchResponse<>).MakeGenericType(new Type[] { type });
 
@@ -272,7 +274,8 @@ namespace QianShi.Music.Services
         public async Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters)
         {
             parameters.Type = SearchType.歌手;
-            return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ?? new SearchResponse<ArtistSearchResult>();
+            return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ??
+                   new SearchResponse<ArtistSearchResult>();
         }
 
         public async Task<SearchResponse<MovieVideoSearchResult>> SearchMovieVideo(SearchRequest parameters)
@@ -288,7 +291,8 @@ namespace QianShi.Music.Services
             var request = new RestRequest(SearchApi);
             parameters.Type = SearchType.歌单;
             request.AddQueryParameters(parameters);
-            return await Get<SearchResponse<PlaylistSearchResult>>(request) ?? new SearchResponse<PlaylistSearchResult>();
+            return await Get<SearchResponse<PlaylistSearchResult>>(request) ??
+                   new SearchResponse<PlaylistSearchResult>();
         }
 
         public async Task<SearchResponse<SongSearchResult>> SearchSong(SearchRequest parameters)
@@ -358,13 +362,18 @@ namespace QianShi.Music.Services
         }
 
         public async Task<MvUrlResponse> MvUrl(MvUrlRequest parameters)
-            => await Request<MvUrlResponse>("/mv/url",parameters);
+            => await Request<MvUrlResponse>("/mv/url", parameters);
 
         public async Task<SimiMvResponse> SimiMv(long mvid)
         {
             var request = new RestRequest("/simi/mv");
             request.AddQueryParameter("mvid", mvid);
             return await Get<SimiMvResponse>(request) ?? new SimiMvResponse();
+        }
+
+        public async Task<LoginResponse> Login(LoginRequest parameters)
+        {
+            return await Request<LoginResponse>("/login", parameters);
         }
     }
 }

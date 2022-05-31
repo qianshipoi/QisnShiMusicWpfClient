@@ -11,6 +11,8 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using QianShi.Music.Common.Helpers;
+using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Views;
 
 namespace QianShi.Music.ViewModels
@@ -28,12 +30,66 @@ namespace QianShi.Music.ViewModels
         private DispatcherTimer? _dispatcherTimer;
         private string? _redirectUri;
 
-        private LoginMode _loginMode = LoginMode.QrCode;
+        private LoginMode _loginMode = LoginMode.Email;
 
         public LoginMode LoginMode
         {
             get { return _loginMode; }
             set { SetProperty(ref _loginMode, value); }
+        }
+
+        private string? _account;
+        public string? Account
+        {
+            get => _account;
+            set => SetProperty(ref _account, value);
+        }
+
+        private string? _password;
+        public string? Password
+        {
+            get => _password;
+            set => SetProperty(ref _password, value);
+        }
+
+        private DelegateCommand _loginCommand;
+        public DelegateCommand LoginCommand =>
+            _loginCommand ??= new(ExecuteLoginCommand);
+
+        void ExecuteLoginCommand()
+        {
+            if (string.IsNullOrWhiteSpace(Account) || string.IsNullOrWhiteSpace(Password))
+            {
+                MessageBox.Show("请完善信息");
+                return;
+            }
+
+            if (LoginMode == LoginMode.Email)
+            {
+                _ = EmailLogin();
+            }
+
+        }
+
+        private async Task EmailLogin()
+        {
+            var response = await _playlistService.Login(new LoginRequest()
+            {
+                Email = Account!,
+                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower()
+            });
+
+            if (response.Code != 200)
+            {
+                MessageBox.Show(response.Msg);
+                return;
+            }
+            LoginSuccess(
+                response.Profile?.Nickname,
+                response.Profile?.AvatarUrl,
+                response.Account?.Id ?? 0,
+                response.Account?.VipType ?? 0,
+                response.Cookie);
         }
 
         private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
@@ -47,6 +103,10 @@ namespace QianShi.Music.ViewModels
             if (mode == LoginMode.QrCode)
             {
                 _ = CreateQrCode();
+            }
+            else if (mode == LoginMode.Phone)
+            {
+                EndCheck();
             }
         }
 
@@ -98,22 +158,37 @@ namespace QianShi.Music.ViewModels
                     }
                     else if (response.Code == 803)
                     {
-                        _userData.IsLogin = true;
-                        _userData.Cookie = response.Cookie;
                         var statusResponse = await _playlistService.LoginStatus();
                         if (statusResponse.Data.Code == 200)
                         {
-                            _userData.NickName = statusResponse.Data.Profile?.Nickname;
-                            _userData.Cover = statusResponse.Data.Profile?.AvatarUrl;
-                            _userData.Id = statusResponse.Data.Account?.Id ?? 0;
-                            _userData.VipType = statusResponse.Data.Account?.VipType ?? 0;
+                            LoginSuccess(
+                                statusResponse.Data.Profile?.Nickname,
+                                statusResponse.Data.Profile?.AvatarUrl,
+                                statusResponse.Data.Account?.Id ?? 0,
+                                statusResponse.Data.Account?.VipType ?? 0,
+                                response.Cookie);
                         }
-                        _userData.Save();
-                        Back();
+                        else
+                        {
+                            MessageBox.Show("用户信息获取异常，请重新尝试。");
+                            await CreateQrCode();
+                        }
                     }
                 }
             };
             _dispatcherTimer.Start();
+        }
+
+        private void LoginSuccess(string? nickname, string? avatarUrl, long id, sbyte vipType, string? cookie)
+        {
+            _userData.IsLogin = true;
+            _userData.Cookie = cookie;
+            _userData.NickName = nickname;
+            _userData.Cover = avatarUrl;
+            _userData.Id = id;
+            _userData.VipType = vipType;
+            _userData.Save();
+            Back();
         }
 
         private void EndCheck()
@@ -132,7 +207,7 @@ namespace QianShi.Music.ViewModels
             _journal.GoBack();
         }
 
-        public override void OnNavigatedTo(NavigationContext navigationContext)
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
             _journal = navigationContext.NavigationService.Journal;
@@ -144,26 +219,18 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
-        {
-            base.OnNavigatedFrom(navigationContext);
-        }
-
         private ImageSource? _qrCodeSource;
-
         public ImageSource? QrCodeSource
         {
             get { return _qrCodeSource; }
             set { SetProperty(ref _qrCodeSource, value); }
         }
-
         public LoginViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
         {
             _playlistService = playlistService;
             _regionManager = regionManager;
             _userData = UserData.Instance;
         }
-
         public bool KeepAlive => false;
     }
 }
