@@ -269,16 +269,6 @@ namespace QianShi.Music.ViewModels
             if (string.IsNullOrWhiteSpace(obj.NameSpace))
                 return;
             var region = _regionManager.Regions[PrismManager.MainViewRegionName];
-            //if (obj.Auth && !UserData.IsLogin)
-            //{
-            //    region.RequestNavigate(LoginViewModel.NavigationName,
-            //        new NavigationParameters
-            //        {
-            //            { LoginViewModel.ParameterRedirectUri, obj.NameSpace }
-            //        });
-            //    return;
-            //}
-
             region.RequestNavigate(obj.NameSpace);
         }
 
@@ -308,10 +298,17 @@ namespace QianShi.Music.ViewModels
             var response = await _playlistService.LoginStatus();
             if (response.Data.Code == 200)
             {
-                UserData.Cover = response.Data.Profile?.AvatarUrl;
-                UserData.NickName = response.Data.Profile?.Nickname;
-                UserData.Id = response.Data.Account?.Id ?? 0;
-                UserData.VipType = response.Data.Account?.VipType ?? 0;
+                if (response.Data.Account == null || response.Data.Profile == null)
+                {
+                    UserData.Clear();
+                }
+                else
+                {
+                    UserData.Cover = response.Data.Profile?.AvatarUrl;
+                    UserData.NickName = response.Data.Profile?.Nickname;
+                    UserData.Id = response.Data.Account?.Id ?? 0;
+                    UserData.VipType = response.Data.Account?.VipType ?? 0;
+                }
                 UserData.Save();
             }
 
@@ -321,9 +318,7 @@ namespace QianShi.Music.ViewModels
                 _journal = back.Context.NavigationService.Journal;
             });
 
-            _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView", (result) =>
-            {
-            });
+            _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
 
             var songResponse = await _playlistService.SongDetail(493735159.ToString());
 
