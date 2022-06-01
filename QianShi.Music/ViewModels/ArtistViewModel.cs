@@ -79,8 +79,10 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand<MovieVideo> _jumpToMvPageCommand = default!;
+
         public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
-            _jumpToMvPageCommand ?? (_jumpToMvPageCommand = new DelegateCommand<MovieVideo>((mv) => {
+            _jumpToMvPageCommand ?? (_jumpToMvPageCommand = new DelegateCommand<MovieVideo>((mv) =>
+            {
                 if (mv != null)
                 {
                     var parameters = new NavigationParameters();

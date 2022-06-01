@@ -12,6 +12,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
         private ObservableCollection<Song> _toBePlayeds;
+
         public ObservableCollection<Song> ToBePlayeds
         {
             get { return _toBePlayeds; }
@@ -19,6 +20,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Song> _jumpPlayeds;
+
         public ObservableCollection<Song> JumpPlayeds
         {
             get { return _jumpPlayeds; }
@@ -26,6 +28,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private Song? _currentSong;
+
         public Song? CurrentSong
         {
             get { return _currentSong; }

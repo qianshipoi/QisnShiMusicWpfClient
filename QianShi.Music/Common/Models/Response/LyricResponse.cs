@@ -25,7 +25,6 @@ namespace QianShi.Music.Common.Models.Response
         [JsonPropertyName("code")]
         public int Code { get; set; }
 
-
         public class LyricData
         {
             [JsonPropertyName("version")]

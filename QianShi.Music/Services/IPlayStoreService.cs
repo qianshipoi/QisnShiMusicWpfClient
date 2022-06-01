@@ -15,13 +15,21 @@ namespace QianShi.Music.Services
         bool HasPrev { get; }
 
         Task AddPlaylistAsync(long playlistId, IEnumerable<Song> songs);
+
         Task AddJumpToQueueSongAsync(Song song);
+
         void Next();
+
         void Previous();
+
         void Play();
+
         void Pause();
+
         Task PlayAsync(Song song);
+
         void RemoveSong(Song song);
+
         void Clear();
     }
 }

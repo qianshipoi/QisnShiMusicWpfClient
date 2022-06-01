@@ -4,7 +4,7 @@ namespace QianShi.Music.Common.Helpers
 {
     public static partial class FullScreenHelper
     {
-        static class Win32
+        private static class Win32
         {
             [Flags]
             public enum ShowWindowCommands
@@ -20,7 +20,6 @@ namespace QianShi.Music.Common.Helpers
                 /// </summary>
                 SW_RESTORE = 9,
             }
-
 
             internal static class Properties
             {
@@ -114,7 +113,7 @@ namespace QianShi.Music.Common.Helpers
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct MonitorInfo
+        private struct MonitorInfo
         {
             /// <summary>
             ///     The size of the structure, in bytes.
@@ -140,11 +139,11 @@ namespace QianShi.Music.Common.Helpers
             public MonitorInfoFlag Flags;
         }
 
-        enum MonitorInfoFlag
+        private enum MonitorInfoFlag
         {
         }
 
-        enum MonitorFlag
+        private enum MonitorFlag
         {
             /// <summary>
             ///     Returns a handle to the primary display monitor.
@@ -153,7 +152,7 @@ namespace QianShi.Music.Common.Helpers
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct WindowPosition
+        private struct WindowPosition
         {
             public IntPtr Hwnd;
             public IntPtr HwndZOrderInsertAfter;
@@ -164,7 +163,7 @@ namespace QianShi.Music.Common.Helpers
             public WindowPositionFlags Flags;
         }
 
-        enum HwndZOrder
+        private enum HwndZOrder
         {
             /// <summary>
             ///     Places the window at the top of the Z order.
@@ -172,12 +171,12 @@ namespace QianShi.Music.Common.Helpers
             HWND_TOP = 0,
         }
 
-        enum DWMWINDOWATTRIBUTE : uint
+        private enum DWMWINDOWATTRIBUTE : uint
         {
             DWMWA_TRANSITIONS_FORCEDISABLED = 3,
         }
 
-        enum GetWindowLongFields
+        private enum GetWindowLongFields
         {
             /// <summary>
             /// 设定一个新的窗口风格
@@ -187,7 +186,7 @@ namespace QianShi.Music.Common.Helpers
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct WINDOWPLACEMENT // WindowPlacement
+        private struct WINDOWPLACEMENT // WindowPlacement
         {
             public uint Size;
             public WindowPlacementFlags Flags;
@@ -246,7 +245,7 @@ namespace QianShi.Music.Common.Helpers
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct Rectangle
+        private struct Rectangle
         {
             public int Left;
             public int Top;
@@ -305,19 +304,19 @@ namespace QianShi.Music.Common.Helpers
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        struct Point
+        private struct Point
         {
             public int X;
             public int Y;
         }
 
         [Flags]
-        enum WindowPlacementFlags
+        private enum WindowPlacementFlags
         {
         }
 
         [Flags]
-        enum WindowStyles
+        private enum WindowStyles
         {
             /// <summary>
             ///     The window is initially maximized.
@@ -340,6 +339,5 @@ namespace QianShi.Music.Common.Helpers
             /// </summary>
             WS_THICKFRAME = 0x00040000,
         }
-
     }
 }

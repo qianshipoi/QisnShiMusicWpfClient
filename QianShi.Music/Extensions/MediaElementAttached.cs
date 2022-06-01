@@ -33,7 +33,7 @@ public class MediaElementAttached : DependencyObject
         }
     }
 
-    #endregion
+    #endregion IsPlaying
 
     #region Progress
 
@@ -41,14 +41,17 @@ public class MediaElementAttached : DependencyObject
         DependencyProperty.RegisterAttached(
             "Progress", typeof(TimeSpan), typeof(MediaElementAttached),
             new PropertyMetadata(new TimeSpan(0, 0, 0), OnProgressChanged));
+
     public static TimeSpan GetProgress(DependencyObject d)
     {
         return (TimeSpan)d.GetValue(ProgressProperty);
     }
+
     public static void SetProgress(DependencyObject d, TimeSpan value)
     {
         d.SetValue(ProgressProperty, value);
     }
+
     private static void OnProgressChanged(
         DependencyObject obj,
         DependencyPropertyChangedEventArgs args)
@@ -60,7 +63,7 @@ public class MediaElementAttached : DependencyObject
         }
     }
 
-    #endregion
+    #endregion Progress
 
     #region Volume
 
@@ -68,14 +71,17 @@ public class MediaElementAttached : DependencyObject
         DependencyProperty.RegisterAttached(
             "Volume", typeof(double), typeof(MediaElementAttached),
             new PropertyMetadata(0.5d, OnVolumeChanged));
+
     public static TimeSpan GetVolume(DependencyObject d)
     {
         return (TimeSpan)d.GetValue(VolumeProperty);
     }
+
     public static void SetVolume(DependencyObject d, double value)
     {
         d.SetValue(VolumeProperty, value);
     }
+
     private static void OnVolumeChanged(
         DependencyObject obj,
         DependencyPropertyChangedEventArgs args)
@@ -88,5 +94,5 @@ public class MediaElementAttached : DependencyObject
         }
     }
 
-    #endregion
+    #endregion Volume
 }

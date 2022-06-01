@@ -69,13 +69,13 @@
                                 FontWeight="Bold"
                                 Text="{Binding Detail.Name}"
                                 TextWrapping="WrapWithOverflow" />
-                            <StackPanel Orientation="Horizontal" Margin="0,24,0,0" 
-                                        Opacity=".68" >
+                            <StackPanel Orientation="Horizontal" Margin="0,24,0,0"
+                                        Opacity=".68">
                                 <TextBlock
                                     FontSize="18"
                                     FontWeight="Bold"
                                     Text="Playlist by" />
-                                <TextBlock Style="{StaticResource UnderlineTextBlock}"  
+                                <TextBlock Style="{StaticResource UnderlineTextBlock}"
                                            FontSize="18" Margin="8,0,0,0"
                                            FontWeight="Bold" MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp"
                                            Text="{Binding Detail.Creator}">

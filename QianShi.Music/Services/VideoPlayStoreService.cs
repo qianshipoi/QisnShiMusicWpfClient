@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using QianShi.Music.Common.Models.Response;
 
-using QianShi.Music.Common.Models.Response;
+using System.Collections.ObjectModel;
 
 using MvUrl = QianShi.Music.Common.Models.MvUrl;
 
@@ -27,6 +27,7 @@ public class VideoPlayStoreService : IVideoPlayStoreService
             CurrentChanged?.Invoke(this, new(_current, oldValue));
         }
     }
+
     public MvUrl? Url
     {
         get => _url;
@@ -63,6 +64,7 @@ public class VideoPlayStoreService : IVideoPlayStoreService
         await GetMvDetail();
         await GetSimiMv();
     }
+
     private async Task GetMvDetail()
     {
         Url = null;
@@ -92,6 +94,7 @@ public class VideoPlayStoreService : IVideoPlayStoreService
             if (MvUrls.Count > 0) Url = MvUrls[^1];
         }
     }
+
     private async Task GetSimiMv()
     {
         var response = await _playlistService.SimiMv(_mvId);
@@ -106,16 +109,18 @@ public class VideoPlayStoreService : IVideoPlayStoreService
     public void SetUrl(MvUrl mvUrl)
     {
         var isPlaying = IsPlaying;
-        if(isPlaying) Pause();
+        if (isPlaying) Pause();
         Url = mvUrl;
         _videoPlayService.SetProgress(0);
         Play();
     }
+
     public void Play()
     {
         if (IsPlaying || Url == null) return;
         _videoPlayService.Play(Url.Url);
     }
+
     public void Pause()
     {
         if (!IsPlaying) return;

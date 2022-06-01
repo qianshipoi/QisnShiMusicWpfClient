@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace QianShi.Music.Views
@@ -41,10 +40,9 @@ namespace QianShi.Music.Views
                 };
                 Process.Start(psi);
             }
-            catch (Exception )
+            catch (Exception)
             {
             }
         }
-        
     }
 }

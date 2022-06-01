@@ -34,6 +34,5 @@ namespace QianShi.Music.Views
                 FullScreenHelper.EndFullScreen(this);
             }
         }
-
     }
 }

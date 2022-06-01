@@ -5,9 +5,13 @@ namespace QianShi.Music.Services
     public interface IPlayService
     {
         event EventHandler<ProgressEventArgs>? ProgressChanged;
+
         event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+
         event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
+
         event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
+
         event EventHandler? PlayEnded;
 
         double Volume { get; }
@@ -15,10 +19,15 @@ namespace QianShi.Music.Services
         bool IsPlaying { get; }
 
         void Play();
+
         void Play(string url);
+
         void Pause();
+
         void SetVolume(double volume);
+
         void SetMute(bool isMute);
+
         void SetProgress(double value);
     }
 

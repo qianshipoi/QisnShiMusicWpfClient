@@ -11,7 +11,7 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
     <DockPanel
-        d:Background="White" 
+        d:Background="White"
         DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:TitleControl}}}"
         LastChildFill="False">
         <TextBlock

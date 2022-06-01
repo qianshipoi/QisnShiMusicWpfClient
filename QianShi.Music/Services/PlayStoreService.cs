@@ -17,6 +17,7 @@ namespace QianShi.Music.Services
         public event EventHandler<SongChangedEventArgs>? CurrentChanged;
 
         private Song? _current;
+
         public Song? Current
         {
             get => _current;

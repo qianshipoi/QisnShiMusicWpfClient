@@ -1,9 +1,11 @@
-﻿using System.Collections.ObjectModel;
-
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
+
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
+
+using System.Collections.ObjectModel;
+
 using MvUrl = QianShi.Music.Common.Models.MvUrl;
 
 namespace QianShi.Music.ViewModels
@@ -22,11 +24,13 @@ namespace QianShi.Music.ViewModels
         }
 
         private bool _showSwitchDialog = false;
+
         public bool ShowSwitchDialog
         {
             get => _showSwitchDialog;
             set => SetProperty(ref _showSwitchDialog, value);
         }
+
         public bool IsPlaying => _videoPlayService.IsPlaying;
         public bool IsMuted => _videoPlayService.IsMuted;
         public double Volume => _videoPlayService.Volume;
@@ -39,8 +43,8 @@ namespace QianShi.Music.ViewModels
         public ObservableCollection<MvUrl> MvUrls => _videoPlayStoreService.MvUrls;
         public ObservableCollection<MovieVideo> MovieVideos => _videoPlayStoreService.Related;
 
-
         private DelegateCommand<MvUrl> _switchBrCommand = default!;
+
         public DelegateCommand<MvUrl> SwitchBrCommand =>
             _switchBrCommand ??= new((mvUrl) =>
             {
@@ -50,14 +54,17 @@ namespace QianShi.Music.ViewModels
             });
 
         private DelegateCommand _playCommand = default!;
+
         public DelegateCommand PlayCommand =>
             _playCommand ??= new(_videoPlayService.Play);
 
         private DelegateCommand _pauseCommand = default!;
+
         public DelegateCommand PauseCommand =>
             _pauseCommand ??= new(_videoPlayService.Pause);
 
         private DelegateCommand<bool?> _setMutedCommand = default!;
+
         public DelegateCommand<bool?> SetMutedCommand =>
             _setMutedCommand ??= new(value =>
             {
@@ -68,6 +75,7 @@ namespace QianShi.Music.ViewModels
             });
 
         private DelegateCommand<double?> _setPositionCommand = default!;
+
         public DelegateCommand<double?> SetPositionCommand =>
             _setPositionCommand ??= new((value) =>
             {
@@ -80,6 +88,7 @@ namespace QianShi.Music.ViewModels
             });
 
         private DelegateCommand<double?> _setVolumeCommand = default!;
+
         public DelegateCommand<double?> SetVolumeCommand =>
             _setVolumeCommand ??= new(val =>
             {
@@ -90,10 +99,12 @@ namespace QianShi.Music.ViewModels
             });
 
         private DelegateCommand<double?> _dragStartedCommand = default!;
+
         public DelegateCommand<double?> DragStartedCommand =>
             _dragStartedCommand ??= new(_ => _isDragProgress = true);
 
         private DelegateCommand _fullScreenCommand = default!;
+
         public DelegateCommand FullScreenCommand =>
             _fullScreenCommand ??= new(_videoPlayService.FullScreen);
 

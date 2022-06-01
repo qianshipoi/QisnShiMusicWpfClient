@@ -47,7 +47,8 @@ namespace QianShi.Music.Services
         public string? NickName { get => _nickname; set => SetProperty(ref _nickname, value); }
         public string? Cookie { get; set; }
         public long Id { get; set; }
-        public sbyte VipType { get; set; }     
+        public sbyte VipType { get; set; }
+
         public void Clear()
         {
             IsLogin = false;

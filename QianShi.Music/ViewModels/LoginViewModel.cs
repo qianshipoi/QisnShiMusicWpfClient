@@ -2,8 +2,11 @@
 using Prism.Ioc;
 using Prism.Regions;
 
+using QianShi.Music.Common.Helpers;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
+using QianShi.Music.Views;
 
 using QRCoder;
 
@@ -11,9 +14,6 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using QianShi.Music.Common.Helpers;
-using QianShi.Music.Common.Models.Request;
-using QianShi.Music.Views;
 
 namespace QianShi.Music.ViewModels
 {
@@ -39,6 +39,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private string? _account;
+
         public string? Account
         {
             get => _account;
@@ -46,6 +47,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private string? _password;
+
         public string? Password
         {
             get => _password;
@@ -53,10 +55,11 @@ namespace QianShi.Music.ViewModels
         }
 
         private DelegateCommand _loginCommand;
+
         public DelegateCommand LoginCommand =>
             _loginCommand ??= new(ExecuteLoginCommand);
 
-        void ExecuteLoginCommand()
+        private void ExecuteLoginCommand()
         {
             if (string.IsNullOrWhiteSpace(Account) || string.IsNullOrWhiteSpace(Password))
             {
@@ -67,16 +70,16 @@ namespace QianShi.Music.ViewModels
             if (LoginMode == LoginMode.Email)
             {
                 _ = EmailLogin();
-            }else if (LoginMode == LoginMode.Phone)
+            }
+            else if (LoginMode == LoginMode.Phone)
             {
                 _ = PhoneLogin();
             }
-
         }
 
         private async Task PhoneLogin()
         {
-            var response = await _playlistService.LoginCellPhone(new ()
+            var response = await _playlistService.LoginCellPhone(new()
             {
                 Phone = Account!,
                 Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
@@ -246,17 +249,20 @@ namespace QianShi.Music.ViewModels
         }
 
         private ImageSource? _qrCodeSource;
+
         public ImageSource? QrCodeSource
         {
             get { return _qrCodeSource; }
             set { SetProperty(ref _qrCodeSource, value); }
         }
+
         public LoginViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
         {
             _playlistService = playlistService;
             _regionManager = regionManager;
             _userData = UserData.Instance;
         }
+
         public bool KeepAlive => false;
     }
 }

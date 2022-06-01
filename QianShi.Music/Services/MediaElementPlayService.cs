@@ -1,10 +1,10 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
-
-using Prism.Ioc;
+﻿using Prism.Ioc;
 
 using QianShi.Music.Views;
+
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace QianShi.Music.Services
 {
@@ -21,13 +21,19 @@ namespace QianShi.Music.Services
         private VideoPlayWindow? _window;
 
         public event EventHandler<ProgressEventArgs>? ProgressChanged;
+
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
+
         public event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
+
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsFullScreenChanged;
+
         public event EventHandler? PlayEnded;
 
         public FrameworkElement Control => _mediaElement;
+
         public double Position
         {
             get => _position;
@@ -38,11 +44,13 @@ namespace QianShi.Music.Services
                 ProgressChanged?.Invoke(this, new ProgressEventArgs(value, Total));
             }
         }
+
         public double Total
         {
             get;
             set;
         }
+
         public bool IsPlaying
         {
             get => _isPlaying;
@@ -58,8 +66,10 @@ namespace QianShi.Music.Services
                 IsPlayingChanged?.Invoke(this, new(value, !value));
             }
         }
+
         public bool IsMuted => _mediaElement.IsMuted;
         public double Volume => _mediaElement.Volume;
+
         public string Url
         {
             get => _url;
@@ -70,6 +80,7 @@ namespace QianShi.Music.Services
                 OnUrlChanged();
             }
         }
+
         public bool IsFullScreen
         {
             get => _isFullScreen;
@@ -126,6 +137,7 @@ namespace QianShi.Music.Services
             _timer.Start();
             IsPlaying = true;
         }
+
         public void Play()
         {
             if (IsPlaying || string.IsNullOrWhiteSpace(_url)) return;
@@ -133,12 +145,14 @@ namespace QianShi.Music.Services
             _timer.Start();
             IsPlaying = true;
         }
+
         public void Pause()
         {
             _mediaElement.Pause();
             _timer.Stop();
             IsPlaying = false;
         }
+
         public void SetVolume(double value)
         {
             if (value > 1) value = 1;
@@ -150,6 +164,7 @@ namespace QianShi.Music.Services
                 VolumeChanged?.Invoke(this, new(value, oldVal));
             }
         }
+
         public void SetProgress(double value)
         {
             if (!_mediaElement.NaturalDuration.HasTimeSpan) return;
@@ -167,12 +182,14 @@ namespace QianShi.Music.Services
                 _timer.Start();
             }
         }
+
         public void SetMute(bool isMute)
         {
             if (isMute == _mediaElement.IsMuted) return;
             _mediaElement.IsMuted = isMute;
             IsMutedChanged?.Invoke(this, new(isMute, !isMute));
         }
+
         public void FullScreen()
         {
             if (IsFullScreen)

@@ -15,16 +15,11 @@ namespace QianShi.Music.ViewModels
 {
     public class SearchViewModel : NavigationViewModel
     {
+        public const string SearchTextParameter = nameof(SearchTextParameter);
+
         private readonly IPlaylistService _playlistService;
         private readonly IRegionManager _regionManager;
         private string _currentSearchKeywords = string.Empty;
-
-        public ObservableCollection<Artist> Artists { get; set; }
-        public ObservableCollection<Album> Albums { get; set; }
-        public ObservableCollection<Song> Songs { get; set; }
-        public ObservableCollection<Playlist> Playlists { get; set; }
-        public ObservableCollection<MovieVideo> MovieVideos { get; set; }
-        public DelegateCommand<SearchType?> MoreCommand { get; private set; }
 
         public SearchViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
         {
@@ -38,23 +33,21 @@ namespace QianShi.Music.ViewModels
             _regionManager = regionManager;
         }
 
-        private void More(SearchType? type)
-        {
-            if (type == null) return;
-            var parameters = new NavigationParameters();
-            parameters.Add(SearchDetailViewModel.SearchTypeParameterName, type);
-            parameters.Add(SearchDetailViewModel.SearchKeywordsParameterName, _currentSearchKeywords);
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(SearchDetailView), parameters);
-        }
+        public ObservableCollection<Album> Albums { get; set; }
+        public ObservableCollection<Artist> Artists { get; set; }
+        public DelegateCommand<SearchType?> MoreCommand { get; private set; }
+        public ObservableCollection<MovieVideo> MovieVideos { get; set; }
+        public ObservableCollection<Playlist> Playlists { get; set; }
+        public ObservableCollection<Song> Songs { get; set; }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
             var parameters = navigationContext.Parameters;
 
-            if (parameters.ContainsKey("SearchText"))
+            if (parameters.ContainsKey(SearchTextParameter))
             {
-                var searchText = parameters.GetValue<string>("SearchText");
+                var searchText = parameters.GetValue<string>(SearchTextParameter);
 
                 if (_currentSearchKeywords == searchText)
                 {
@@ -80,7 +73,7 @@ namespace QianShi.Music.ViewModels
                 void FormatCover(IPlaylist playlist, int w = 200, int h = 200)
                     => playlist.CoverImgUrl += $"?param={w}y{h}";
 
-                void FormatCoverDetault(IPlaylist playlist)
+                void FormatCoverDefault(IPlaylist playlist)
                     => FormatCover(playlist);
 
                 foreach (var searchType in searchTypes)
@@ -111,19 +104,19 @@ namespace QianShi.Music.ViewModels
 
                             case SearchType.专辑:
                                 var albumSearchResult = (AlbumSearchResult)response.Result;
-                                albumSearchResult.Albums.ForEach(FormatCoverDetault);
+                                albumSearchResult.Albums.ForEach(FormatCoverDefault);
                                 Albums.AddRange(albumSearchResult.Albums);
                                 break;
 
                             case SearchType.歌手:
                                 var artistSearchResult = (ArtistSearchResult)response.Result;
-                                artistSearchResult.Artists.ForEach(FormatCoverDetault);
+                                artistSearchResult.Artists.ForEach(FormatCoverDefault);
                                 Artists.AddRange(artistSearchResult.Artists);
                                 break;
 
                             case SearchType.歌单:
                                 var playlistSearchResult = (PlaylistSearchResult)response.Result;
-                                playlistSearchResult.Playlists.ForEach(FormatCoverDetault);
+                                playlistSearchResult.Playlists.ForEach(FormatCoverDefault);
                                 Playlists.AddRange(playlistSearchResult.Playlists);
                                 break;
 
@@ -145,6 +138,17 @@ namespace QianShi.Music.ViewModels
                     }
                 }
             }
+        }
+
+        private void More(SearchType? type)
+        {
+            if (type == null) return;
+            var parameters = new NavigationParameters
+            {
+                { SearchDetailViewModel.SearchTypeParameterName, type },
+                { SearchDetailViewModel.SearchKeywordsParameterName, _currentSearchKeywords }
+            };
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(SearchDetailView), parameters);
         }
     }
 }

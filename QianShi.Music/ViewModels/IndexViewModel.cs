@@ -9,7 +9,6 @@ using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 using System.Windows;
-using QianShi.Music.Common.Models.Response;
 
 namespace QianShi.Music.ViewModels
 {

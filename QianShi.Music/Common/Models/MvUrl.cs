@@ -7,6 +7,7 @@ namespace QianShi.Music.Common.Models
         public int Br { get; set; }
         public string Url { get; set; } = string.Empty;
         private bool _isActive = false;
+
         public bool IsActive
         {
             get => _isActive;

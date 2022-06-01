@@ -380,6 +380,5 @@ namespace QianShi.Music.Services
         {
             return await Request<LoginResponse>("/login/cellphone", parameters);
         }
-
     }
 }

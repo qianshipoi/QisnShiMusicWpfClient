@@ -17,7 +17,7 @@
             <conver:NumberConverter x:Key="NumberConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border 
+    <Border
         Background="White"
         BorderThickness="0"
         CornerRadius="10">
@@ -37,15 +37,15 @@
             <TextBlock
                 MaxHeight="42"
                 Margin="2,0"
-                Cursor="Hand" 
+                Cursor="Hand"
                 Style="{StaticResource UnderlineTextBlock}"
                 FontSize="{Binding TitleFontSize}"
-                FontWeight="Bold" 
+                FontWeight="Bold"
                 Text="{Binding Title}"
-                TextWrapping="WrapWithOverflow" >
+                TextWrapping="WrapWithOverflow">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding OpenPlaylistCommand}" 
+                        <i:InvokeCommandAction Command="{Binding OpenPlaylistCommand}"
                                                CommandParameter="{Binding Playlist}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
@@ -55,10 +55,10 @@
                 MaxHeight="40"
                 Margin="2,2,0,0"
                 FontSize="12px"
-                Opacity=".68" 
+                Opacity=".68"
                 Text="{Binding Description}"
                 TextTrimming="CharacterEllipsis"
-                Visibility="Collapsed" >
+                Visibility="Collapsed">
                 <TextBlock.Style>
                     <Style TargetType="TextBlock">
                         <Style.Triggers>
@@ -75,7 +75,7 @@
                 </TextBlock.Style>
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding DescriptionCommand}" 
+                        <i:InvokeCommandAction Command="{Binding DescriptionCommand}"
                                                CommandParameter="{Binding DescriptionCommandParameter}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>

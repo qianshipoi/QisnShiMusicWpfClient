@@ -9,11 +9,13 @@ public class LoginRequest : BaseRequest
     /// </summary>
     [Description("email")]
     public string Email { get; set; } = default!;
+
     /// <summary>
     /// 密码
     /// </summary>
     [Description("password")]
     public string? Password { get; set; }
+
     /// <summary>
     /// md5 加密后的密码,传入后 password 将失效
     /// </summary>

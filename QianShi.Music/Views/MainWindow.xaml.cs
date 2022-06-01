@@ -1,7 +1,8 @@
-﻿using QianShi.Music.Services;
+﻿using Prism.Ioc;
+
+using QianShi.Music.Services;
 
 using System.Windows;
-using Prism.Ioc;
 
 namespace QianShi.Music.Views
 {
@@ -11,7 +12,7 @@ namespace QianShi.Music.Views
     public partial class MainWindow : Window
     {
         private readonly IPlaylistService _playlistService;
-        private readonly IContainerProvider _containerProvider; 
+        private readonly IContainerProvider _containerProvider;
 
         public MainWindow(IPlaylistService playlistService, IContainerProvider containerProvider)
         {

@@ -30,6 +30,7 @@ namespace QianShi.Music.Common.Models.Response
 
         [JsonPropertyName("id")]
         public long Id { get; set; }
+
         [JsonPropertyName("maxbr")]
         public int Maxbr { get; set; }
 
@@ -47,8 +48,10 @@ namespace QianShi.Music.Common.Models.Response
 
         [JsonPropertyName("st")]
         public int St { get; set; }
+
         [JsonPropertyName("subp")]
         public int Subp { get; set; }
+
         [JsonPropertyName("toast")]
         public bool Toast { get; set; }
     }

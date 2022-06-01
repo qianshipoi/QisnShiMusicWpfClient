@@ -6,7 +6,6 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
-using System.Windows;
 
 using static QianShi.Music.Common.Models.Response.UserCloudResponse;
 
@@ -20,6 +19,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistService _playlistService;
 
         private ObservableCollection<MovieVideoSubject> _movieVideos;
+
         public ObservableCollection<MovieVideoSubject> MovieVideos
         {
             get => _movieVideos;
@@ -27,6 +27,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Album> _albums;
+
         public ObservableCollection<Album> Albums
         {
             get => _albums;
@@ -34,12 +35,15 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Artist> _artists;
+
         public ObservableCollection<Artist> Artists
         {
             get => _artists;
             set => SetProperty(ref _artists, value);
         }
+
         private Playlist _likePlaylist;
+
         public Playlist LikePlaylist
         {
             get => _likePlaylist;
@@ -47,6 +51,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Playlist> _playlists;
+
         public ObservableCollection<Playlist> Playlists
         {
             get => _playlists;
@@ -54,6 +59,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<CloudItem> _cloudItems;
+
         public ObservableCollection<CloudItem> CloudItems
         {
             get => _cloudItems;
@@ -61,6 +67,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<PlayRecord> _allRecord;
+
         public ObservableCollection<PlayRecord> AllRecord
         {
             get => _allRecord;
@@ -68,6 +75,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<PlayRecord> _weekRecord;
+
         public ObservableCollection<PlayRecord> WeekRecord
         {
             get => _weekRecord;
@@ -75,6 +83,7 @@ namespace QianShi.Music.ViewModels
         }
 
         private ObservableCollection<Song> _songs;
+
         public ObservableCollection<Song> Songs
         {
             get => _songs;
@@ -121,13 +130,13 @@ namespace QianShi.Music.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
 
-        T FormatCover<T>(T playlist) where T : IPlaylist
+        private T FormatCover<T>(T playlist) where T : IPlaylist
         {
             playlist.CoverImgUrl += "?param=200y200";
             return playlist;
         }
 
-        async Task GetMyPlaylists()
+        private async Task GetMyPlaylists()
         {
             var myPlaylists = await _playlistService.UserPlaylist(new Common.Models.Request.UserPlaylistRequest
             {
@@ -145,7 +154,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyLikeSongs()
+        private async Task GetMyLikeSongs()
         {
             var response = await _playlistService.GetPlaylistDetailAsync(LikePlaylist.Id);
             if (response.Code == 200)
@@ -160,7 +169,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyAlbums()
+        private async Task GetMyAlbums()
         {
             var response = await _playlistService.AlbumSublist(new Common.Models.Request.PagedRequestBase
             {
@@ -172,7 +181,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyAritsts()
+        private async Task GetMyAritsts()
         {
             var response = await _playlistService.ArtistSublist(new Common.Models.Request.PagedRequestBase
             {
@@ -184,7 +193,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyMvs()
+        private async Task GetMyMvs()
         {
             var response = await _playlistService.MvSublist(new Common.Models.Request.PagedRequestBase
             {
@@ -200,7 +209,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyCloud()
+        private async Task GetMyCloud()
         {
             var response = await _playlistService.UserCloud(new Common.Models.Request.PagedRequestBase
             {
@@ -217,7 +226,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        async Task GetMyRecord(long userId, sbyte type = 0)
+        private async Task GetMyRecord(long userId, sbyte type = 0)
         {
             var allResponse = await _playlistService.UserRecord(new Common.Models.Request.UserRecordRequest
             {

@@ -6,13 +6,17 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
+
 using MvUrl = QianShi.Music.Common.Models.MvUrl;
 
 namespace QianShi.Music.ViewModels
 {
     public class MvViewModel : NavigationViewModel, IRegionMemberLifetime
     {
-        public MvViewModel() : base(App.Current.Container.Resolve<IContainerProvider>()) { }
+        public MvViewModel() : base(App.Current.Container.Resolve<IContainerProvider>())
+        {
+        }
+
         public const string MvIdParameter = nameof(MvIdParameter);
 
         private readonly IVideoPlayService _videoPlayService;
@@ -21,6 +25,7 @@ namespace QianShi.Music.ViewModels
         private bool _isDragProgress = false;
 
         private object? _videoControl;
+
         public object? VideoControl
         {
             get => _videoControl;
@@ -28,11 +33,13 @@ namespace QianShi.Music.ViewModels
         }
 
         private bool _showSwitchDialog = false;
+
         public bool ShowSwitchDialog
         {
             get => _showSwitchDialog;
             set => SetProperty(ref _showSwitchDialog, value);
         }
+
         public bool IsPlaying => _videoPlayService.IsPlaying;
         public bool IsMuted => _videoPlayService.IsMuted;
         public double Volume => _videoPlayService.Volume;
@@ -41,6 +48,7 @@ namespace QianShi.Music.ViewModels
         public string? Cover => _videoPlayStoreService.Current?.Cover;
 
         private bool _showCover = true;
+
         public bool ShowCover
         {
             get => _showCover;
@@ -53,14 +61,17 @@ namespace QianShi.Music.ViewModels
         public ObservableCollection<MovieVideo> MovieVideos => _videoPlayStoreService.Related;
 
         private DelegateCommand _playCommand = default!;
+
         public DelegateCommand PlayCommand =>
             _playCommand ??= new(_videoPlayService.Play);
 
         private DelegateCommand _pauseCommand = default!;
+
         public DelegateCommand PauseCommand =>
             _pauseCommand ??= new(_videoPlayService.Pause);
 
         private DelegateCommand<bool?> _setMutedCommand = default!;
+
         public DelegateCommand<bool?> SetMutedCommand =>
             _setMutedCommand ??= new(value =>
             {
@@ -71,6 +82,7 @@ namespace QianShi.Music.ViewModels
             });
 
         private DelegateCommand<double?> _setPositionCommand = default!;
+
         public DelegateCommand<double?> SetPositionCommand =>
             _setPositionCommand ??= new((value) =>
             {
@@ -83,6 +95,7 @@ namespace QianShi.Music.ViewModels
             });
 
         private DelegateCommand<double?> _setVolumeCommand = default!;
+
         public DelegateCommand<double?> SetVolumeCommand =>
             _setVolumeCommand ??= new(val =>
             {
@@ -98,10 +111,12 @@ namespace QianShi.Music.ViewModels
             _dragStartedCommand ??= new(_ => _isDragProgress = true);
 
         private DelegateCommand _fullScreenCommand = default!;
+
         public DelegateCommand FullScreenCommand =>
             _fullScreenCommand ??= new(_videoPlayService.FullScreen);
 
         private DelegateCommand<MvUrl> _switchBrCommand = default!;
+
         public DelegateCommand<MvUrl> SwitchBrCommand =>
             _switchBrCommand ??= new((mvUrl) =>
             {
@@ -109,7 +124,9 @@ namespace QianShi.Music.ViewModels
                 _videoPlayStoreService.SetUrl(mvUrl);
                 ShowSwitchDialog = false;
             });
+
         private DelegateCommand<MovieVideo> _playMvCommand = default!;
+
         public DelegateCommand<MovieVideo> PlayMvCommand =>
             _playMvCommand ?? (_playMvCommand = new DelegateCommand<MovieVideo>(async (mv) =>
             {
@@ -125,7 +142,7 @@ namespace QianShi.Music.ViewModels
 
         public MvViewModel(
             IContainerProvider containerProvider,
-            IVideoPlayService videoPlayService, 
+            IVideoPlayService videoPlayService,
             IVideoPlayStoreService videoPlayStoreService)
             : base(containerProvider)
         {
@@ -144,7 +161,7 @@ namespace QianShi.Music.ViewModels
                 if (e.NewValue && ShowCover) ShowCover = false;
             };
             _videoPlayService.VolumeChanged += (_, _) => RaisePropertyChanged(nameof(Volume));
-            _videoPlayService.IsMutedChanged += (_, _) => RaisePropertyChanged(nameof(IsMuted)); 
+            _videoPlayService.IsMutedChanged += (_, _) => RaisePropertyChanged(nameof(IsMuted));
             _videoPlayService.IsFullScreenChanged += (_, e) =>
             {
                 VideoControl = e.NewValue ? null : _videoPlayService.Control;

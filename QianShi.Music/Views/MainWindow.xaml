@@ -7,7 +7,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
-    Title="{Binding Title}"
+    Title="QianshiMusic"
     Width="1080"
     Height="720"
     prism:ViewModelLocator.AutoWireViewModel="True"

@@ -30,11 +30,13 @@ namespace QianShi.Music.ViewModels
             get => _title;
             set => SetProperty(ref _title, value);
         }
+
         public ObservableCollection<Song> Playlists
         {
             get => _playlists;
             set => SetProperty(ref _playlists, value);
         }
+
         public bool Loading { get => _loading; set => SetProperty(ref _loading, value); }
         public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
 
@@ -42,6 +44,7 @@ namespace QianShi.Music.ViewModels
         /// 播放歌单
         /// </summary>
         private DelegateCommand<Song?> _playCommand = default!;
+
         public DelegateCommand<Song?> PlayCommand =>
             _playCommand ??= new DelegateCommand<Song?>(Play);
 
@@ -94,7 +97,7 @@ namespace QianShi.Music.ViewModels
                     Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
                     Detail.Count = response.PlaylistDetail.TrackCount;
                     Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
-                    Detail.CreatorId = response.PlaylistDetail.Creator?.UserId??0;
+                    Detail.CreatorId = response.PlaylistDetail.Creator?.UserId ?? 0;
                     _playlists.Clear();
 
                     // 获取所有歌曲

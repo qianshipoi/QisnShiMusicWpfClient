@@ -16,9 +16,9 @@
             MaxWidth="1280"
             VerticalAlignment="Stretch"
             Background="White">
-            <uc:TitleControl Title="推荐歌单" TitleFontSize="28" Margin="20,20,20,0" 
+            <uc:TitleControl Title="推荐歌单" TitleFontSize="28" Margin="20,20,20,0"
                              ShowLookAll="True"
-                             LookAllCammand="{Binding JumpFoundCommand}" 
+                             LookAllCammand="{Binding JumpFoundCommand}"
                              LookAllCommandParameter="推荐" />
             <ItemsControl Margin="10,20" ItemsSource="{Binding RecommendPlayList}">
                 <ItemsControl.ItemsPanel>
@@ -30,7 +30,7 @@
                     <DataTemplate>
                         <StackPanel>
                             <uc:PlaylistCard
-                                Title="{Binding Name}" 
+                                Title="{Binding Name}"
                                 Margin="10"
                                 Cover="{Binding CoverImgUrl}"
                                 Description="{Binding Copywriter}"
@@ -150,7 +150,7 @@
                                 FontSize="16" Cursor="Hand" Style="{StaticResource UnderlineTextBlock}"
                                 FontWeight="Bold"
                                 Opacity=".65"
-                                Text="{Binding Name}" >
+                                Text="{Binding Name}">
                                 <i:Interaction.Triggers>
                                     <i:EventTrigger EventName="MouseLeftButtonUp">
                                         <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}, Path=DataContext.OpenArtistCommand}" CommandParameter="{Binding}" />
@@ -161,9 +161,9 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <uc:TitleControl Title="新专速递" TitleFontSize="28" Margin="20,20,20,0" 
+            <uc:TitleControl Title="新专速递" TitleFontSize="28" Margin="20,20,20,0"
                              ShowLookAll="True"
-                             LookAllCammand="{Binding JumpFoundCommand}" 
+                             LookAllCammand="{Binding JumpFoundCommand}"
                              LookAllCommandParameter="新专速递" />
             <ItemsControl Margin="10,20" ItemsSource="{Binding NewAlbumList}">
                 <ItemsControl.ItemsPanel>
@@ -188,9 +188,9 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <uc:TitleControl Title="排行榜" TitleFontSize="28" Margin="20,20,20,0" 
+            <uc:TitleControl Title="排行榜" TitleFontSize="28" Margin="20,20,20,0"
                              ShowLookAll="True"
-                             LookAllCammand="{Binding JumpFoundCommand}" 
+                             LookAllCammand="{Binding JumpFoundCommand}"
                              LookAllCommandParameter="排行榜" />
             <ItemsControl Margin="10,20" ItemsSource="{Binding RankingList}">
                 <ItemsControl.ItemsPanel>

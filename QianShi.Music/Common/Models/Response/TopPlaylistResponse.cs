@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace QianShi.Music.Common.Models.Response
+﻿namespace QianShi.Music.Common.Models.Response
 {
     public class TopPlaylistResponse
     {

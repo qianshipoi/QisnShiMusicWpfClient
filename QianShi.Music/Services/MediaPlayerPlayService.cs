@@ -9,6 +9,7 @@ namespace QianShi.Music.Services
         private readonly DispatcherTimer _timer;
         private string _mediaUrl = string.Empty;
         private bool _isPlaying = false;
+
         public bool IsPlaying
         {
             get => _isPlaying;
@@ -19,12 +20,16 @@ namespace QianShi.Music.Services
                 _isPlaying = value;
             }
         }
+
         public bool IsMuted => _mediaPlayer.IsMuted;
         public double Volume => _mediaPlayer.Volume;
 
         public event EventHandler<ProgressEventArgs>? ProgressChanged;
+
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsMutedChanged;
+
         public event EventHandler<PropertyChangedEventArgs<double>>? VolumeChanged;
+
         public event EventHandler<PropertyChangedEventArgs<bool>>? IsPlayingChanged;
 
         public event EventHandler? PlayEnded;

@@ -110,7 +110,6 @@ namespace QianShi.Music.Common.Helpers
                     return;
                 }
 
-
                 var hwndSource = HwndSource.FromHwnd(hwnd);
 
                 //去除hook
@@ -245,7 +244,7 @@ namespace QianShi.Music.Common.Helpers
                                 {
                                     //确保窗口的 WPF 属性与 Win32 位置一致，防止有逗比全屏后改 WPF 的属性，发生一些诡异的行为
                                     //下面这样做其实不太好，会再次触发 WM_WINDOWPOSCHANGING 来着.....但是又没有其他时机了
-                                    // WM_WINDOWPOSCHANGED 不能用 
+                                    // WM_WINDOWPOSCHANGED 不能用
                                     //（例如：在进入全屏后，修改 Left 属性，会进入 WM_WINDOWPOSCHANGING，然后在这里将消息里的结构体中的 Left 改回，
                                     // 使对 Left 的修改无效，那么将不会进入 WM_WINDOWPOSCHANGED，窗口尺寸正常，但窗口的 Left 属性值错误。）
                                     var logicalPos =

@@ -12,6 +12,7 @@ namespace QianShi.Music.Common.Models.Response
         public bool Subed { get; set; }
         public MpData Mp { get; set; } = default!;
         public MvDetail Data { get; set; } = default!;
+
         public class MpData
         {
             [JsonPropertyName("id")]
@@ -61,8 +62,10 @@ namespace QianShi.Music.Common.Models.Response
         public string BriefDesc { get; set; } = string.Empty;
         public object? Desc { get; set; }
         public string Cover { get; set; } = default!;
+
         [JsonPropertyName("coverId_str")]
         public string CoverIdStr { get; set; } = default!;
+
         public long CoverId { get; set; }
         public int PlayCount { get; set; }
         public int SubCount { get; set; }

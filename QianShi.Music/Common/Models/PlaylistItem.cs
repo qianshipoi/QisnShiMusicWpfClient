@@ -24,5 +24,4 @@ namespace QianShi.Music.Common.Models
         private bool _isPlaying = false;
         public bool IsPlaying { get => _isPlaying; set => SetProperty(ref _isPlaying, value); }
     }
-
 }

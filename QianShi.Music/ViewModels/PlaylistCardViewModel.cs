@@ -15,35 +15,11 @@ namespace QianShi.Music.ViewModels
     {
         private readonly IPlaylistService _playlistService;
         private readonly IRegionManager _regionManager;
-        private int _offset = 0;
         private int _limit = 100;
-
         private bool _loading;
-
-        public bool Loading
-        {
-            get => _loading;
-            set => SetProperty(ref _loading, value);
-        }
-
-        private ObservableCollection<IPlaylist> _playlists;
-
-        public ObservableCollection<IPlaylist> Playlists
-        {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
-        }
-
         private bool _more = false;
-
-        public bool More
-        {
-            get => _more;
-            set => SetProperty(ref _more, value);
-        }
-
-        public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
-        public DelegateCommand<ItemsControl> MorePlaylistCommand { get; private set; }
+        private int _offset = 0;
+        private ObservableCollection<IPlaylist> _playlists;
 
         public PlaylistCardViewModel(
             IContainerProvider containerProvider,
@@ -59,14 +35,34 @@ namespace QianShi.Music.ViewModels
             MorePlaylistCommand = new DelegateCommand<ItemsControl>(MorePlaylist);
         }
 
-        /// <summary>
-        /// 更多歌单
-        /// </summary>
-        private async void MorePlaylist(ItemsControl el)
+        public bool Loading
         {
-            el.Focus();
-            _offset += _limit;
-            await LoadPlaylist();
+            get => _loading;
+            set => SetProperty(ref _loading, value);
+        }
+        public bool More
+        {
+            get => _more;
+            set => SetProperty(ref _more, value);
+        }
+
+        public DelegateCommand<ItemsControl> MorePlaylistCommand { get; private set; }
+
+        public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
+
+        public ObservableCollection<IPlaylist> Playlists
+        {
+            get => _playlists;
+            set => SetProperty(ref _playlists, value);
+        }
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (_playlists.Count == 0)
+            {
+                await LoadPlaylist();
+            }
+
+            base.OnNavigatedTo(navigationContext);
         }
 
         private async Task LoadPlaylist(bool clear = false)
@@ -88,6 +84,15 @@ namespace QianShi.Music.ViewModels
             Loading = false;
         }
 
+        /// <summary>
+        /// 更多歌单
+        /// </summary>
+        private async void MorePlaylist(ItemsControl el)
+        {
+            el.Focus();
+            _offset += _limit;
+            await LoadPlaylist();
+        }
         private void OpenPlaylist(IPlaylist obj)
         {
             var parameters = new NavigationParameters();
@@ -95,17 +100,6 @@ namespace QianShi.Music.ViewModels
 
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("AlbumView", parameters);
         }
-
-        public override async void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            if (_playlists.Count == 0)
-            {
-                await LoadPlaylist();
-            }
-
-            base.OnNavigatedTo(navigationContext);
-        }
-
         private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
         {
             if (isClear)

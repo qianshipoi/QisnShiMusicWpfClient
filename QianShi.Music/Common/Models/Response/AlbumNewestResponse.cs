@@ -18,6 +18,7 @@ namespace QianShi.Music.Common.Models.Response
 
         [JsonPropertyName("picUrl")]
         public string CoverImgUrl { get; set; } = null!;
+
         public string Description { get; set; } = null!;
         public string Tags { get; set; } = null!;
         public Artist Artist { get; set; } = new();

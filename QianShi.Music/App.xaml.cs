@@ -77,7 +77,6 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<PlayingListView, PlayingListViewModel>();
             containerRegistry.RegisterForNavigation<MvView, MvViewModel>();
             //containerRegistry.RegisterForNavigation<SearchView, DesignSearchViewModel>();
-
         }
 
         protected override void OnExit(ExitEventArgs e)
