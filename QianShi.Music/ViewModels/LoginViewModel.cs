@@ -67,8 +67,33 @@ namespace QianShi.Music.ViewModels
             if (LoginMode == LoginMode.Email)
             {
                 _ = EmailLogin();
+            }else if (LoginMode == LoginMode.Phone)
+            {
+                _ = PhoneLogin();
             }
 
+        }
+
+        private async Task PhoneLogin()
+        {
+            var response = await _playlistService.LoginCellPhone(new ()
+            {
+                Phone = Account!,
+                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
+                Time = DateTime.Now.Ticks
+            });
+
+            if (response.Code != 200)
+            {
+                MessageBox.Show(response.Msg);
+                return;
+            }
+            LoginSuccess(
+                response.Profile?.Nickname,
+                response.Profile?.AvatarUrl,
+                response.Account?.Id ?? 0,
+                response.Account?.VipType ?? 0,
+                response.Cookie);
         }
 
         private async Task EmailLogin()
@@ -76,7 +101,8 @@ namespace QianShi.Music.ViewModels
             var response = await _playlistService.Login(new LoginRequest()
             {
                 Email = Account!,
-                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower()
+                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
+                Time = DateTime.Now.Ticks
             });
 
             if (response.Code != 200)

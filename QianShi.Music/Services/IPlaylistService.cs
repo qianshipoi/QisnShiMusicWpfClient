@@ -288,5 +288,12 @@ namespace QianShi.Music.Services
         /// <param name="parameters"></param>
         /// <returns></returns>
         Task<LoginResponse> Login(LoginRequest parameters);
+
+        /// <summary>
+        /// 手机号登录
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        Task<LoginResponse> LoginCellPhone(LoginCellphoneRequest parameters);
     }
 }

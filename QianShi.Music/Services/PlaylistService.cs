@@ -375,5 +375,11 @@ namespace QianShi.Music.Services
         {
             return await Request<LoginResponse>("/login", parameters);
         }
+
+        public async Task<LoginResponse> LoginCellPhone(LoginCellphoneRequest parameters)
+        {
+            return await Request<LoginResponse>("/login/cellphone", parameters);
+        }
+
     }
 }
