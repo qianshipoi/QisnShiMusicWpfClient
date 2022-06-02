@@ -10,26 +10,43 @@ using QianShi.Music.Services;
 using QianShi.Music.Views.Dialogs;
 
 using System.Collections.ObjectModel;
+using static System.String;
 
 namespace QianShi.Music.ViewModels
 {
     public class PlaylistViewModel : NavigationViewModel
     {
         private readonly IPlaylistService _playlistService;
-        private readonly IPlayStoreService _playStoreService;
         private readonly IPlayService _playService;
-        private readonly IContainerProvider _containerProvider;
-        private string _title = "加载中...";
-        private bool _loading = false;
-        private long _playlistId;
+        private readonly IPlayStoreService _playStoreService;
         private PlaylistDetail _detail = new();
-        private ObservableCollection<Song> _playlists;
+        private bool _loading = false;
+        /// <summary>
+        /// 播放歌单
+        /// </summary>
+        private DelegateCommand<Song?> _playCommand = default!;
 
-        public string Title
+        private long _playlistId;
+        private ObservableCollection<Song> _playlists;
+        private string _title = "加载中...";
+        public PlaylistViewModel(IContainerProvider containerProvider,
+            IPlaylistService playlistService,
+            IPlayService playService,
+            IPlayStoreService playStoreService)
+            : base(containerProvider)
         {
-            get => _title;
-            set => SetProperty(ref _title, value);
+            _playlists = new ObservableCollection<Song>();
+            _playlistService = playlistService;
+            _playService = playService;
+            _playStoreService = playStoreService;
         }
+
+        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
+
+        public bool Loading { get => _loading; set => SetProperty(ref _loading, value); }
+
+        public DelegateCommand<Song?> PlayCommand =>
+            _playCommand ??= new(Play);
 
         public ObservableCollection<Song> Playlists
         {
@@ -37,47 +54,21 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _playlists, value);
         }
 
-        public bool Loading { get => _loading; set => SetProperty(ref _loading, value); }
-        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
-
-        /// <summary>
-        /// 播放歌单
-        /// </summary>
-        private DelegateCommand<Song?> _playCommand = default!;
-
-        public DelegateCommand<Song?> PlayCommand =>
-            _playCommand ??= new DelegateCommand<Song?>(Play);
-
-        /// <summary>
-        /// 立即播放
-        /// </summary>
-        public DelegateCommand<Song?> PlayImmediatelyCommand => PlayCommand;
-
-        public PlaylistViewModel(IContainerProvider containerProvider,
-            IPlaylistService playlistService, IPlayService playService, IPlayStoreService playStoreService) : base(containerProvider)
+        public string Title
         {
-            _playlists = new ObservableCollection<Song>();
-            _playlistService = playlistService;
-            _containerProvider = containerProvider;
-            _playService = playService;
-            _playStoreService = playStoreService;
+            get => _title;
+            set => SetProperty(ref _title, value);
         }
-
-        private async void Play(Song? playlist)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            if (playlist != null)
+            if (DialogHost.IsDialogOpen(Extensions.PrismManager.PlaylistDialogName))
             {
-                await _playStoreService.PlayAsync(playlist);
+                var session = DialogHost.GetDialogSession(Extensions.PrismManager.PlaylistDialogName);
+                if (session != null)
+                    session.UpdateContent(new LoadingDialog());
+                DialogHost.Close(Extensions.PrismManager.PlaylistDialogName);
             }
-            else
-            {
-                await _playStoreService.AddPlaylistAsync(_playlistId, Playlists);
-                _playStoreService.Pause();
-                if (!_playService.IsPlaying)
-                {
-                    _playStoreService.Play();
-                }
-            }
+            base.OnNavigatedFrom(navigationContext);
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
@@ -92,7 +83,7 @@ namespace QianShi.Music.ViewModels
                 {
                     Detail.Id = response.PlaylistDetail.Id;
                     Detail.Name = response.PlaylistDetail.Name;
-                    Detail.Description = response.PlaylistDetail.Description ?? String.Empty;
+                    Detail.Description = response.PlaylistDetail.Description ?? Empty;
                     Detail.LastUpdateTime = response.PlaylistDetail.UpdateTime;
                     Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
                     Detail.Count = response.PlaylistDetail.TrackCount;
@@ -101,7 +92,7 @@ namespace QianShi.Music.ViewModels
                     _playlists.Clear();
 
                     // 获取所有歌曲
-                    var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
+                    var ids = Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
                     var songResponse = await _playlistService.SongDetail(ids);
                     if (songResponse.Code == 200)
                     {
@@ -124,16 +115,21 @@ namespace QianShi.Music.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
 
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        private async void Play(Song? playlist)
         {
-            if (DialogHost.IsDialogOpen(Extensions.PrismManager.PlaylistDialogName))
+            if (playlist != null)
             {
-                var session = DialogHost.GetDialogSession(Extensions.PrismManager.PlaylistDialogName);
-                if (session != null)
-                    session.UpdateContent(new LoadingDialog());
-                DialogHost.Close(Extensions.PrismManager.PlaylistDialogName);
+                await _playStoreService.PlayAsync(playlist);
             }
-            base.OnNavigatedFrom(navigationContext);
+            else
+            {
+                await _playStoreService.AddPlaylistAsync(_playlistId, Playlists);
+                _playStoreService.Pause();
+                if (!_playService.IsPlaying)
+                {
+                    _playStoreService.Play();
+                }
+            }
         }
     }
 }

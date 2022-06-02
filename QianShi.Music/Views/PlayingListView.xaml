@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:views="clr-namespace:QianShi.Music.Views"
     d:DataContext="{Binding DesignPlayingListViewModel, Source={StaticResource ViewModelLocator}}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
@@ -57,7 +58,7 @@
             <ItemsControl Margin="20,0" ItemsSource="{Binding ToBePlayeds}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <uc:SongItem Item="{Binding}" />
+                        <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type views:PlayingListView}}, Path=DataContext.PlayCommand}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

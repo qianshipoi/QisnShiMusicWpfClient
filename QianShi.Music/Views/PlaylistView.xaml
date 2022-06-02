@@ -18,20 +18,6 @@
         <ResourceDictionary>
             <conver:TimestampConverter x:Key="TimestampConverter" />
             <conver:NewlineFilterConverter x:Key="NewlineFilterConverter" />
-            <Style x:Key="PlaylistItemBorderStyle" TargetType="Border">
-                <Setter Property="Padding" Value="8" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="CornerRadius" Value="12" />
-                <Setter Property="Background" Value="Transparent" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#f5f5f7" />
-                    </Trigger>
-                    <DataTrigger Binding="{Binding IsPlaying}" Value="True">
-                        <Setter Property="Background" Value="#eaeffd" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <materialDesign:DialogHost Identifier="{x:Static ext:PrismManager.PlaylistDialogName}" IsOpen="{Binding Loading}">
@@ -69,18 +55,25 @@
                                 FontWeight="Bold"
                                 Text="{Binding Detail.Name}"
                                 TextWrapping="WrapWithOverflow" />
-                            <StackPanel Orientation="Horizontal" Margin="0,24,0,0"
-                                        Opacity=".68">
+                            <StackPanel
+                                Margin="0,24,0,0"
+                                Opacity=".68"
+                                Orientation="Horizontal">
                                 <TextBlock
                                     FontSize="18"
                                     FontWeight="Bold"
                                     Text="Playlist by" />
-                                <TextBlock Style="{StaticResource UnderlineTextBlock}"
-                                           FontSize="18" Margin="8,0,0,0"
-                                           FontWeight="Bold" MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp"
-                                           Text="{Binding Detail.Creator}">
-                                </TextBlock>
-                                <TextBlock x:Name="CreatorUrlControl" Visibility="Collapsed" Text="{Binding Detail.CreatorId,StringFormat='{}https://music.163.com/#/user/home?id={0}'}"></TextBlock>
+                                <TextBlock
+                                    Margin="8,0,0,0"
+                                    FontSize="18"
+                                    FontWeight="Bold"
+                                    MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp"
+                                    Style="{StaticResource UnderlineTextBlock}"
+                                    Text="{Binding Detail.Creator}" />
+                                <TextBlock
+                                    x:Name="CreatorUrlControl"
+                                    Text="{Binding Detail.CreatorId, StringFormat='{}https://music.163.com/#/user/home?id={0}'}"
+                                    Visibility="Collapsed" />
                             </StackPanel>
                             <StackPanel
                                 Margin="0,2,0,0"
@@ -170,7 +163,7 @@
                     <ItemsControl ItemsSource="{Binding Playlists}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayImmediatelyCommand}" />
+                                <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayCommand}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
