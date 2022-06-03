@@ -18,7 +18,7 @@ namespace QianShi.Music.Services
             _cookieContainer = new CookieContainer();
         }
 
-        private RestClient _client => new RestClient(new RestClientOptions("http://150.158.194.185:3001")
+        private RestClient Client => new(new RestClientOptions("http://150.158.194.185:3001")
         {
             Timeout = -1,
             CookieContainer = _cookieContainer
@@ -130,6 +130,16 @@ namespace QianShi.Music.Services
             return (await Get<LikelistResponse>(request)) ?? new();
         }
 
+        public async Task<LoginResponse> Login(LoginRequest parameters)
+        {
+            return await Request<LoginResponse>("/login", parameters);
+        }
+
+        public async Task<LoginResponse> LoginCellPhone(LoginCellphoneRequest parameters)
+        {
+            return await Request<LoginResponse>("/login/cellphone", parameters);
+        }
+
         public async Task<LoginQrCheckResponse> LoginQrCheck(string key)
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -186,8 +196,25 @@ namespace QianShi.Music.Services
             }
         }
 
+        public async Task<LyricResponse> Lyric(long id)
+        {
+            var request = new RestRequest("/lyric");
+            request.AddQueryParameter("id", id);
+            return await Get<LyricResponse>(request) ?? new LyricResponse();
+        }
+
+        public async Task<MvDetailResponse> MvDetail(long mvid)
+        {
+            var request = new RestRequest("/mv/detail");
+            request.AddQueryParameter("mvid", mvid);
+            return await Get<MvDetailResponse>(request) ?? new MvDetailResponse();
+        }
+
         public async Task<MvSublistResponse> MvSublist(PagedRequestBase parameters)
-            => await Request<MvSublistResponse>("/mv/sublist", parameters);
+                            => await Request<MvSublistResponse>("/mv/sublist", parameters);
+
+        public async Task<MvUrlResponse> MvUrl(MvUrlRequest parameters)
+            => await Request<MvUrlResponse>("/mv/url", parameters);
 
         public async Task<SearchResponse> Search(SearchRequest parasmeters)
         {
@@ -315,12 +342,22 @@ namespace QianShi.Music.Services
             return (await Get<SimiArtistResponse>(request)) ?? new();
         }
 
+        public async Task<SimiMvResponse> SimiMv(long mvid)
+        {
+            var request = new RestRequest("/simi/mv");
+            request.AddQueryParameter("mvid", mvid);
+            return await Get<SimiMvResponse>(request) ?? new SimiMvResponse();
+        }
+
         public async Task<SongDetailResponse> SongDetail(string ids)
         {
             var request = new RestRequest("/song/detail");
             request.AddQueryParameter("ids", ids);
             return await Get<SongDetailResponse>(request) ?? new SongDetailResponse();
         }
+
+        public async Task<SongUrlResponse> SongUrl(SongUrlRequest parameters)
+            => await Request<SongUrlResponse>("/song/url", parameters);
 
         public async Task<ToplistArtistResponse> ToplistArtist(int? type = null)
         {
@@ -338,47 +375,9 @@ namespace QianShi.Music.Services
 
         public async Task<UserRecordResponse> UserRecord(UserRecordRequest parameters)
             => await Request<UserRecordResponse>("/user/record", parameters);
-
-        public async Task<SongUrlResponse> SongUrl(SongUrlRequest parameters)
-            => await Request<SongUrlResponse>("/song/url", parameters);
-
-        public async Task<LyricResponse> Lyric(long id)
-        {
-            var request = new RestRequest("/lyric");
-            request.AddQueryParameter("id", id);
-            return await Get<LyricResponse>(request) ?? new LyricResponse();
-        }
-
-        private Task<T?> Get<T>(RestRequest request) => _client.GetAsync<T>(request);
+        private Task<T?> Get<T>(RestRequest request) => Client.GetAsync<T>(request);
 
         private async Task<T> Request<T>(string route, object parameters) where T : new()
             => (await Get<T>(new RestRequest(route).AddQueryParameters(parameters))) ?? new T();
-
-        public async Task<MvDetailResponse> MvDetail(long mvid)
-        {
-            var request = new RestRequest("/mv/detail");
-            request.AddQueryParameter("mvid", mvid);
-            return await Get<MvDetailResponse>(request) ?? new MvDetailResponse();
-        }
-
-        public async Task<MvUrlResponse> MvUrl(MvUrlRequest parameters)
-            => await Request<MvUrlResponse>("/mv/url", parameters);
-
-        public async Task<SimiMvResponse> SimiMv(long mvid)
-        {
-            var request = new RestRequest("/simi/mv");
-            request.AddQueryParameter("mvid", mvid);
-            return await Get<SimiMvResponse>(request) ?? new SimiMvResponse();
-        }
-
-        public async Task<LoginResponse> Login(LoginRequest parameters)
-        {
-            return await Request<LoginResponse>("/login", parameters);
-        }
-
-        public async Task<LoginResponse> LoginCellPhone(LoginCellphoneRequest parameters)
-        {
-            return await Request<LoginResponse>("/login/cellphone", parameters);
-        }
     }
 }

@@ -58,13 +58,13 @@ namespace QianShi.Music.Common.Models.Response
 
     public partial class Song
     {
-        [JsonPropertyName("al")]
-        public Album? Album { get; set; }
+        [JsonPropertyName("al")] 
+        public Album Album { get; set; } = default!;
 
         public List<string>? Alia { get; set; }
 
         [JsonPropertyName("ar")]
-        public List<Artist>? Artists { get; set; }
+        public List<Artist> Artists { get; set; } = default!;
 
         public string? Cd { get; set; }
         public string? Cf { get; set; }

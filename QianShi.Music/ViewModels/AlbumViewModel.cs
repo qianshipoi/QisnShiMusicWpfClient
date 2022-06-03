@@ -10,6 +10,7 @@ using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
+using QianShi.Music.ViewModels.Dialogs;
 using QianShi.Music.Views.Dialogs;
 
 using System.Collections.ObjectModel;
@@ -19,37 +20,39 @@ namespace QianShi.Music.ViewModels
 {
     public class AlbumViewModel : NavigationViewModel, IRegionMemberLifetime
     {
-        private readonly IPlaylistService _playlistService;
+        public const string AlbumIdParameterName = "PlaylistId";
+
         private readonly IContainerProvider _containerProvider;
-        private readonly IDialogHostService _dialogHostService;
-        private string _title;
+        private readonly IPlaylistService _playlistService;
+        private PlaylistDetail _detail = new();
         private bool _loading;
         private ObservableCollection<SongBindable> _playlists;
+        private string _title;
 
-        public string Title
+        public AlbumViewModel(
+            IContainerProvider containerProvider,
+            IPlaylistService playlistService)
+            : base(containerProvider)
         {
-            get => _title;
-            set => SetProperty(ref _title, value);
+            _title = string.Empty;
+            _playlists = new ObservableCollection<SongBindable>();
+
+            PlayCommand = new DelegateCommand<SongBindable?>(Play);
+            PlayImmediatelyCommand = new DelegateCommand<SongBindable?>(Play);
+            _playlistService = playlistService;
+            _containerProvider = containerProvider;
+            ShowDescriptionCommand = new DelegateCommand(ShowDescription);
         }
 
-        public ObservableCollection<SongBindable> Playlists
-        {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
-        }
+        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
 
-        private PlaylistDetail _detail = new PlaylistDetail();
+        public bool KeepAlive => false;
 
         public bool Loading
         {
             get => _loading;
-            set
-            {
-                SetProperty(ref _loading, value);
-            }
+            set => SetProperty(ref _loading, value);
         }
-
-        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
 
         /// <summary>
         /// 播放歌单
@@ -61,68 +64,35 @@ namespace QianShi.Music.ViewModels
         /// </summary>
         public DelegateCommand<SongBindable?> PlayImmediatelyCommand { get; private set; }
 
+        public ObservableCollection<SongBindable> Playlists
+        {
+            get => _playlists;
+            set => SetProperty(ref _playlists, value);
+        }
+
         public DelegateCommand ShowDescriptionCommand { get; private set; }
 
-        public bool KeepAlive => false;
-
-        public AlbumViewModel(IContainerProvider containerProvider,
-            IPlaylistService playlistService,
-            IDialogHostService dialogHostService) : base(containerProvider)
+        public string Title
         {
-            _title = string.Empty;
-            _playlists = new ObservableCollection<SongBindable>();
-            _dialogHostService = dialogHostService;
-
-            PlayCommand = new DelegateCommand<SongBindable?>(Play);
-            PlayImmediatelyCommand = new DelegateCommand<SongBindable?>(Play);
-            _playlistService = playlistService;
-            _containerProvider = containerProvider;
-            ShowDescriptionCommand = new DelegateCommand(ShowDescription);
+            get => _title;
+            set => SetProperty(ref _title, value);
         }
 
-        private void Play(SongBindable? palylist)
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            if (palylist != null)
+            if (DialogHost.IsDialogOpen(PrismManager.PlaylistDialogName))
             {
-                Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
-                palylist.IsPlaying = true;
+                var session = DialogHost.GetDialogSession(PrismManager.PlaylistDialogName);
+                if (session != null)
+                    session.UpdateContent(new LoadingDialog());
+                DialogHost.Close(PrismManager.PlaylistDialogName);
             }
-            else
-            {
-                Playlists.First().IsPlaying = false;
-            }
-        }
-
-        private async void ShowDescription()
-        {
-            var parameters = new DialogParameters();
-            parameters.Add("Description", Detail.Description);
-
-            var dialog = _containerProvider.Resolve<DescriptionDialog>();
-
-            if (dialog is FrameworkElement view && view.DataContext is null && ViewModelLocator.GetAutoWireViewModel(view) is null)
-                ViewModelLocator.SetAutoWireViewModel(view, true);
-
-            if (dialog.DataContext is IDialogHostAware aware)
-            {
-                aware.DialogHostName = PrismManager.PlaylistDialogName;
-            }
-
-            DialogOpenedEventHandler eventHandler = (sender, eventArgs) =>
-            {
-                if (dialog.DataContext is IDialogHostAware aware)
-                {
-                    aware.OnDialogOpend(parameters);
-                }
-                eventArgs.Session.UpdateContent(dialog);
-            };
-
-            await DialogHost.Show(dialog, PrismManager.PlaylistDialogName, eventHandler);
+            base.OnNavigatedFrom(navigationContext);
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var playlistId = navigationContext.Parameters.GetValue<long>("PlaylistId");
+            var playlistId = navigationContext.Parameters.GetValue<long>(AlbumIdParameterName);
             Title = playlistId.ToString();
             if (Detail.Id != playlistId)
             {
@@ -153,30 +123,51 @@ namespace QianShi.Music.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
 
-        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        private void Play(SongBindable? song)
         {
-            if (DialogHost.IsDialogOpen(PrismManager.PlaylistDialogName))
+            if (song != null)
             {
-                var session = DialogHost.GetDialogSession(PrismManager.PlaylistDialogName);
-                if (session != null)
-                    session.UpdateContent(new LoadingDialog());
-                DialogHost.Close(PrismManager.PlaylistDialogName);
+                Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
+                song.IsPlaying = true;
             }
-            base.OnNavigatedFrom(navigationContext);
+            else
+            {
+                Playlists.First().IsPlaying = false;
+            }
+        }
+
+        private async void ShowDescription()
+        {
+            var dialog = _containerProvider.Resolve<DescriptionDialog>();
+
+            if (dialog is FrameworkElement view && view.DataContext is null && ViewModelLocator.GetAutoWireViewModel(view) is null)
+                ViewModelLocator.SetAutoWireViewModel(view, true);
+
+            if (dialog.DataContext is IDialogHostAware aware)
+            {
+                aware.DialogHostName = PrismManager.PlaylistDialogName;
+            }
+
+            await DialogHost.Show(dialog, PrismManager.PlaylistDialogName, openedEventHandler: (sender, eventArgs) =>
+            {
+                if (dialog.DataContext is IDialogHostAware dialogHostAware)
+                {
+                    dialogHostAware.OnDialogOpend(new DialogParameters { { DescriptionDialogViewModel.DescriptionParameterName, Detail.Description } });
+                }
+                eventArgs.Session.UpdateContent(dialog);
+            });
         }
     }
 
     public class SongBindable : BindableBase
     {
-        public long Id { get; set; }
-        public string Name { get; set; } = null!;
-        public string? ArtistName { get; set; }
-        public long Time { get; set; }
-
         private bool _isLike;
-        public bool IsLike { get => _isLike; set => SetProperty(ref _isLike, value); }
-
         private bool _isPlaying;
+        public string? ArtistName { get; set; }
+        public long Id { get; set; }
+        public bool IsLike { get => _isLike; set => SetProperty(ref _isLike, value); }
         public bool IsPlaying { get => _isPlaying; set => SetProperty(ref _isPlaying, value); }
+        public string Name { get; set; } = null!;
+        public long Time { get; set; }
     }
 }

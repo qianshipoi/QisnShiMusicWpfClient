@@ -18,86 +18,18 @@ namespace QianShi.Music.ViewModels
 
         private readonly IPlaylistService _playlistService;
         private readonly IRegionManager _regionManager;
-        private long ArtistId = 0;
-        private ObservableCollection<Song> _songs;
-
-        public ObservableCollection<Song> Songs
-        {
-            get { return _songs; }
-            set { SetProperty(ref _songs, value); }
-        }
-
-        private ObservableCollection<Album> _albums;
-
-        public ObservableCollection<Album> Albums
-        {
-            get { return _albums; }
-            set
-            {
-                SetProperty(ref _albums, value);
-            }
-        }
-
-        private ObservableCollection<MovieVideo> _movieVideos;
-
-        public ObservableCollection<MovieVideo> MovieVideos
-        {
-            get => _movieVideos;
-            set => SetProperty(ref _movieVideos, value);
-        }
-
-        private ObservableCollection<Artist> _artists;
-
-        public ObservableCollection<Artist> Artists
-        {
-            get { return _artists; }
-            set { SetProperty(ref _artists, value); }
-        }
-
-        private Artist _artist = default!;
-
-        public Artist Artist
-        {
-            get { return _artist; }
-            set { SetProperty(ref _artist, value); }
-        }
-
         private Album? _album;
-
-        public Album? Album
-        {
-            get { return _album; }
-            set { SetProperty(ref _album, value); }
-        }
-
-        private MovieVideo? _movieVideo;
-
-        public MovieVideo? MovieVideo
-        {
-            get { return _movieVideo; }
-            set { SetProperty(ref _movieVideo, value); }
-        }
-
+        private ObservableCollection<Album> _albums;
+        private Artist _artist = default!;
+        private long _artistId;
+        private ObservableCollection<Artist> _artists;
         private DelegateCommand<MovieVideo> _jumpToMvPageCommand = default!;
-
-        public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
-            _jumpToMvPageCommand ?? (_jumpToMvPageCommand = new DelegateCommand<MovieVideo>((mv) =>
-            {
-                if (mv != null)
-                {
-                    var parameters = new NavigationParameters();
-                    parameters.Add(MvViewModel.MvIdParameter, mv.Id);
-                    _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(MvView), parameters);
-                }
-            }));
-
         private bool _loading;
-
-        public bool Loading
-        {
-            get { return _loading; }
-            set { SetProperty(ref _loading, value); }
-        }
+        private MovieVideo? _movieVideo;
+        private ObservableCollection<MovieVideo> _movieVideos;
+        private DelegateCommand<IPlaylist> _openArtistCommand = default!;
+        private DelegateCommand<Album> _openPlaylistCommand = default!;
+        private ObservableCollection<Song> _songs;
 
         /// <summary>
         /// 设计器使用
@@ -117,26 +49,80 @@ namespace QianShi.Music.ViewModels
             _artists = new();
         }
 
-        private DelegateCommand<Album> _openPlaylistCommand = default!;
+        public Album? Album
+        {
+            get => _album;
+            set => SetProperty(ref _album, value);
+        }
 
-        public DelegateCommand<Album> OpenPlaylistCommand => _openPlaylistCommand ??= new DelegateCommand<Album>((album) =>
-         {
-             var parameters = new NavigationParameters();
-             parameters.Add("PlaylistId", album.Id);
-             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(AlbumView), parameters);
-         });
+        public ObservableCollection<Album> Albums
+        {
+            get => _albums;
+            set => SetProperty(ref _albums, value);
+        }
 
-        private DelegateCommand<IPlaylist> _openArtistCommand = default!;
+        public Artist Artist
+        {
+            get => _artist;
+            set => SetProperty(ref _artist, value);
+        }
 
-        public DelegateCommand<IPlaylist> OpenArtistCommand => _openArtistCommand ??= new DelegateCommand<IPlaylist>((playlist) =>
-         {
-             var parameters = new NavigationParameters();
-             parameters.Add(ArtistViewModel.ArtistIdParameterName, playlist.Id);
-             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(ArtistView), parameters);
-         });
+        public ObservableCollection<Artist> Artists
+        {
+            get => _artists;
+            set => SetProperty(ref _artists, value);
+        }
+
+        public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
+            _jumpToMvPageCommand ??= new((mv) =>
+            {
+                Navigate(nameof(MvView), new NavigationParameters
+                {
+                    { MvViewModel.MvIdParameter, mv.Id}
+                });
+            });
 
         public bool KeepAlive => false;
 
+        public bool Loading
+        {
+            get => _loading;
+            set => SetProperty(ref _loading, value);
+        }
+
+        public MovieVideo? MovieVideo
+        {
+            get => _movieVideo;
+            set => SetProperty(ref _movieVideo, value);
+        }
+
+        public ObservableCollection<MovieVideo> MovieVideos
+        {
+            get => _movieVideos;
+            set => SetProperty(ref _movieVideos, value);
+        }
+
+        public DelegateCommand<IPlaylist> OpenArtistCommand => _openArtistCommand ??= new((playlist) =>
+         {
+             Navigate(nameof(ArtistView), new NavigationParameters
+             {
+                 {ArtistViewModel.ArtistIdParameterName, playlist.Id}
+             });
+         });
+
+        public DelegateCommand<Album> OpenPlaylistCommand => _openPlaylistCommand ??= new((album) =>
+        {
+            Navigate(nameof(AlbumView), new NavigationParameters
+            {
+                { AlbumViewModel.AlbumIdParameterName, album.Id }
+            });
+        });
+
+        public ObservableCollection<Song> Songs
+        {
+            get => _songs;
+            set => SetProperty(ref _songs, value);
+        }
         public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey(ArtistIdParameterName))
@@ -153,7 +139,7 @@ namespace QianShi.Music.ViewModels
 
             var parameters = navigationContext.Parameters;
 
-            ArtistId = parameters.GetValue<long>(ArtistIdParameterName);
+            _artistId = parameters.GetValue<long>(ArtistIdParameterName);
             Loading = true;
             try
             {
@@ -168,9 +154,44 @@ namespace QianShi.Music.ViewModels
             }
         }
 
+        private async Task GetAlbums()
+        {
+            var response = await _playlistService.ArtistAlbum(new Common.Models.Request.ArtistAlbumRequest
+            {
+                Id = _artistId,
+                Limit = 20
+            });
+            if (response.Code == 200)
+            {
+                var albums = response.HotAlbums.Select(x =>
+                {
+                    x.CoverImgUrl += "?param=200y200";
+                    return x;
+                }).ToList();
+                if (albums.Any())
+                {
+                    Albums.AddRange(albums);
+                    Album = albums[0];
+                }
+            }
+        }
+
+        private async Task GetArtists()
+        {
+            var response = await _playlistService.SimiArtist(_artistId);
+            if (response.Code == 200)
+            {
+                Artists.AddRange(response.Artists.Take(12).Select(x =>
+                {
+                    x.CoverImgUrl += "?param=200y200";
+                    return x;
+                }));
+            }
+        }
+
         private async Task GetHotSongs()
         {
-            var response = await _playlistService.Artists(ArtistId);
+            var response = await _playlistService.Artists(_artistId);
             if (response.Code == 200)
             {
                 Artist = response.Artist;
@@ -183,33 +204,11 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private async Task GetAlbums()
-        {
-            var response = await _playlistService.ArtistAlbum(new Common.Models.Request.ArtistAlbumRequest
-            {
-                Id = ArtistId,
-                Limit = 20
-            });
-            if (response.Code == 200)
-            {
-                var albums = response.HotAlbums.Select(x =>
-                {
-                    x.CoverImgUrl += "?param=200y200";
-                    return x;
-                }).ToList();
-                if (albums.Count() > 0)
-                {
-                    Albums.AddRange(albums);
-                    Album = albums[0];
-                }
-            }
-        }
-
         private async Task GetMovieVideos()
         {
             var response = await _playlistService.ArtistMv(new Common.Models.Request.ArtistMvRequest
             {
-                Id = ArtistId,
+                Id = _artistId,
                 Limit = 20
             });
             if (response.Code == 200)
@@ -220,7 +219,7 @@ namespace QianShi.Music.ViewModels
                     return x;
                 }).ToList();
 
-                if (mvs.Count() > 0)
+                if (mvs.Any())
                 {
                     MovieVideos.AddRange(mvs);
                     MovieVideo = mvs[0];
@@ -228,17 +227,9 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private async Task GetArtists()
+        private void Navigate(string view, NavigationParameters? parameters)
         {
-            var response = await _playlistService.SimiArtist(ArtistId);
-            if (response.Code == 200)
-            {
-                Artists.AddRange(response.Artists.Take(12).Select(x =>
-                {
-                    x.CoverImgUrl += "?param=200y200";
-                    return x;
-                }));
-            }
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(view, parameters);
         }
     }
 }
