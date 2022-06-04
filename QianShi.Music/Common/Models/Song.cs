@@ -13,5 +13,12 @@ namespace QianShi.Music.Common.Models.Response
         }
 
         public string? Url { get; set; }
+
+        private bool _isLike;
+        public bool IsLike
+        {
+            get => _isLike;
+            set => SetProperty(ref _isLike, value);
+        }
     }
 }

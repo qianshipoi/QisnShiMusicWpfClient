@@ -30,6 +30,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
         private DelegateCommand<Album> _openPlaylistCommand = default!;
         private ObservableCollection<Song> _songs;
+        
 
         /// <summary>
         /// 设计器使用
@@ -123,6 +124,7 @@ namespace QianShi.Music.ViewModels
             get => _songs;
             set => SetProperty(ref _songs, value);
         }
+
         public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey(ArtistIdParameterName))

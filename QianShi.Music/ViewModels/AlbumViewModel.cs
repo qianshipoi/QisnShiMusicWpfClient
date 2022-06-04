@@ -8,6 +8,7 @@ using Prism.Services.Dialogs;
 
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels.Dialogs;
@@ -24,22 +25,28 @@ namespace QianShi.Music.ViewModels
 
         private readonly IContainerProvider _containerProvider;
         private readonly IPlaylistService _playlistService;
+        private readonly IPlayService _playService;
+        private readonly IPlayStoreService _playStoreService;
         private PlaylistDetail _detail = new();
         private bool _loading;
-        private ObservableCollection<SongBindable> _playlists;
+        private long _playlistId;
+        private ObservableCollection<Song> _songs;
         private string _title;
-
         public AlbumViewModel(
             IContainerProvider containerProvider,
-            IPlaylistService playlistService)
+            IPlaylistService playlistService,
+            IPlayService playService,
+            IPlayStoreService playStoreService)
             : base(containerProvider)
         {
             _title = string.Empty;
-            _playlists = new ObservableCollection<SongBindable>();
+            _songs = new ObservableCollection<Song>();
 
-            PlayCommand = new DelegateCommand<SongBindable?>(Play);
-            PlayImmediatelyCommand = new DelegateCommand<SongBindable?>(Play);
+            PlayCommand = new DelegateCommand<Song?>(Play);
+            PlayImmediatelyCommand = new DelegateCommand<Song?>(Play);
             _playlistService = playlistService;
+            _playService = playService;
+            _playStoreService = playStoreService;
             _containerProvider = containerProvider;
             ShowDescriptionCommand = new DelegateCommand(ShowDescription);
         }
@@ -57,21 +64,20 @@ namespace QianShi.Music.ViewModels
         /// <summary>
         /// 播放歌单
         /// </summary>
-        public DelegateCommand<SongBindable?> PlayCommand { get; private set; }
+        public DelegateCommand<Song?> PlayCommand { get; private set; }
 
         /// <summary>
         /// 立即播放
         /// </summary>
-        public DelegateCommand<SongBindable?> PlayImmediatelyCommand { get; private set; }
-
-        public ObservableCollection<SongBindable> Playlists
-        {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
-        }
+        public DelegateCommand<Song?> PlayImmediatelyCommand { get; private set; }
 
         public DelegateCommand ShowDescriptionCommand { get; private set; }
 
+        public ObservableCollection<Song> Songs
+        {
+            get => _songs;
+            set => SetProperty(ref _songs, value);
+        }
         public string Title
         {
             get => _title;
@@ -83,56 +89,76 @@ namespace QianShi.Music.ViewModels
             if (DialogHost.IsDialogOpen(PrismManager.PlaylistDialogName))
             {
                 var session = DialogHost.GetDialogSession(PrismManager.PlaylistDialogName);
-                if (session != null)
-                    session.UpdateContent(new LoadingDialog());
+                session?.UpdateContent(new LoadingDialog());
                 DialogHost.Close(PrismManager.PlaylistDialogName);
             }
+            _playStoreService.CurrentChanged -= CurrentChanged;
             base.OnNavigatedFrom(navigationContext);
         }
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            var playlistId = navigationContext.Parameters.GetValue<long>(AlbumIdParameterName);
-            Title = playlistId.ToString();
-            if (Detail.Id != playlistId)
+            _playlistId = navigationContext.Parameters.GetValue<long>(AlbumIdParameterName);
+            Title = _playlistId.ToString();
+            if (Detail.Id != _playlistId)
             {
                 Loading = true;
-                var response = await _playlistService.GetAblumAsync(playlistId);
+                var response = await _playlistService.GetAblumAsync(_playlistId);
                 if (response.Code == 200)
                 {
                     Detail.Id = response.Album.Id;
                     Detail.Name = response.Album.Name;
-                    Detail.Description = response.Album.Description ?? String.Empty;
+                    Detail.Description = response.Album.Description;
                     Detail.LastUpdateTime = response.Album.PublishTime;
                     Detail.PicUrl = response.Album.CoverImgUrl;
                     Detail.Count = response.Album.Size;
                     Detail.Creator = response.Album.Artist.Name;
-                    _playlists.Clear();
+                    _songs.Clear();
 
-                    Playlists.AddRange(response.Songs.Select(x => new SongBindable
+                    Songs.AddRange(response.Songs);
+
+                    if ((_playStoreService.Current?.Id).HasValue)
                     {
-                        Id = x.Id,
-                        ArtistName = x.Artists[0].Name,
-                        Name = x.Name,
-                        Time = x.Dt
-                    }));
+                        CurrentChanged(null, new(_playStoreService.Current));
+                    }
                 }
                 Loading = false;
             }
 
+            _playStoreService.CurrentChanged -= CurrentChanged;
+            _playStoreService.CurrentChanged += CurrentChanged;
             base.OnNavigatedTo(navigationContext);
         }
 
-        private void Play(SongBindable? song)
+        private void CurrentChanged(object? sender, SongChangedEventArgs e)
         {
-            if (song != null)
+            var songId = e.NewSong?.Id;
+            if (songId.HasValue)
             {
-                Playlists.Where(x => x.IsPlaying).ToList().ForEach(i => i.IsPlaying = false);
-                song.IsPlaying = true;
+                Songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
+                var song = Songs.FirstOrDefault(x => x.Id == songId.Value);
+                if (song != null) song.IsPlaying = true;
             }
             else
             {
-                Playlists.First().IsPlaying = false;
+                Songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
+            }
+        }
+
+        private async void Play(Song? playlist)
+        {
+            if (playlist != null)
+            {
+                await _playStoreService.PlayAsync(playlist);
+            }
+            else
+            {
+                await _playStoreService.AddPlaylistAsync(_playlistId, Songs);
+                _playStoreService.Pause();
+                if (!_playService.IsPlaying)
+                {
+                    _playStoreService.Play();
+                }
             }
         }
 
@@ -140,7 +166,7 @@ namespace QianShi.Music.ViewModels
         {
             var dialog = _containerProvider.Resolve<DescriptionDialog>();
 
-            if (dialog is FrameworkElement view && view.DataContext is null && ViewModelLocator.GetAutoWireViewModel(view) is null)
+            if (dialog is FrameworkElement { DataContext: null } view && ViewModelLocator.GetAutoWireViewModel(view) is null)
                 ViewModelLocator.SetAutoWireViewModel(view, true);
 
             if (dialog.DataContext is IDialogHostAware aware)
@@ -157,17 +183,5 @@ namespace QianShi.Music.ViewModels
                 eventArgs.Session.UpdateContent(dialog);
             });
         }
-    }
-
-    public class SongBindable : BindableBase
-    {
-        private bool _isLike;
-        private bool _isPlaying;
-        public string? ArtistName { get; set; }
-        public long Id { get; set; }
-        public bool IsLike { get => _isLike; set => SetProperty(ref _isLike, value); }
-        public bool IsPlaying { get => _isPlaying; set => SetProperty(ref _isPlaying, value); }
-        public string Name { get; set; } = null!;
-        public long Time { get; set; }
     }
 }

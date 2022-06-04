@@ -74,7 +74,7 @@
                                 FontSize="13"
                                 Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                                 Opacity=".68"
-                                Text="{Binding ArtistName}"
+                                Text="{Binding Artists[0].Name}"
                                 TextTrimming="CharacterEllipsis" />
                         </StackPanel>
                         <materialDesign:PackIcon
@@ -96,7 +96,7 @@
                             FontSize="16"
                             Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                             Opacity="0.88"
-                            Text="{Binding Time, Converter={StaticResource LongToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
+                            Text="{Binding Dt, Converter={StaticResource LongToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>

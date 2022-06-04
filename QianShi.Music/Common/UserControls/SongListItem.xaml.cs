@@ -3,6 +3,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using QianShi.Music.Common.Models.Response;
 
 namespace QianShi.Music.Common.UserControls
 {
@@ -13,21 +14,21 @@ namespace QianShi.Music.Common.UserControls
     {
         public ICommand PlayImmediatelyCommand
         {
-            get { return (ICommand)GetValue(PlayImmediatelyCommandProperty); }
-            set { SetValue(PlayImmediatelyCommandProperty, value); }
+            get => (ICommand)GetValue(PlayImmediatelyCommandProperty);
+            set => SetValue(PlayImmediatelyCommandProperty, value);
         }
 
         public static readonly DependencyProperty PlayImmediatelyCommandProperty =
             DependencyProperty.Register(nameof(PlayImmediatelyCommand), typeof(ICommand), typeof(SongListItem), new PropertyMetadata(null));
 
-        public SongBindable Item
+        public Song Item
         {
-            get { return (SongBindable)GetValue(SongBindableProperty); }
-            set { SetValue(SongBindableProperty, value); }
+            get => (Song)GetValue(SongProperty);
+            set => SetValue(SongProperty, value);
         }
 
-        public static readonly DependencyProperty SongBindableProperty =
-            DependencyProperty.Register(nameof(Item), typeof(SongBindable), typeof(SongListItem), new PropertyMetadata(new SongBindable()));
+        public static readonly DependencyProperty SongProperty =
+            DependencyProperty.Register(nameof(Item), typeof(Song), typeof(SongListItem), new PropertyMetadata(default));
 
         public SongListItem()
         {
