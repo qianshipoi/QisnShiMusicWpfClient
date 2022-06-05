@@ -6,7 +6,9 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
-
+using Prism.Commands;
+using QianShi.Music.Extensions;
+using QianShi.Music.Views;
 using static QianShi.Music.Common.Models.Response.UserCloudResponse;
 
 namespace QianShi.Music.ViewModels
@@ -17,6 +19,7 @@ namespace QianShi.Music.ViewModels
             : base(App.Current.Container.Resolve<IContainerProvider>()) { }
 
         private readonly IPlaylistService _playlistService;
+        private readonly IRegionManager _regionManager;
 
         private ObservableCollection<MovieVideoSubject> _movieVideos;
 
@@ -90,7 +93,21 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _songs, value);
         }
 
-        public LibraryViewModel(IContainerProvider containerProvider, IPlaylistService playlistService) : base(containerProvider)
+        public UserData UserInfo => UserData.Instance;
+
+        private DelegateCommand _jumpToFondPageCommand;
+        public DelegateCommand JumpToFondPageCommand =>
+            _jumpToFondPageCommand ??= new(ExecuteCommandName);
+
+        void ExecuteCommandName()
+        {
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(FondPlaylistView), new NavigationParameters
+            {
+                {FondPlaylistViewModel.PlaylistIdParameterName, LikePlaylist.Id}
+            });
+        }
+
+        public LibraryViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
         {
             _movieVideos = new();
             _playlists = new();
@@ -100,14 +117,16 @@ namespace QianShi.Music.ViewModels
             _weekRecord = new();
             _songs = new();
             _artists = new();
+            _likePlaylist = new();
             _playlistService = playlistService;
+            _regionManager = regionManager;
         }
 
         private bool _isFirstJoin = true;
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (!UserData.Instance.IsLogin || UserData.Instance.Id == 0)
+            if (!UserInfo.IsLogin || UserInfo.Id == 0)
             {
                 if (_isFirstJoin)
                 {
@@ -117,15 +136,15 @@ namespace QianShi.Music.ViewModels
                 }
             }
 
-            if (Playlists.Count == 0 && UserData.Instance.Id != 0)
+            if (Playlists.Count == 0 && UserInfo.Id != 0)
             {
                 await GetMyPlaylists();
                 await GetMyAlbums();
                 await GetMyAritsts();
                 await GetMyMvs();
                 await GetMyCloud();
-                await GetMyRecord(UserData.Instance.Id);
-                await GetMyRecord(UserData.Instance.Id, 1);
+                await GetMyRecord(UserInfo.Id);
+                await GetMyRecord(UserInfo.Id, 1);
             }
             base.OnNavigatedTo(navigationContext);
         }

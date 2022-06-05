@@ -116,11 +116,11 @@
                                         </StackPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-
                             </ItemsControl>
                         </StackPanel>
                         <TextBlock
                             Grid.Column="2"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             d:Text="专辑"
                             FontSize="16"
@@ -142,9 +142,23 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             Foreground="#335eea"
-                            Kind="CardsHeartOutline"
-                            Opacity=".88"
-                            Visibility="Collapsed" />
+                            Opacity=".88">
+                            <materialDesign:PackIcon.Style>
+                                <Style TargetType="materialDesign:PackIcon">
+                                    <Setter Property="Kind" Value="CardsHeartOutline" />
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsLike}" Value="True">
+                                            <Setter Property="Kind" Value="CardsHeart" />
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ContentControl}, Path=IsMouseOver}" Value="{StaticResource True}">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </materialDesign:PackIcon.Style>
+                        </materialDesign:PackIcon>
                         <TextBlock
                             Grid.Column="4"
                             Margin="0,0,10,0"
@@ -158,9 +172,9 @@
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
+                    <!--<Trigger Property="IsMouseOver" Value="True">
                         <Setter TargetName="LikeControl" Property="Visibility" Value="Visible" />
-                    </Trigger>
+                    </Trigger>-->
                     <DataTrigger Binding="{Binding IsPlaying}" Value="True">
                         <Setter TargetName="NameControl" Property="Foreground" Value="#335eea" />
                     </DataTrigger>

@@ -2,9 +2,8 @@
 
 namespace QianShi.Music.Common.Models.Response
 {
-    public class PlaylistDetailResponse
+    public class PlaylistDetailResponse : BaseResponse
     {
-        public int Code { get; set; }
 
         [JsonPropertyName("Playlist")]
         public Playlist PlaylistDetail { get; set; } = new Playlist();

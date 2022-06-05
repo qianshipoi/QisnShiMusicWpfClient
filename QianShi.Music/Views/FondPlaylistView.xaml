@@ -1,0 +1,47 @@
+﻿<UserControl
+    x:Class="QianShi.Music.Views.FondPlaylistView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:QianShi.Music.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    d:DesignHeight="720"
+    d:DesignWidth="1280"
+    mc:Ignorable="d">
+    <uc:ScrollViewerAnimation Background="White">
+        <StackPanel MaxWidth="1280">
+            <DockPanel Margin="10" LastChildFill="True">
+                <uc:FilletImage
+                    Width="48"
+                    Height="48"
+                    Margin="0,0,6,0"
+                    CornerRadius="24"
+                    DockPanel.Dock="Left" />
+                <TextBlock
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Left"
+                    FontSize="42"
+                    FontWeight="Bold"
+                    Text="大hentai_loli控喜欢的音乐" />
+                <TextBox
+                    MinWidth="200"
+                    MaxWidth="400"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    materialDesign:HintAssist.Hint="请输入搜索内容"
+                    AcceptsReturn="True"
+                    Style="{StaticResource MaterialDesignFilledTextBox}"
+                    TextWrapping="Wrap" />
+            </DockPanel>
+            <ItemsControl ItemsSource="{Binding Songs}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FondPlaylistView}}, Path=DataContext.PlayCommand}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </uc:ScrollViewerAnimation>
+</UserControl>

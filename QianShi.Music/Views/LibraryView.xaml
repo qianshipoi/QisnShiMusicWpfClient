@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
@@ -32,11 +33,11 @@
                         Margin="0,0,12,0"
                         CornerRadius="30"
                         DockPanel.Dock="Left"
-                        ImageSource="https://oss.kuriyama.top/static/background.png" />
+                        ImageSource="{Binding UserInfo.Cover}" />
                     <TextBlock
                         FontSize="42"
                         FontWeight="Bold"
-                        Text="大hentai_loli控的音乐库" />
+                        Text="{Binding UserInfo.NickName, StringFormat='{}{0}的音乐库'}" />
                 </DockPanel>
                 <Grid Height="240">
                     <Grid.ColumnDefinitions>
@@ -50,6 +51,11 @@
                         Background="#EAEFFD"
                         Cursor="Hand"
                         UniformCornerRadius="16">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonUp">
+                                <i:InvokeCommandAction Command="{Binding JumpToFondPageCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <DockPanel LastChildFill="True">
                             <DockPanel
                                 Height="50"
