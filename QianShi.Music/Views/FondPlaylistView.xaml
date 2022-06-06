@@ -33,9 +33,10 @@
                     materialDesign:HintAssist.Hint="请输入搜索内容"
                     AcceptsReturn="True"
                     Style="{StaticResource MaterialDesignFilledTextBox}"
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=200}"
                     TextWrapping="Wrap" />
             </DockPanel>
-            <ItemsControl ItemsSource="{Binding Songs}">
+            <ItemsControl ItemsSource="{Binding SongsListView}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FondPlaylistView}}, Path=DataContext.PlayCommand}" />

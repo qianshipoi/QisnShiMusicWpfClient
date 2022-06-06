@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Data;
+
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
@@ -32,6 +34,25 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _songs, value);
         }
 
+        public ListCollectionView SongsListView
+        {
+            get;
+            set;
+        }
+
+        private string? _searchText;
+        public string? SearchText
+        {
+            get => _searchText;
+            set
+            {
+                SetProperty(ref _searchText, value);
+                SongsListView.Refresh();
+            }
+        }
+
+
+
         private DelegateCommand<Song?> _playCommand = default!;
         public DelegateCommand<Song?> PlayCommand =>
             _playCommand ??= new(Play);
@@ -61,6 +82,30 @@ namespace QianShi.Music.ViewModels
             _playlistService = playlistService;
             _playService = playService;
             _playStoreService = playStoreService;
+
+            SongsListView = new ListCollectionView(Songs)
+            {
+                Filter = (obj) =>
+                {
+                    if (obj is Song song)
+                    {
+                        if (string.IsNullOrWhiteSpace(SearchText))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return song.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
+                                   || song.Album.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase)
+                                   || song.Artists.Any(x => x.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase));
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            };
         }
 
 
@@ -82,7 +127,7 @@ namespace QianShi.Music.ViewModels
                 return;
             }
 
-            var playlistId  = parameters.GetValue<long>(PlaylistIdParameterName);
+            var playlistId = parameters.GetValue<long>(PlaylistIdParameterName);
 
             if (_playlistId == playlistId)
             {
