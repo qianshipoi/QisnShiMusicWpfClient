@@ -21,6 +21,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
+        private readonly IPlaylistStoreService _playlistStoreService;
         private PlaylistDetail _detail = new();
         private bool _loading;
         private DelegateCommand<Song?> _playCommand = default!;
@@ -31,13 +32,15 @@ namespace QianShi.Music.ViewModels
         public PlaylistViewModel(IContainerProvider containerProvider,
             IPlaylistService playlistService,
             IPlayService playService,
-            IPlayStoreService playStoreService)
+            IPlayStoreService playStoreService, 
+            IPlaylistStoreService playlistStoreService)
             : base(containerProvider)
         {
             _songs = new ObservableCollection<Song>();
             _playlistService = playlistService;
             _playService = playService;
             _playStoreService = playStoreService;
+            _playlistStoreService = playlistStoreService;
         }
 
         public PlaylistDetail Detail
@@ -109,6 +112,7 @@ namespace QianShi.Music.ViewModels
                         foreach (var song in songResponse.Songs)
                         {
                             song.Album.CoverImgUrl += "?param=48y48";
+                            song.IsLike = _playlistStoreService.HasLikedSong(song);
                             _songs.Add(song);
                             i++;
                             if (i % 5 == 0)
