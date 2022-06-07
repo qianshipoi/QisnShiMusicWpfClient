@@ -6,6 +6,7 @@ using Prism.Services.Dialogs;
 
 using System.Windows;
 
+
 namespace QianShi.Music.Common
 {
     public class DialogHostService : DialogService, IDialogHostService
@@ -29,8 +30,8 @@ namespace QianShi.Music.Common
             if (!(content is FrameworkElement dialogContent))
                 throw new NullReferenceException("A dialog's content must be a FrameworkElement");
 
-            if (dialogContent is FrameworkElement view && view.DataContext is null && ViewModelLocator.GetAutoWireViewModel(view) is null)
-                ViewModelLocator.SetAutoWireViewModel(view, true);
+            if (dialogContent is FrameworkElement view && view.DataContext is null && Prism.Mvvm.ViewModelLocator.GetAutoWireViewModel(view) is null)
+                Prism.Mvvm.ViewModelLocator.SetAutoWireViewModel(view, true);
 
             if (!(dialogContent.DataContext is IDialogHostAware viewModel))
                 throw new NullReferenceException("A dialog's ViewModel must implement the IDialogAware interface");

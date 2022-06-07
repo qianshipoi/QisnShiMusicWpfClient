@@ -11,6 +11,7 @@
     Title="VideoPlayWindow"
     Width="800"
     Height="450"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=VideoPlayWindowViewModel}"
     prism:ViewModelLocator.AutoWireViewModel="True"
     AllowsTransparency="True"
     WindowStyle="None"

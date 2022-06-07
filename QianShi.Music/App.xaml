@@ -1,14 +1,14 @@
 ﻿<prism:PrismApplication
     x:Class="QianShi.Music.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="clr-namespace:QianShi.Music.Common"
+    xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
-    xmlns:data="clr-namespace:QianShi.Music.Common.Data"
     xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
-    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
-    xmlns:s="clr-namespace:System;assembly=mscorlib">
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="/Resources/ScrollBarResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <common:ViewModelLocator x:Key="ViewModelLocator" />
             <DataTemplate x:Key="ArtistDataTemplate">
                 <StackPanel Margin="20" HorizontalAlignment="Stretch">
                     <uc:PlaylistCover CornerRadius="200" ImageSource="{Binding CoverImgUrl}" />
@@ -106,7 +107,6 @@
             <converters:TimeSpanToDoubleConverter x:Key="TimeSpanToDoubleConverter" />
             <converters:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />
             <FontFamily x:Key="SourceHan">/QianShi.Music;Component/Resources/#SourceHanSerifSC-VF</FontFamily>
-            <data:ViewModelLocator x:Key="ViewModelLocator" />
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

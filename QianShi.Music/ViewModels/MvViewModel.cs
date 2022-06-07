@@ -13,10 +13,6 @@ namespace QianShi.Music.ViewModels
 {
     public class MvViewModel : NavigationViewModel, IRegionMemberLifetime
     {
-        public MvViewModel() : base(App.Current.Container.Resolve<IContainerProvider>())
-        {
-        }
-
         public const string MvIdParameter = nameof(MvIdParameter);
 
         private readonly IVideoPlayService _videoPlayService;

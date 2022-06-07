@@ -15,9 +15,6 @@ namespace QianShi.Music.ViewModels
 {
     public class LibraryViewModel : NavigationViewModel
     {
-        public LibraryViewModel()
-            : base(App.Current.Container.Resolve<IContainerProvider>()) { }
-
         private readonly IPlaylistService _playlistService;
         private readonly IRegionManager _regionManager;
 

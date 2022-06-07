@@ -166,8 +166,8 @@ namespace QianShi.Music.ViewModels
         {
             var dialog = _containerProvider.Resolve<DescriptionDialog>();
 
-            if (dialog is FrameworkElement { DataContext: null } view && ViewModelLocator.GetAutoWireViewModel(view) is null)
-                ViewModelLocator.SetAutoWireViewModel(view, true);
+            if (dialog is FrameworkElement { DataContext: null } view && Prism.Mvvm.ViewModelLocator.GetAutoWireViewModel(view) is null)
+                Prism.Mvvm.ViewModelLocator.SetAutoWireViewModel(view, true);
 
             if (dialog.DataContext is IDialogHostAware aware)
             {

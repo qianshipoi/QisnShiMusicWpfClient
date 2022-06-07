@@ -12,7 +12,7 @@
     xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:vm="clr-namespace:QianShi.Music.ViewModels"
-    d:DataContext="{d:DesignInstance Type={x:Type vm:ArtistViewModel}}"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ArtistViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
     mc:Ignorable="d">

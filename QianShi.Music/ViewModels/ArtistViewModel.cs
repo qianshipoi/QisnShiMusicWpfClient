@@ -30,14 +30,6 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
         private DelegateCommand<Album> _openPlaylistCommand = default!;
         private ObservableCollection<Song> _songs;
-        
-
-        /// <summary>
-        /// 设计器使用
-        /// </summary>
-        public ArtistViewModel() : base(null)
-        {
-        }
 
         public ArtistViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
         {

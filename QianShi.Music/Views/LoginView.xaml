@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="clr-namespace:QianShi.Music.Common.Models"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
-    d:DataContext="{d:DesignInstance Type=viewmodels:LoginViewModel}"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=LoginViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
     Background="White"

@@ -1,13 +1,14 @@
 ﻿<UserControl
     x:Class="QianShi.Music.Views.FoundView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
-    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:QianShi.Music.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=FoundViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -20,7 +21,8 @@
             <ItemsPanelTemplate x:Key="StackPanel">
                 <StackPanel />
             </ItemsPanelTemplate>
-            <Style x:Key="SelectionCatButton"
+            <Style
+                x:Key="SelectionCatButton"
                 BasedOn="{StaticResource MaterialDesignRaisedButton}"
                 TargetType="Button">
                 <Setter Property="Opacity" Value=".65" />
@@ -47,7 +49,8 @@
                     Content="···"
                     Style="{StaticResource SelectionCatButton}" />
             </DataTemplate>
-            <Style x:Key="SelectedCatBtn"
+            <Style
+                x:Key="SelectedCatBtn"
                 BasedOn="{StaticResource MaterialDesignRaisedButton}"
                 TargetType="Button">
                 <Style.Triggers>
@@ -169,7 +172,8 @@
                 </Border>
                 <ItemsControl
                     x:Name="PlaylistControl"
-                    Grid.Row="1" Margin="10,0"
+                    Grid.Row="1"
+                    Margin="10,0"
                     HorizontalAlignment="Center"
                     HorizontalContentAlignment="Center"
                     ItemTemplateSelector="{StaticResource PlaylistDataTemplateSelector}"

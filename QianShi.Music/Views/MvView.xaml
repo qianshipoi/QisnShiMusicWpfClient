@@ -13,7 +13,7 @@
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
     d:Background="White"
-    d:DataContext="{d:DesignInstance Type=viewmodels:MvViewModel}"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=MvViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
     mc:Ignorable="d">

@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:views="clr-namespace:QianShi.Music.Views"
-    d:DataContext="{Binding DesignPlayingListViewModel, Source={StaticResource ViewModelLocator}}"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=PlayingListViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
     mc:Ignorable="d">

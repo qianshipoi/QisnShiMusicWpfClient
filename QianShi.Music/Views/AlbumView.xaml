@@ -12,7 +12,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
-    d:DataContext="{d:DesignInstance Type=viewmodels:AlbumViewModel}"
+    d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=AlbumViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
