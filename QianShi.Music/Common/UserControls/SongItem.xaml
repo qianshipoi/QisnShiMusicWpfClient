@@ -26,17 +26,17 @@
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#f5f5f7" />
                     </Trigger>
-                    <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                    <DataTrigger Binding="{Binding Item.IsPlaying}" Value="True">
                         <Setter Property="Background" Value="#eaeffd" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <ContentControl DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=Item}">
+    <ContentControl DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}}">
         <i:Interaction.Triggers>
             <i:EventTrigger EventName="MouseDoubleClick">
-                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=PlayImmediatelyCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=Item}" />
+                <i:InvokeCommandAction Command="{Binding PlayImmediatelyCommand}" CommandParameter="{Binding Item}" />
             </i:EventTrigger>
         </i:Interaction.Triggers>
         <ContentControl.Template>
@@ -56,7 +56,7 @@
                             Margin="0,0,20,0"
                             HorizontalAlignment="Left"
                             Cursor="Hand"
-                            Source="{Binding Album.CoverImgUrl, FallbackValue=https://oss.kuriyama.top/static/background.png, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
+                            Source="{Binding Item.Album.CoverImgUrl ,FallbackValue=https://oss.kuriyama.top/static/background.png, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
                             <Image.Clip>
                                 <RectangleGeometry
                                     RadiusX="12"
@@ -72,12 +72,12 @@
                                 d:Text="歌名"
                                 FontSize="18"
                                 FontWeight="Bold"
-                                Text="{Binding Name}"
+                                Text="{Binding Item.Name}"
                                 TextTrimming="CharacterEllipsis" />
                             <ItemsControl
                                 Margin="0,6,20,0"
                                 helpers:ItemsControlHelper.MarkIndex="True"
-                                ItemsSource="{Binding Artists}"
+                                ItemsSource="{Binding Item.Artists}"
                                 Opacity=".68">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -104,12 +104,12 @@
                                             <TextBlock
                                                 FontSize="13"
                                                 Style="{StaticResource UnderlineTextBlock}"
-                                                Text="{Binding Name}"
+                                                Text="{Binding Item.Name}"
                                                 TextTrimming="CharacterEllipsis"
                                                 ToolTip="{Binding Path=(helpers:ItemsControlHelper.ItemIndex), RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=JumpToArtistPageCommand}" CommandParameter="{Binding}" />
+                                                        <i:InvokeCommandAction Command="{Binding JumpToPlayListCommand}" CommandParameter="{Binding}" />
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </TextBlock>
@@ -127,10 +127,10 @@
                             Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                             Opacity="0.88"
                             Style="{StaticResource UnderlineTextBlock}"
-                            Text="{Binding Album.Name}">
+                            Text="{Binding Item.Album.Name}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseLeftButtonUp">
-                                    <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=JumpToAlbumPageCommand}" CommandParameter="{Binding Album}" />
+                                    <i:InvokeCommandAction Command="{Binding JumpToPlayListCommand}" CommandParameter="{Binding Item.Album}" />
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </TextBlock>
@@ -148,7 +148,7 @@
                                     <Setter Property="Kind" Value="CardsHeartOutline" />
                                     <Setter Property="Visibility" Value="Collapsed" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsLike}" Value="True">
+                                        <DataTrigger Binding="{Binding Item.IsLike}" Value="True">
                                             <Setter Property="Kind" Value="CardsHeart" />
                                             <Setter Property="Visibility" Value="Visible" />
                                         </DataTrigger>
@@ -168,14 +168,11 @@
                             FontSize="16"
                             Foreground="{Binding ElementName=NameControl, Path=Foreground}"
                             Opacity="0.88"
-                            Text="{Binding Dt, Converter={StaticResource LongToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
+                            Text="{Binding Item.Dt, Converter={StaticResource LongToTimeSpanConverter}, StringFormat={}{0:mm\\:ss}}" />
                     </Grid>
                 </Border>
                 <ControlTemplate.Triggers>
-                    <!--<Trigger Property="IsMouseOver" Value="True">
-                        <Setter TargetName="LikeControl" Property="Visibility" Value="Visible" />
-                    </Trigger>-->
-                    <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                    <DataTrigger Binding="{Binding Item.IsPlaying}" Value="True">
                         <Setter TargetName="NameControl" Property="Foreground" Value="#335eea" />
                     </DataTrigger>
                 </ControlTemplate.Triggers>

@@ -1,11 +1,8 @@
 ﻿using Prism.Commands;
 using Prism.Ioc;
-using Prism.Regions;
 
 using QianShi.Music.Common.Models.Response;
-using QianShi.Music.Extensions;
-using QianShi.Music.ViewModels;
-using QianShi.Music.Views;
+using QianShi.Music.Services;
 
 using System.Windows;
 using System.Windows.Input;
@@ -29,8 +26,8 @@ namespace QianShi.Music.Common.UserControls
                 }
             }));
 
-        private DelegateCommand<Album> _jumpToAlbumPageCommand = default!;
-        private DelegateCommand<Artist> _jumpToArtistPageCommand = default!;
+        private DelegateCommand<IPlaylist> _jumpToPlaylistCommand = default!;
+
         public SongItem()
         {
             InitializeComponent();
@@ -42,11 +39,8 @@ namespace QianShi.Music.Common.UserControls
             set => SetValue(PlaylistItemProperty, value);
         }
 
-        public DelegateCommand<Album> JumpToAlbumPageCommand =>
-            _jumpToAlbumPageCommand ??= new(ExecuteJumpToAlbumPageCommand);
-
-        public DelegateCommand<Artist> JumpToArtistPageCommand =>
-            _jumpToArtistPageCommand ??= new(ExecuteJumpToArtistPageCommand);
+        public DelegateCommand<IPlaylist> JumpToPlayListCommand =>
+            _jumpToPlaylistCommand ??= new DelegateCommand<IPlaylist>(ExecuteJumpToPlayListCommand);
 
         public ICommand PlayImmediatelyCommand
         {
@@ -54,21 +48,21 @@ namespace QianShi.Music.Common.UserControls
             set => SetValue(PlayImmediatelyCommandProperty, value);
         }
 
-        private IRegionManager _regionManager => App.Current.Container.Resolve<IRegionManager>();
-        private void ExecuteJumpToAlbumPageCommand(Album album)
-        {
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(AlbumView), new NavigationParameters
-            {
-                {AlbumViewModel.AlbumIdParameterName,album.Id}
-            });
-        }
+        private INavigationService _navigationService => App.Current.Container.Resolve<INavigationService>();
 
-        private void ExecuteJumpToArtistPageCommand(Artist artist)
+        private void ExecuteJumpToPlayListCommand(IPlaylist parameter)
         {
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(ArtistView), new NavigationParameters
+            switch (parameter)
             {
-                {ArtistViewModel.ArtistIdParameterName,artist.Id}
-            });
+                case Album album:
+                    _navigationService.NavigateToAlbum(album.Id);
+                    break;
+                case Artist artist:
+                    _navigationService.NavigateToArtist(artist.Id);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
