@@ -80,10 +80,8 @@ namespace QianShi.Music.Common.Helpers
                 public static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
                 {
                     return IntPtr.Size > 4
-#pragma warning disable CS0618 // 类型或成员已过时
                         ? GetWindowLongPtr_x64(hWnd, nIndex)
                         : new IntPtr(GetWindowLong(hWnd, nIndex));
-#pragma warning restore CS0618 // 类型或成员已过时
                 }
 
                 [DllImport(LibraryName, CharSet = Properties.BuildCharSet)]
@@ -98,10 +96,8 @@ namespace QianShi.Music.Common.Helpers
                 public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
                 {
                     return IntPtr.Size > 4
-#pragma warning disable CS0618 // 类型或成员已过时
                         ? SetWindowLongPtr_x64(hWnd, nIndex, dwNewLong)
                         : new IntPtr(SetWindowLong(hWnd, nIndex, dwNewLong.ToInt32()));
-#pragma warning restore CS0618 // 类型或成员已过时
                 }
 
                 [DllImport(LibraryName, CharSet = Properties.BuildCharSet, EntryPoint = "SetWindowLongPtr")]
@@ -275,7 +271,9 @@ namespace QianShi.Music.Common.Helpers
                 return (Left == other.Left) && (Right == other.Right) && (Top == other.Top) && (Bottom == other.Bottom);
             }
 
+#pragma warning disable CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
             public override bool Equals(object obj)
+#pragma warning restore CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
             {
                 return obj is Rectangle rectangle && Equals(rectangle);
             }

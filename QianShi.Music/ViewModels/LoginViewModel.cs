@@ -23,22 +23,26 @@ namespace QianShi.Music.ViewModels
         public const string ParameterRedirectUri = "RedirectUri";
 
         private readonly IPlaylistService _playlistService;
-        private readonly IRegionManager _regionManager;
         private readonly UserData _userData;
-        private IRegionNavigationJournal _journal = default!;
-        private string? _qrKey;
-        private DispatcherTimer? _dispatcherTimer;
-        private string? _redirectUri;
-
-        private LoginMode _loginMode = LoginMode.Email;
-
-        public LoginMode LoginMode
-        {
-            get { return _loginMode; }
-            set { SetProperty(ref _loginMode, value); }
-        }
-
         private string? _account;
+        private DispatcherTimer? _dispatcherTimer;
+        private IRegionNavigationJournal _journal = default!;
+        private DelegateCommand _loginCommand = default!;
+        private LoginMode _loginMode = LoginMode.Email;
+        private string? _password;
+        private ImageSource? _qrCodeSource;
+        private string? _qrKey;
+        private string? _redirectUri;
+        private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
+
+        public LoginViewModel(
+            IContainerProvider containerProvider,
+            IPlaylistService playlistService)
+            : base(containerProvider)
+        {
+            _playlistService = playlistService;
+            _userData = UserData.Instance;
+        }
 
         public string? Account
         {
@@ -46,97 +50,49 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _account, value);
         }
 
-        private string? _password;
+        public bool KeepAlive => false;
 
+        public DelegateCommand LoginCommand =>
+            _loginCommand ??= new(ExecuteLoginCommand);
+
+        public LoginMode LoginMode
+        {
+            get { return _loginMode; }
+            set { SetProperty(ref _loginMode, value); }
+        }
         public string? Password
         {
             get => _password;
             set => SetProperty(ref _password, value);
         }
-
-        private DelegateCommand _loginCommand;
-
-        public DelegateCommand LoginCommand =>
-            _loginCommand ??= new(ExecuteLoginCommand);
-
-        private void ExecuteLoginCommand()
+        public ImageSource? QrCodeSource
         {
-            if (string.IsNullOrWhiteSpace(Account) || string.IsNullOrWhiteSpace(Password))
-            {
-                MessageBox.Show("请完善信息");
-                return;
-            }
-
-            if (LoginMode == LoginMode.Email)
-            {
-                _ = EmailLogin();
-            }
-            else if (LoginMode == LoginMode.Phone)
-            {
-                _ = PhoneLogin();
-            }
+            get => _qrCodeSource;
+            set => SetProperty(ref _qrCodeSource, value);
         }
-
-        private async Task PhoneLogin()
-        {
-            var response = await _playlistService.LoginCellPhone(new()
-            {
-                Phone = Account!,
-                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
-                Time = DateTime.Now.Ticks
-            });
-
-            if (response.Code != 200)
-            {
-                MessageBox.Show(response.Msg);
-                return;
-            }
-            LoginSuccess(
-                response.Profile?.Nickname,
-                response.Profile?.AvatarUrl,
-                response.Account?.Id ?? 0,
-                response.Account?.VipType ?? 0,
-                response.Cookie);
-        }
-
-        private async Task EmailLogin()
-        {
-            var response = await _playlistService.Login(new LoginRequest()
-            {
-                Email = Account!,
-                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
-                Time = DateTime.Now.Ticks
-            });
-
-            if (response.Code != 200)
-            {
-                MessageBox.Show(response.Msg);
-                return;
-            }
-            LoginSuccess(
-                response.Profile?.Nickname,
-                response.Profile?.AvatarUrl,
-                response.Account?.Id ?? 0,
-                response.Account?.VipType ?? 0,
-                response.Cookie);
-        }
-
-        private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
 
         public DelegateCommand<LoginMode?> SwitchLoginModeCommand =>
             _switchLoginModeCommand ??= new(ExecuteSwitchLoginModeCommand);
 
-        private void ExecuteSwitchLoginModeCommand(LoginMode? mode)
+        public override void OnNavigatedTo(NavigationContext navigationContext)
         {
-            LoginMode = mode ?? LoginMode;
-            if (mode == LoginMode.QrCode)
+            base.OnNavigatedTo(navigationContext);
+            _journal = navigationContext.NavigationService.Journal;
+
+            var parameters = navigationContext.Parameters;
+            if (parameters.ContainsKey(NavigationName))
             {
-                _ = CreateQrCode();
+                _redirectUri = parameters.GetValue<string>(ParameterRedirectUri);
             }
-            else if (mode == LoginMode.Phone)
-            {
-                EndCheck();
-            }
+        }
+
+        /// <summary>
+        /// 返回页面
+        /// </summary>
+        private void Back()
+        {
+            EndCheck();
+            _journal.GoBack();
         }
 
         private async Task CreateQrCode()
@@ -168,6 +124,99 @@ namespace QianShi.Music.ViewModels
             StartCheck();
         }
 
+        private async Task EmailLogin()
+        {
+            var response = await _playlistService.Login(new LoginRequest()
+            {
+                Email = Account!,
+                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
+                Time = DateTime.Now.Ticks
+            });
+
+            if (response.Code != 200)
+            {
+                MessageBox.Show(response.Msg);
+                return;
+            }
+            LoginSuccess(
+                response.Profile?.Nickname,
+                response.Profile?.AvatarUrl,
+                response.Account?.Id ?? 0,
+                response.Account?.VipType ?? 0,
+                response.Cookie);
+        }
+
+        private void EndCheck()
+        {
+            if (_dispatcherTimer == null) return;
+            _dispatcherTimer.Stop();
+            _dispatcherTimer = null;
+        }
+
+        private void ExecuteLoginCommand()
+        {
+            if (string.IsNullOrWhiteSpace(Account) || string.IsNullOrWhiteSpace(Password))
+            {
+                MessageBox.Show("请完善信息");
+                return;
+            }
+
+            if (LoginMode == LoginMode.Email)
+            {
+                _ = EmailLogin();
+            }
+            else if (LoginMode == LoginMode.Phone)
+            {
+                _ = PhoneLogin();
+            }
+        }
+
+        private void ExecuteSwitchLoginModeCommand(LoginMode? mode)
+        {
+            LoginMode = mode ?? LoginMode;
+            if (mode == LoginMode.QrCode)
+            {
+                _ = CreateQrCode();
+            }
+            else if (mode == LoginMode.Phone)
+            {
+                EndCheck();
+            }
+        }
+
+        private void LoginSuccess(string? nickname, string? avatarUrl, long id, sbyte vipType, string? cookie)
+        {
+            _userData.IsLogin = true;
+            _userData.Cookie = cookie;
+            _userData.NickName = nickname;
+            _userData.Cover = avatarUrl;
+            _userData.Id = id;
+            _userData.VipType = vipType;
+            _userData.Save();
+            Back();
+        }
+
+        private async Task PhoneLogin()
+        {
+            var response = await _playlistService.LoginCellPhone(new()
+            {
+                Phone = Account!,
+                Md5Password = MD5Helper.MD5Encrypt32(Password!).ToLower(),
+                Time = DateTime.Now.Ticks
+            });
+
+            if (response.Code != 200)
+            {
+                MessageBox.Show(response.Msg);
+                return;
+            }
+            LoginSuccess(
+                response.Profile?.Nickname,
+                response.Profile?.AvatarUrl,
+                response.Account?.Id ?? 0,
+                response.Account?.VipType ?? 0,
+                response.Cookie);
+        }
         private void StartCheck()
         {
             EndCheck();
@@ -207,62 +256,5 @@ namespace QianShi.Music.ViewModels
             };
             _dispatcherTimer.Start();
         }
-
-        private void LoginSuccess(string? nickname, string? avatarUrl, long id, sbyte vipType, string? cookie)
-        {
-            _userData.IsLogin = true;
-            _userData.Cookie = cookie;
-            _userData.NickName = nickname;
-            _userData.Cover = avatarUrl;
-            _userData.Id = id;
-            _userData.VipType = vipType;
-            _userData.Save();
-            Back();
-        }
-
-        private void EndCheck()
-        {
-            if (_dispatcherTimer == null) return;
-            _dispatcherTimer.Stop();
-            _dispatcherTimer = null;
-        }
-
-        /// <summary>
-        /// 返回页面
-        /// </summary>
-        private void Back()
-        {
-            EndCheck();
-            _journal.GoBack();
-        }
-
-        public override async void OnNavigatedTo(NavigationContext navigationContext)
-        {
-            base.OnNavigatedTo(navigationContext);
-            _journal = navigationContext.NavigationService.Journal;
-
-            var parameters = navigationContext.Parameters;
-            if (parameters.ContainsKey(NavigationName))
-            {
-                _redirectUri = parameters.GetValue<string>(ParameterRedirectUri);
-            }
-        }
-
-        private ImageSource? _qrCodeSource;
-
-        public ImageSource? QrCodeSource
-        {
-            get { return _qrCodeSource; }
-            set { SetProperty(ref _qrCodeSource, value); }
-        }
-
-        public LoginViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
-        {
-            _playlistService = playlistService;
-            _regionManager = regionManager;
-            _userData = UserData.Instance;
-        }
-
-        public bool KeepAlive => false;
     }
 }

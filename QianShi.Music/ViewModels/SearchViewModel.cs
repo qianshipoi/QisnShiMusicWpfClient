@@ -18,10 +18,13 @@ namespace QianShi.Music.ViewModels
         public const string SearchTextParameter = nameof(SearchTextParameter);
 
         private readonly IPlaylistService _playlistService;
-        private readonly IRegionManager _regionManager;
+        private readonly INavigationService _navigationService;
         private string _currentSearchKeywords = string.Empty;
 
-        public SearchViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
+        public SearchViewModel(
+            IContainerProvider containerProvider,
+            IPlaylistService playlistService,
+            INavigationService navigationService) : base(containerProvider)
         {
             _playlistService = playlistService;
             Artists = new();
@@ -30,7 +33,7 @@ namespace QianShi.Music.ViewModels
             Playlists = new();
             MovieVideos = new();
             MoreCommand = new(More);
-            _regionManager = regionManager;
+            _navigationService = navigationService;
         }
 
         public ObservableCollection<Album> Albums { get; set; }
@@ -143,12 +146,7 @@ namespace QianShi.Music.ViewModels
         private void More(SearchType? type)
         {
             if (type == null) return;
-            var parameters = new NavigationParameters
-            {
-                { SearchDetailViewModel.SearchTypeParameterName, type },
-                { SearchDetailViewModel.SearchKeywordsParameterName, _currentSearchKeywords }
-            };
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(SearchDetailView), parameters);
+            _navigationService.NavigateToSearchDetail(_currentSearchKeywords, type.Value);
         }
     }
 }

@@ -5,7 +5,6 @@ using Prism.Regions;
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Request;
-using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
@@ -16,36 +15,38 @@ namespace QianShi.Music.ViewModels
 {
     public class FoundViewModel : NavigationViewModel
     {
+        public const string PlaylistTypeParameterName = "PlaylistType";
+
+        private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
-        private readonly IRegionManager _regionManager;
-        private readonly IDialogHostService _dialogHostService;
-        private ObservableCollection<Cat> _cats;
-        private ObservableCollection<CatOption> _catOptions;
-        private Visibility _moreCat = Visibility.Collapsed;
-        private ObservableCollection<IPlaylist> _playlists;
-        private Cat? _currentCat;
+        private DelegateCommand<Cat> _addCatCommand = default!;
+        private long _before = 0;
+        private Cat? _currentCat = null;
         private bool _loading = false;
         private bool _more = false;
+        private Visibility _moreCat = Visibility.Collapsed;
+        private DelegateCommand<ItemsControl> _morePlaylistCommand = default!;
         private int _offset = 0;
-        private long _before = 0;
+        private DelegateCommand<IPlaylist> _openPlaylistCommand = default!;
+        private DelegateCommand<Cat> _selectedCatCommand = default!;
+        private DelegateCommand<Cat> _switchMoreCatCommand = default!;
 
-        public ObservableCollection<Cat> Cats
+        public FoundViewModel(
+                                    IContainerProvider provider,
+            IPlaylistService playlistService,
+            INavigationService navigationService)
+            : base(provider)
         {
-            get => _cats;
-            set { _cats = value; RaisePropertyChanged(); }
+            _playlistService = playlistService;
+            _navigationService = navigationService;
         }
 
-        public ObservableCollection<CatOption> CatOptions
-        {
-            get => _catOptions;
-            set { _catOptions = value; RaisePropertyChanged(); }
-        }
+        public DelegateCommand<Cat> AddCatCommand
+            => _addCatCommand ??= new(AddCat);
 
-        public Visibility MoreCat
-        {
-            get => _moreCat;
-            set { _moreCat = value; RaisePropertyChanged(); }
-        }
+        public ObservableCollection<CatOption> CatOptions { get; } = new();
+
+        public ObservableCollection<Cat> Cats { get; } = new();
 
         public bool Loading
         {
@@ -59,45 +60,124 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _more, value);
         }
 
-        public ObservableCollection<IPlaylist> Playlists
+        public Visibility MoreCat
         {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
+            get => _moreCat;
+            set { _moreCat = value; RaisePropertyChanged(); }
         }
 
-        public DelegateCommand<Cat> SwitchMoreCatCommand { get; private set; }
-        public DelegateCommand<Cat> AddCatCommand { get; private set; }
-        public DelegateCommand<Cat> SelectedCatCommand { get; private set; }
-        public DelegateCommand<ItemsControl> MorePlaylistCommand { get; private set; }
-        public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
+        public DelegateCommand<ItemsControl> MorePlaylistCommand
+            => _morePlaylistCommand ??= new(MorePlaylist);
 
-        public FoundViewModel(
-            IContainerProvider provider,
-            IRegionManager regionManager,
-            IPlaylistService playlistService,
-            IDialogHostService dialogHostService)
-            : base(provider)
+        public DelegateCommand<IPlaylist> OpenPlaylistCommand
+            => _openPlaylistCommand ??= new(OpenPlaylist);
+
+        public ObservableCollection<IPlaylist> Playlists { get; } = new();
+
+        public DelegateCommand<Cat> SelectedCatCommand
+            => _selectedCatCommand ??= new(SelectedCat);
+
+        public DelegateCommand<Cat> SwitchMoreCatCommand
+            => _switchMoreCatCommand ??= new(SwitchMoreCat);
+
+        public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            _playlistService = playlistService;
-            _regionManager = regionManager;
-            _dialogHostService = dialogHostService;
-            _cats = new ObservableCollection<Cat>();
-            _catOptions = new ObservableCollection<CatOption>();
-            _playlists = new ObservableCollection<IPlaylist>();
-            _currentCat = null;
-            SwitchMoreCatCommand = new DelegateCommand<Cat>(SwitchMoreCat);
-            AddCatCommand = new DelegateCommand<Cat>(AddCat);
-            SelectedCatCommand = new DelegateCommand<Cat>(SelectedCat);
-            MorePlaylistCommand = new DelegateCommand<ItemsControl>(MorePlaylist);
-            OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
+            if (Cats.Count == 0)
+            {
+                Cats.Add(new Cat { DisplayName = "全部", Name = "全部" });
+                Cats.Add(new Cat { DisplayName = "推荐歌单", Name = "推荐" });
+                Cats.Add(new Cat { DisplayName = "精品歌单", Name = "精品" });
+                Cats.Add(new Cat { DisplayName = "官方", Name = "官方" });
+                Cats.Add(new Cat { DisplayName = "排行榜", Name = "排行榜" });
+                Cats.Add(new Cat { DisplayName = "...", IsLastOne = true });
+            }
+
+            var parametes = navigationContext.Parameters;
+            var type = "全部";
+            if (parametes.ContainsKey(PlaylistTypeParameterName))
+            {
+                var value = parametes.GetValue<string>("PlaylistType");
+                type = string.IsNullOrWhiteSpace(value) ? "全部" : value;
+
+                var first = Cats.FirstOrDefault(x => x.Name == type);
+                if (first == null)
+                    first = Cats[0];
+
+                if (_currentCat == null || _currentCat.Name != type)
+                {
+                    SelectedCat(first);
+                }
+            }
+            else
+            {
+                if (_currentCat == null)
+                    SelectedCat(Cats[0]);
+            }
+
+            if (CatOptions.Count == 0)
+            {
+                var catlistResponse = await _playlistService.GetCatlistAsync();
+                catlistResponse.Sub?.ForEach(x => x.DisplayName = x.Name);
+                foreach (var cat in catlistResponse.Categories)
+                {
+                    CatOptions.Add(new CatOption
+                    {
+                        Type = cat.Key,
+                        Name = cat.Value,
+                        Cats = catlistResponse.Sub?.Where(x => x.Category == cat.Key).ToList()
+                    });
+                }
+            }
+
+            base.OnNavigatedTo(navigationContext);
         }
 
-        private void OpenPlaylist(IPlaylist obj)
+        private void AddCat(Cat cat)
         {
-            var parameters = new NavigationParameters();
-            parameters.Add("PlaylistId", obj.Id);
+            if (Cats.Any(x => x.Equals(cat)))
+            {
+                cat.IsSelected = false;
+                Cats.Remove(cat);
+            }
+            else
+            {
+                cat.IsSelected = true;
+                Cats.Insert(Cats.Count - 1, cat);
+            }
+        }
 
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("PlaylistView", parameters);
+        private async Task CallApi(Cat cat, bool isClear = false)
+        {
+            Loading = true;
+            try
+            {
+                List<IPlaylist> playlists = new List<IPlaylist>();
+                switch (cat.Name)
+                {
+                    case "精品":
+                        await QuerySelectPlaylist(isClear);
+                        break;
+
+                    case "推荐":
+                        await QueryRecommendedPalylist();
+                        break;
+
+                    case "排行榜":
+                        await QueryToplist();
+                        break;
+
+                    default:
+                        await QueryCatPlaylist(cat.Name, isClear);
+                        break;
+                }
+            }
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                Loading = false;
+            }
         }
 
         /// <summary>
@@ -112,39 +192,9 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        /// <summary>
-        /// 获取精选歌单
-        /// </summary>
-        /// <returns></returns>
-        private async Task QuerySelectPlaylist(bool isClear = false)
+        private void OpenPlaylist(IPlaylist obj)
         {
-            var response = await _playlistService.GetTopPlaylistHighqualityAsnyc(new TopPlaylistHighqualityRequest
-            {
-                Limit = 100,
-                Before = _before == 0 ? null : _before,
-            });
-
-            if (response != null)
-            {
-                await UpdatePalylist(response.Playlists, isClear);
-                More = response.More;
-                _before = response.Lasttime;
-            }
-        }
-
-        private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
-        {
-            if (isClear)
-                Playlists.Clear();
-            int i = 0;
-            foreach (var sourceItem in source.Where(x => !string.IsNullOrWhiteSpace(x.CoverImgUrl)))
-            {
-                sourceItem.CoverImgUrl += "?param=200y200";
-                Playlists.Add(sourceItem);
-                if (i % 5 == 0)
-                    await Task.Delay(20);
-                i++;
-            }
+            _navigationService.NavigateToPlaylist(obj.Id);
         }
 
         /// <summary>
@@ -183,6 +233,26 @@ namespace QianShi.Music.ViewModels
         }
 
         /// <summary>
+        /// 获取精选歌单
+        /// </summary>
+        /// <returns></returns>
+        private async Task QuerySelectPlaylist(bool isClear = false)
+        {
+            var response = await _playlistService.GetTopPlaylistHighqualityAsnyc(new TopPlaylistHighqualityRequest
+            {
+                Limit = 100,
+                Before = _before == 0 ? null : _before,
+            });
+
+            if (response != null)
+            {
+                await UpdatePalylist(response.Playlists, isClear);
+                More = response.More;
+                _before = response.Lasttime;
+            }
+        }
+
+        /// <summary>
         /// 获取排行榜列表
         /// </summary>
         /// <returns></returns>
@@ -210,54 +280,6 @@ namespace QianShi.Music.ViewModels
             await CallApi(cat, true);
         }
 
-        private async Task CallApi(Cat cat, bool isClear = false)
-        {
-            Loading = true;
-            try
-            {
-                List<IPlaylist> playlists = new List<IPlaylist>();
-                switch (cat.Name)
-                {
-                    case "精品":
-                        await QuerySelectPlaylist(isClear);
-                        break;
-
-                    case "推荐":
-                        await QueryRecommendedPalylist();
-                        break;
-
-                    case "排行榜":
-                        await QueryToplist();
-                        break;
-
-                    default:
-                        await QueryCatPlaylist(cat.Name, isClear);
-                        break;
-                }
-            }
-            catch (Exception)
-            {
-            }
-            finally
-            {
-                Loading = false;
-            }
-        }
-
-        private void AddCat(Cat cat)
-        {
-            if (_cats.Any(x => x.Equals(cat)))
-            {
-                cat.IsSelected = false;
-                _cats.Remove(cat);
-            }
-            else
-            {
-                cat.IsSelected = true;
-                _cats.Insert(_cats.Count - 1, cat);
-            }
-        }
-
         private void SwitchMoreCat(Cat cat)
         {
             cat.IsActivation = !cat.IsActivation;
@@ -266,56 +288,19 @@ namespace QianShi.Music.ViewModels
                 : MoreCat = Visibility.Collapsed;
         }
 
-        public override async void OnNavigatedTo(NavigationContext navigationContext)
+        private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
         {
-            if (Cats.Count == 0)
+            if (isClear)
+                Playlists.Clear();
+            int i = 0;
+            foreach (var sourceItem in source.Where(x => !string.IsNullOrWhiteSpace(x.CoverImgUrl)))
             {
-                Cats.Add(new Cat { DisplayName = "全部", Name = "全部" });
-                Cats.Add(new Cat { DisplayName = "推荐歌单", Name = "推荐" });
-                Cats.Add(new Cat { DisplayName = "精品歌单", Name = "精品" });
-                Cats.Add(new Cat { DisplayName = "官方", Name = "官方" });
-                Cats.Add(new Cat { DisplayName = "排行榜", Name = "排行榜" });
-                Cats.Add(new Cat { DisplayName = "...", IsLastOne = true });
+                sourceItem.CoverImgUrl += "?param=200y200";
+                Playlists.Add(sourceItem);
+                if (i % 5 == 0)
+                    await Task.Delay(20);
+                i++;
             }
-
-            var parametes = navigationContext.Parameters;
-            var type = "全部";
-            if (parametes.ContainsKey("PlaylistType"))
-            {
-                var value = parametes.GetValue<string>("PlaylistType");
-                type = string.IsNullOrWhiteSpace(value) ? "全部" : value;
-
-                var first = Cats.FirstOrDefault(x => x.Name == type);
-                if (first == null)
-                    first = Cats[0];
-
-                if (_currentCat == null || _currentCat.Name != type)
-                {
-                    SelectedCat(first);
-                }
-            }
-            else
-            {
-                if (_currentCat == null)
-                    SelectedCat(Cats[0]);
-            }
-
-            if (_catOptions.Count == 0)
-            {
-                var catlistResponse = await _playlistService.GetCatlistAsync();
-                catlistResponse.Sub?.ForEach(x => x.DisplayName = x.Name);
-                foreach (var cat in catlistResponse.Categories)
-                {
-                    _catOptions.Add(new CatOption
-                    {
-                        Type = cat.Key,
-                        Name = cat.Value,
-                        Cats = catlistResponse.Sub?.Where(x => x.Category == cat.Key).ToList()
-                    });
-                }
-            }
-
-            base.OnNavigatedTo(navigationContext);
         }
     }
 }

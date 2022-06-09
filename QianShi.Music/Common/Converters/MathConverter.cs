@@ -23,7 +23,7 @@ namespace QianShi.Music.Common.Converters
         {
             // Parse value into equation and remove spaces
             var mathEquation = parameter as string;
-            mathEquation = mathEquation.Replace(" ", "");
+            mathEquation = mathEquation!.Replace(" ", "");
             mathEquation = mathEquation.Replace("@VALUE", value.ToString());
 
             // Validate values and get list of numbers in equation

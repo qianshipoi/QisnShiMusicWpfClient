@@ -73,10 +73,14 @@ namespace QianShi.Music.Common.Helpers
                 var itemsControl = dependencyObject as ItemsControl;
                 if (itemsControl != null)
                 {
+#pragma warning disable CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
                     itemsControl.ItemContainerGenerator.StatusChanged -= ItemContainerGeneratorOnStatusChanged;
+#pragma warning restore CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
                     itemsControl.ItemContainerGenerator.ItemsChanged -= ItemContainerGeneratorOnItemsChanged;
 
+#pragma warning disable CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
                     itemsControl.ItemContainerGenerator.StatusChanged += ItemContainerGeneratorOnStatusChanged;
+#pragma warning restore CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
                     itemsControl.ItemContainerGenerator.ItemsChanged += ItemContainerGeneratorOnItemsChanged;
                 }
             }
@@ -85,7 +89,9 @@ namespace QianShi.Music.Common.Helpers
                 var itemsControl = dependencyObject as ItemsControl;
                 if (itemsControl != null)
                 {
+#pragma warning disable CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
                     itemsControl.ItemContainerGenerator.StatusChanged -= ItemContainerGeneratorOnStatusChanged;
+#pragma warning restore CS8622 // 参数类型中引用类型的为 Null 性与目标委托不匹配(可能是由于为 Null 性特性)。
                     itemsControl.ItemContainerGenerator.ItemsChanged -= ItemContainerGeneratorOnItemsChanged;
                 }
             }

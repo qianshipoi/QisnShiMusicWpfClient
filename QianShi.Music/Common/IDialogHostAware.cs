@@ -8,7 +8,7 @@ namespace QianShi.Music.Common
         /// <summary>
         /// DialoHost名称
         /// </summary>
-        string DialogHostName { get; set; }
+        string? DialogHostName { get; set; }
 
         /// <summary>
         /// 打开过程中执行

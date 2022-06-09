@@ -34,6 +34,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<double?> _setPositionCommand = default!;
         private bool _settingUp = false;
         private DelegateCommand<double?> _startSetPositionCommand = default!;
+
         public PlayViewModel(
             IContainerProvider provider,
             IRegionManager regionManager,
@@ -63,6 +64,7 @@ namespace QianShi.Music.ViewModels
         }
 
         public static PlayViewModel PlayViewModelDesign => App.Current.Container.Resolve<PlayViewModel>();
+
         public DelegateCommand CloseCommand =>
             _closeCommand ??= new(() => Display = false);
 
@@ -109,6 +111,7 @@ namespace QianShi.Music.ViewModels
                 }
             }
         }
+
         public double Duration
         {
             get => _duration;
@@ -129,6 +132,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand NextCommand =>
                                     _nextCommand ??= new(_playStoreService.Next);
+
         public DelegateCommand PauseCommand =>
             _pauseCommand ??= new(_playStoreService.Pause);
 
@@ -151,6 +155,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand PreviousCommand =>
                                     _previousCommand ??= new(_playStoreService.Previous);
+
         public DelegateCommand<double?> SetPositionCommand =>
             _setPositionCommand ??= new((value) =>
             {
@@ -160,6 +165,7 @@ namespace QianShi.Music.ViewModels
                     _playService.SetProgress(value.Value);
                 }
             });
+
         public DelegateCommand<double?> StartSetPositionCommand =>
             _startSetPositionCommand ??= new(ExecuteStartSetPositionCommand);
 
@@ -181,13 +187,14 @@ namespace QianShi.Music.ViewModels
         {
             _settingUp = true;
         }
+
         private async Task<string> GetLyric(long songId)
         {
             var lyricResponse = await _playlistService.Lyric(songId);
 
             if (lyricResponse.Code == 200)
             {
-                return lyricResponse.Lrc.Lyric;
+                return lyricResponse.Lrc?.Lyric ?? String.Empty;
             }
             return string.Empty;
         }

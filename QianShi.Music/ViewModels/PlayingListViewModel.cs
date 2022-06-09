@@ -1,10 +1,10 @@
-﻿using Prism.Ioc;
+﻿using Prism.Commands;
+using Prism.Ioc;
 
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
-using Prism.Commands;
 
 namespace QianShi.Music.ViewModels
 {
@@ -16,6 +16,7 @@ namespace QianShi.Music.ViewModels
         private ObservableCollection<Song> _jumpPlayeds;
         private DelegateCommand<Song> _playCommand = default!;
         private ObservableCollection<Song> _toBePlayeds;
+
         public PlayingListViewModel(
             IContainerProvider containerProvider,
             IPlayStoreService playStoreService,
@@ -44,6 +45,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand<Song> PlayCommand =>
                                     _playCommand ??= new((song) => _playStoreService.PlayAsync(song));
+
         public ObservableCollection<Song> ToBePlayeds
         {
             get => _toBePlayeds;

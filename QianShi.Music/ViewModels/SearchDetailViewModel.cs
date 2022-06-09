@@ -13,31 +13,39 @@ namespace QianShi.Music.ViewModels
 {
     public class SearchDetailViewModel : NavigationViewModel, IRegionMemberLifetime
     {
-        public static string SearchTypeParameterName = "Type";
         public static string SearchKeywordsParameterName = "Keywords";
-
-        private readonly IRegionManager _regionManager;
+        public static string SearchTypeParameterName = "Type";
         private readonly IPlaylistService _playlistService;
-        private int _limit = 30;
-        private int _offset = 0;
-
         private bool _hasMore;
+        private ObservableCollection<object> _items;
+        private string _keywords = String.Empty;
+        private int _limit = 30;
+        private bool _loading;
+        private DelegateCommand<ItemsControl> _moreCommand = default!;
+        private int _offset = 0;
+        private SearchType _searchType = SearchType.单曲;
+
+        public SearchDetailViewModel(
+            IContainerProvider containerProvider,
+            IPlaylistService playlistService)
+            : base(containerProvider)
+        {
+            _playlistService = playlistService;
+            _items = new ObservableCollection<object>();
+        }
 
         public bool HasMore
         {
             get { return _hasMore; }
             set { SetProperty(ref _hasMore, value); }
         }
-
-        private SearchType _searchType = SearchType.单曲;
-
-        public SearchType SearchType
+        public ObservableCollection<object> Items
         {
-            get { return _searchType; }
-            set { SetProperty(ref _searchType, value); }
+            get { return _items; }
+            set { SetProperty(ref _items, value); }
         }
 
-        private string _keywords = String.Empty;
+        public bool KeepAlive => false;
 
         public string Keywords
         {
@@ -45,40 +53,19 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _keywords, value); }
         }
 
-        private ObservableCollection<object> _items;
-
-        public ObservableCollection<object> Items
-        {
-            get { return _items; }
-            set { SetProperty(ref _items, value); }
-        }
-
-        private bool _loading;
-
         public bool Loading
         {
             get { return _loading; }
             set { SetProperty(ref _loading, value); }
         }
 
-        private DelegateCommand<ItemsControl> _moreCommand = default!;
         public DelegateCommand<ItemsControl> MoreCommand => _moreCommand ??= new DelegateCommand<ItemsControl>(More);
 
-        public bool KeepAlive => false;
-
-        private async void More(ItemsControl control)
+        public SearchType SearchType
         {
-            control.Focus();
-            await Search();
+            get { return _searchType; }
+            set { SetProperty(ref _searchType, value); }
         }
-
-        public SearchDetailViewModel(IContainerProvider containerProvider, IRegionManager regionManager, IPlaylistService playlistService) : base(containerProvider)
-        {
-            _regionManager = regionManager;
-            _playlistService = playlistService;
-            _items = new ObservableCollection<object>();
-        }
-
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
@@ -92,6 +79,11 @@ namespace QianShi.Music.ViewModels
             }
         }
 
+        private async void More(ItemsControl control)
+        {
+            control.Focus();
+            await Search();
+        }
         private async Task Search(bool clear = false)
         {
             if (clear)

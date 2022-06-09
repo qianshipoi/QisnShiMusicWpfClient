@@ -4,9 +4,7 @@ using Prism.Regions;
 
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Response;
-using QianShi.Music.Extensions;
 using QianShi.Music.Services;
-using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 
@@ -16,30 +14,25 @@ namespace QianShi.Music.ViewModels
     {
         public const string ArtistIdParameterName = "ArtistId";
 
+        private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
-        private readonly IRegionManager _regionManager;
         private Album? _album;
-        private ObservableCollection<Album> _albums;
         private Artist _artist = default!;
         private long _artistId;
-        private ObservableCollection<Artist> _artists;
         private DelegateCommand<MovieVideo> _jumpToMvPageCommand = default!;
         private bool _loading;
         private MovieVideo? _movieVideo;
-        private ObservableCollection<MovieVideo> _movieVideos;
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
         private DelegateCommand<Album> _openPlaylistCommand = default!;
-        private ObservableCollection<Song> _songs;
 
-        public ArtistViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
+        public ArtistViewModel(
+            IContainerProvider containerProvider,
+            IPlaylistService playlistService,
+            INavigationService navigationService)
+            : base(containerProvider)
         {
             _playlistService = playlistService;
-            _songs = new();
-            _loading = false;
-            _albums = new();
-            _movieVideos = new();
-            _regionManager = regionManager;
-            _artists = new();
+            _navigationService = navigationService;
         }
 
         public Album? Album
@@ -48,11 +41,7 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _album, value);
         }
 
-        public ObservableCollection<Album> Albums
-        {
-            get => _albums;
-            set => SetProperty(ref _albums, value);
-        }
+        public ObservableCollection<Album> Albums { get; } = new();
 
         public Artist Artist
         {
@@ -60,20 +49,10 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _artist, value);
         }
 
-        public ObservableCollection<Artist> Artists
-        {
-            get => _artists;
-            set => SetProperty(ref _artists, value);
-        }
+        public ObservableCollection<Artist> Artists { get; } = new();
 
         public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
-            _jumpToMvPageCommand ??= new((mv) =>
-            {
-                Navigate(nameof(MvView), new NavigationParameters
-                {
-                    { MvViewModel.MvIdParameter, mv.Id}
-                });
-            });
+            _jumpToMvPageCommand ??= new((mv) => _navigationService.NavigateToMv(mv.Id));
 
         public bool KeepAlive => false;
 
@@ -89,33 +68,15 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _movieVideo, value);
         }
 
-        public ObservableCollection<MovieVideo> MovieVideos
-        {
-            get => _movieVideos;
-            set => SetProperty(ref _movieVideos, value);
-        }
+        public ObservableCollection<MovieVideo> MovieVideos { get; } = new();
 
-        public DelegateCommand<IPlaylist> OpenArtistCommand => _openArtistCommand ??= new((playlist) =>
-         {
-             Navigate(nameof(ArtistView), new NavigationParameters
-             {
-                 {ArtistViewModel.ArtistIdParameterName, playlist.Id}
-             });
-         });
+        public DelegateCommand<IPlaylist> OpenArtistCommand =>
+            _openArtistCommand ??= new((playlist) => _navigationService.NavigateToArtist(playlist.Id));
 
-        public DelegateCommand<Album> OpenPlaylistCommand => _openPlaylistCommand ??= new((album) =>
-        {
-            Navigate(nameof(AlbumView), new NavigationParameters
-            {
-                { AlbumViewModel.AlbumIdParameterName, album.Id }
-            });
-        });
+        public DelegateCommand<Album> OpenPlaylistCommand =>
+            _openPlaylistCommand ??= new((album) => _navigationService.NavigateToAlbum(album.Id));
 
-        public ObservableCollection<Song> Songs
-        {
-            get => _songs;
-            set => SetProperty(ref _songs, value);
-        }
+        public ObservableCollection<Song> Songs { get; } = new();
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
@@ -219,11 +180,6 @@ namespace QianShi.Music.ViewModels
                     MovieVideo = mvs[0];
                 }
             }
-        }
-
-        private void Navigate(string view, NavigationParameters? parameters)
-        {
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(view, parameters);
         }
     }
 }

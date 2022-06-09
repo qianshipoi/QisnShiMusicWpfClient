@@ -9,7 +9,7 @@ namespace QianShi.Music.Common.Converters
         {
             if (value is double val)
                 return TimeSpan.FromMilliseconds(val).ToString(@"mm\:ss");
-            return null;
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

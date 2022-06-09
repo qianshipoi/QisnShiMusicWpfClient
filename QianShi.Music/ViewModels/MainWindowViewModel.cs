@@ -20,18 +20,26 @@ namespace QianShi.Music.ViewModels
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
         private readonly IRegionManager _regionManager;
+        private readonly INavigationService _navigationService;
         private Song? _currentSong = null;
+        private DelegateCommand _goBackCommand = default!;
+        private DelegateCommand _goForwardCommand = default!;
         private bool _isMuted = false;
         private bool _isPlaying = false;
         private IRegionNavigationJournal _journal = null!;
-        private ObservableCollection<MenuBar> _menuBars;
+        private DelegateCommand _loginCommand = default!;
+        private DelegateCommand _logoutCommand = default!;
+        private DelegateCommand<MenuBar> _navigateCommand = default!;
         private MenuBar? _navigateCurrentItem;
         private DelegateCommand _nextCommand = default!;
+        private DelegateCommand<ContentControl> _openPlayViewCommand = default!;
         private DelegateCommand _pauseCommand = default!;
         private DelegateCommand _playCommand = default!;
         private DelegateCommand _playingListSwitchCommand = default!;
         private DelegateCommand _previousCommand = default!;
+        private DelegateCommand<string> _searchCommand = default!;
         private DelegateCommand<bool?> _setMutedCommand = default!;
+        private DelegateCommand _settingCommand = default!;
         private DelegateCommand<double?> _setVolumeCommand = default!;
         private double _songDuration = 1d;
         private double _songPosition = 0d;
@@ -42,33 +50,15 @@ namespace QianShi.Music.ViewModels
             IRegionManager regionManager,
             IPlaylistService playlistService,
             IPlayService playService,
-            IPlayStoreService playStoreService)
+            IPlayStoreService playStoreService,
+            INavigationService navigationService)
         {
             _regionManager = regionManager;
-            _menuBars = new ObservableCollection<MenuBar>();
-            NavigateCommand = new DelegateCommand<MenuBar>(Navigate);
-            GoBackCommand = new DelegateCommand(() =>
-            {
-                if (_journal.CanGoBack)
-                    _journal.GoBack();
-            });
-            GoForwardCommand = new DelegateCommand(() =>
-            {
-                if (_journal.CanGoForward)
-                    _journal.GoForward();
-            });
-            LogoutCommand = new DelegateCommand(Logout);
-            LoginCommand = new DelegateCommand(Login);
-            OpenPlayViewCommand = new DelegateCommand<ContentControl>(OpenPlayView);
-            SearchCommand = new DelegateCommand<string>(Search);
             _playlistService = playlistService;
             _userData = UserData.Instance;
             _playService = playService;
             _playStoreService = playStoreService;
-            _playService.IsPlayingChanged += (s, e) =>
-            {
-                IsPlaying = e.NewValue;
-            };
+            _playService.IsPlayingChanged += (s, e) => IsPlaying = e.NewValue;
             _playService.ProgressChanged += (s, e) =>
             {
                 SongPosition = e.Value;
@@ -78,6 +68,7 @@ namespace QianShi.Music.ViewModels
             _playService.VolumeChanged += (s, e) => Volume = e.NewValue;
             _playService.IsMutedChanged += (s, e) => IsMuted = e.NewValue;
             _playStoreService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
+            _navigationService = navigationService;
         }
 
         public Song? CurrentSong
@@ -85,10 +76,18 @@ namespace QianShi.Music.ViewModels
             get => _currentSong;
             set => SetProperty(ref _currentSong, value);
         }
-
-        public DelegateCommand GoBackCommand { get; private set; }
-
-        public DelegateCommand GoForwardCommand { get; private set; }
+        public DelegateCommand GoBackCommand =>
+            _goBackCommand ?? (_goBackCommand = new DelegateCommand(() =>
+            {
+                if (_journal.CanGoBack)
+                    _journal.GoBack();
+            }));
+        public DelegateCommand GoForwardCommand =>
+            _goForwardCommand ?? (_goForwardCommand = new DelegateCommand(() =>
+            {
+                if (_journal.CanGoForward)
+                    _journal.GoForward();
+            }));
 
         public bool IsMuted
         {
@@ -102,17 +101,14 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _isPlaying, value);
         }
 
-        public DelegateCommand LoginCommand { get; private set; }
+        public DelegateCommand LoginCommand =>
+            _loginCommand ?? (_loginCommand = new DelegateCommand(() => Login()));
+        public DelegateCommand LogoutCommand =>
+            _logoutCommand ?? (_logoutCommand = new DelegateCommand(async () => await Logout()));
 
-        public DelegateCommand LogoutCommand { get; private set; }
-
-        public ObservableCollection<MenuBar> MenuBars
-        {
-            get => _menuBars;
-            set { _menuBars = value; RaisePropertyChanged(); }
-        }
-
-        public DelegateCommand<MenuBar> NavigateCommand { get; private set; }
+        public ObservableCollection<MenuBar> MenuBars { get; } = new();
+        public DelegateCommand<MenuBar> NavigateCommand =>
+            _navigateCommand ?? (_navigateCommand = new DelegateCommand<MenuBar>(Navigate));
 
         public MenuBar? NavigateCurrentItem
         {
@@ -129,8 +125,8 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand NextCommand =>
             _nextCommand ??= new DelegateCommand(_playStoreService.Next);
-
-        public DelegateCommand<ContentControl> OpenPlayViewCommand { get; private set; }
+        public DelegateCommand<ContentControl> OpenPlayViewCommand =>
+            _openPlayViewCommand ?? (_openPlayViewCommand = new DelegateCommand<ContentControl>(OpenPlayView));
 
         public DelegateCommand PauseCommand =>
             _pauseCommand ??= new DelegateCommand(_playStoreService.Pause);
@@ -154,21 +150,17 @@ namespace QianShi.Music.ViewModels
             });
 
         public DelegateCommand PreviousCommand =>
-            _previousCommand ??= new DelegateCommand(_playStoreService.Previous);
-
-        public DelegateCommand<string> SearchCommand { get; private set; }
+            _previousCommand ??= new(_playStoreService.Previous);
+        public DelegateCommand<string> SearchCommand =>
+            _searchCommand ??= new(Search);
 
         public DelegateCommand<bool?> SetMutedCommand =>
             _setMutedCommand ??= new(ExecuteSetMutedCommand);
 
+        public DelegateCommand SettingCommand =>
+            _settingCommand ??= new(() => _navigationService.MainRegionNavigation(nameof(SettingView)));
         public DelegateCommand<double?> SetVolumeCommand =>
-            _setVolumeCommand ??= new((value) =>
-            {
-                if (value.HasValue)
-                {
-                    _playService.SetVolume(value.Value);
-                }
-            });
+            _setVolumeCommand ??= new((value) => _playService.SetVolume(value ?? _playService.Volume));
 
         public double SongDuration
         {
@@ -250,12 +242,9 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private void Login()
-        {
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(LoginView));
-        }
+        private void Login() => _navigationService.MainRegionNavigation(nameof(LoginView));
 
-        private async void Logout()
+        private async Task Logout()
         {
             var response = await _playlistService.Logout();
             if (response.Code == 200)
@@ -269,14 +258,13 @@ namespace QianShi.Music.ViewModels
         {
             if (string.IsNullOrWhiteSpace(obj.NameSpace))
                 return;
-            var region = _regionManager.Regions[PrismManager.MainViewRegionName];
-            region.RequestNavigate(obj.NameSpace);
+            _navigationService.MainRegionNavigation(obj.NameSpace);
         }
 
         private void NavigationService_Navigated(object? sender, RegionNavigationEventArgs e)
         {
             var viewName = e.Uri.OriginalString;
-            var menuBar = _menuBars.FirstOrDefault(x => x.NameSpace == viewName);
+            var menuBar = MenuBars.FirstOrDefault(x => x.NameSpace == viewName);
 
             if (menuBar != null && menuBar != NavigateCurrentItem)
             {

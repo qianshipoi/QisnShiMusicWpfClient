@@ -12,17 +12,26 @@ namespace QianShi.Music.ViewModels.Dialogs
     {
         public const string DescriptionParameterName = "Description";
 
-        private string _description;
+        private string? _description;
+
         public DescriptionDialogViewModel()
         {
             CancelCommand = new DelegateCommand(Cancel);
+            SaveCommand = new DelegateCommand(Save);
         }
 
         public DelegateCommand CancelCommand { get; set; }
-        public string Description { get => _description; set => SetProperty(ref _description, value); }
-        public string DialogHostName { get; set; }
+
+        public string? Description
+        {
+            get => _description;
+            set => SetProperty(ref _description, value);
+        }
+
+        public string? DialogHostName { get; set; }
+
         public DelegateCommand SaveCommand { get; set; }
-        public string Title => throw new NotImplementedException();
+
         public void OnDialogOpend(IDialogParameters parameters)
         {
             if (parameters.ContainsKey(DescriptionParameterName))
@@ -36,6 +45,12 @@ namespace QianShi.Music.ViewModels.Dialogs
         {
             if (DialogHost.IsDialogOpen(DialogHostName))
                 DialogHost.Close(DialogHostName, new DialogResult(ButtonResult.No));
+        }
+
+        private void Save()
+        {
+            if (DialogHost.IsDialogOpen(DialogHostName))
+                DialogHost.Close(DialogHostName, new DialogResult(ButtonResult.Yes));
         }
     }
 }

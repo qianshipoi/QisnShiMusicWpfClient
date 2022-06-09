@@ -18,25 +18,25 @@ namespace QianShi.Music.ViewModels
     public class PlaylistViewModel : NavigationViewModel
     {
         public const string IdParameters = "PlaylistId";
+
         private readonly IPlaylistService _playlistService;
+        private readonly IPlaylistStoreService _playlistStoreService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
-        private readonly IPlaylistStoreService _playlistStoreService;
         private PlaylistDetail _detail = new();
         private bool _loading;
         private DelegateCommand<Song?> _playCommand = default!;
         private long _playlistId;
-        private ObservableCollection<Song> _songs;
-        private string _title = "加载中...";
+        private ObservableCollection<Song> _songs = new();
 
         public PlaylistViewModel(IContainerProvider containerProvider,
             IPlaylistService playlistService,
             IPlayService playService,
-            IPlayStoreService playStoreService, 
+            IPlayStoreService playStoreService,
             IPlaylistStoreService playlistStoreService)
             : base(containerProvider)
         {
-            _songs = new ObservableCollection<Song>();
+            Title = "加载中...";
             _playlistService = playlistService;
             _playService = playService;
             _playStoreService = playStoreService;
@@ -62,12 +62,6 @@ namespace QianShi.Music.ViewModels
         {
             get => _songs;
             set => SetProperty(ref _songs, value);
-        }
-
-        public string Title
-        {
-            get => _title;
-            set => SetProperty(ref _title, value);
         }
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)

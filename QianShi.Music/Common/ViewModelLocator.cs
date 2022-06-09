@@ -22,5 +22,6 @@ namespace QianShi.Music.Common
         public PlayViewModel PlayViewModel => App.Current.Container.Resolve<PlayViewModel>();
         public SearchDetailViewModel SearchDetailViewModel => App.Current.Container.Resolve<SearchDetailViewModel>();
         public VideoPlayWindowViewModel VideoPlayWindowViewModel => App.Current.Container.Resolve<VideoPlayWindowViewModel>();
+        public SettingViewModel SettingViewModel => App.Current.Container.Resolve<SettingViewModel>();
     }
 }

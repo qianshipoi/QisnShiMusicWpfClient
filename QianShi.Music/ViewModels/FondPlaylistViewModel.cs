@@ -1,78 +1,29 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Data;
-
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Ioc;
 using Prism.Regions;
 
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
+using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Data;
+
 namespace QianShi.Music.ViewModels
 {
     public class FondPlaylistViewModel : NavigationViewModel
     {
         public const string PlaylistIdParameterName = $"{nameof(FondPlaylistViewModel)}.PlaylistId";
-        private readonly IPlaylistService _playlistService;
-        private readonly IPlayStoreService _playStoreService;
-        private readonly IPlayService _playService;
-        private long _playlistId;
 
+        private readonly IPlaylistService _playlistService;
+        private readonly IPlayService _playService;
+        private readonly IPlayStoreService _playStoreService;
+        private DelegateCommand<Song?> _playCommand = default!;
         private Playlist _playlist = default!;
-        public Playlist Playlist
-        {
-            get => _playlist;
-            set => SetProperty(ref _playlist, value);
-        }
+        private long _playlistId;
+        private string? _searchText;
 
         private ObservableCollection<Song> _songs = new();
-
-        public ObservableCollection<Song> Songs
-        {
-            get => _songs;
-            set => SetProperty(ref _songs, value);
-        }
-
-        public ListCollectionView SongsListView
-        {
-            get;
-            set;
-        }
-
-        private string? _searchText;
-        public string? SearchText
-        {
-            get => _searchText;
-            set
-            {
-                SetProperty(ref _searchText, value);
-                SongsListView.Refresh();
-            }
-        }
-
-
-
-        private DelegateCommand<Song?> _playCommand = default!;
-        public DelegateCommand<Song?> PlayCommand =>
-            _playCommand ??= new(Play);
-
-        private async void Play(Song? playlist)
-        {
-            if (playlist != null)
-            {
-                await _playStoreService.PlayAsync(playlist);
-            }
-            else
-            {
-                await _playStoreService.AddPlaylistAsync(_playlistId, Songs);
-                _playStoreService.Pause();
-                if (!_playService.IsPlaying)
-                {
-                    _playStoreService.Play();
-                }
-            }
-        }
 
         public FondPlaylistViewModel(
             IContainerProvider containerProvider,
@@ -108,6 +59,35 @@ namespace QianShi.Music.ViewModels
             };
         }
 
+        public DelegateCommand<Song?> PlayCommand =>
+            _playCommand ??= new(Play);
+
+        public Playlist Playlist
+        {
+            get => _playlist;
+            set => SetProperty(ref _playlist, value);
+        }
+        public string? SearchText
+        {
+            get => _searchText;
+            set
+            {
+                SetProperty(ref _searchText, value);
+                SongsListView.Refresh();
+            }
+        }
+
+        public ObservableCollection<Song> Songs
+        {
+            get => _songs;
+            set => SetProperty(ref _songs, value);
+        }
+
+        public ListCollectionView SongsListView
+        {
+            get;
+            set;
+        }
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
@@ -162,8 +142,8 @@ namespace QianShi.Music.ViewModels
 
             _playStoreService.CurrentChanged -= CurrentChanged;
             _playStoreService.CurrentChanged += CurrentChanged;
-
         }
+
         private void CurrentChanged(object? sender, SongChangedEventArgs e)
         {
             var songId = e.NewSong?.Id;
@@ -176,6 +156,23 @@ namespace QianShi.Music.ViewModels
             else
             {
                 Songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
+            }
+        }
+
+        private async void Play(Song? playlist)
+        {
+            if (playlist != null)
+            {
+                await _playStoreService.PlayAsync(playlist);
+            }
+            else
+            {
+                await _playStoreService.AddPlaylistAsync(_playlistId, Songs);
+                _playStoreService.Pause();
+                if (!_playService.IsPlaying)
+                {
+                    _playStoreService.Play();
+                }
             }
         }
     }

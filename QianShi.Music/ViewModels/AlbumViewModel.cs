@@ -2,7 +2,6 @@
 
 using Prism.Commands;
 using Prism.Ioc;
-using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 
@@ -31,7 +30,7 @@ namespace QianShi.Music.ViewModels
         private bool _loading;
         private long _playlistId;
         private ObservableCollection<Song> _songs;
-        private string _title;
+
         public AlbumViewModel(
             IContainerProvider containerProvider,
             IPlaylistService playlistService,
@@ -39,7 +38,6 @@ namespace QianShi.Music.ViewModels
             IPlayStoreService playStoreService)
             : base(containerProvider)
         {
-            _title = string.Empty;
             _songs = new ObservableCollection<Song>();
 
             PlayCommand = new DelegateCommand<Song?>(Play);
@@ -77,11 +75,6 @@ namespace QianShi.Music.ViewModels
         {
             get => _songs;
             set => SetProperty(ref _songs, value);
-        }
-        public string Title
-        {
-            get => _title;
-            set => SetProperty(ref _title, value);
         }
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)

@@ -49,7 +49,7 @@ namespace QianShi.Music.Common.Models.Response
             public bool Unauthorized { get; set; }
 
             [JsonPropertyName("msg")]
-            public object Msg { get; set; }
+            public dynamic? Msg { get; set; }
         }
     }
 
@@ -98,7 +98,7 @@ namespace QianShi.Music.Common.Models.Response
             public int Id { get; set; }
 
             [JsonPropertyName("name")]
-            public string Name { get; set; }
+            public string Name { get; set; } = default!;
 
             [JsonPropertyName("type")]
             public int Type { get; set; }

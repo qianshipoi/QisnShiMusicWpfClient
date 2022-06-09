@@ -93,6 +93,7 @@ namespace QianShi.Music.Services
 
         public void SetVolume(double volume)
         {
+            if (volume == Volume) return;
             if (volume > 1) volume = 1;
             else if (volume < 0) volume = 0;
             var oldVal = _mediaPlayer.Volume;

@@ -15,18 +15,22 @@ namespace QianShi.Music.Common.Helpers
 
         private static void OnPasswordContentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var box = d as PasswordBox;
-            box.PasswordChanged -= OnPasswordChanged;
-            var password = (string)e.NewValue;
-            if (box != null && box.Password != password)
-                box.Password = password;
-            box.PasswordChanged += OnPasswordChanged;
+            if(d is PasswordBox box)
+            {
+                box.PasswordChanged -= OnPasswordChanged;
+                var password = (string)e.NewValue;
+                if (box != null && box.Password != password)
+                    box.Password = password;
+                box!.PasswordChanged += OnPasswordChanged;
+            }
         }
 
         private static void OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            var box = sender as PasswordBox;
-            SetPasswordContent(box, box.Password);
+            if(sender is PasswordBox box)
+            {
+                SetPasswordContent(box, box.Password);
+            }
         }
     }
 }

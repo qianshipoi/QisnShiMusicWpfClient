@@ -3,7 +3,6 @@ using Prism.Ioc;
 using Prism.Regions;
 
 using QianShi.Music.Common;
-using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
@@ -13,8 +12,8 @@ namespace QianShi.Music.ViewModels
 {
     public class PlaylistCardViewModel : NavigationViewModel
     {
+        private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
-        private readonly IRegionManager _regionManager;
         private int _limit = 100;
         private bool _loading;
         private bool _more = false;
@@ -24,15 +23,16 @@ namespace QianShi.Music.ViewModels
         public PlaylistCardViewModel(
             IContainerProvider containerProvider,
             IPlaylistService playlistService,
-            IRegionManager regionManager)
+            IRegionManager regionManager,
+            INavigationService navigationService)
             : base(containerProvider)
         {
             _loading = false;
             _playlists = new ObservableCollection<IPlaylist>();
             _playlistService = playlistService;
-            _regionManager = regionManager;
             OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
             MorePlaylistCommand = new DelegateCommand<ItemsControl>(MorePlaylist);
+            _navigationService = navigationService;
         }
 
         public bool Loading
@@ -40,6 +40,7 @@ namespace QianShi.Music.ViewModels
             get => _loading;
             set => SetProperty(ref _loading, value);
         }
+
         public bool More
         {
             get => _more;
@@ -55,6 +56,7 @@ namespace QianShi.Music.ViewModels
             get => _playlists;
             set => SetProperty(ref _playlists, value);
         }
+
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (_playlists.Count == 0)
@@ -93,13 +95,12 @@ namespace QianShi.Music.ViewModels
             _offset += _limit;
             await LoadPlaylist();
         }
+
         private void OpenPlaylist(IPlaylist obj)
         {
-            var parameters = new NavigationParameters();
-            parameters.Add("PlaylistId", obj.Id);
-
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("AlbumView", parameters);
+            _navigationService.NavigateToAlbum(obj.Id);
         }
+
         private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
         {
             if (isClear)

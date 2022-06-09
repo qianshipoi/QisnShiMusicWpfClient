@@ -171,7 +171,9 @@ namespace QianShi.Music.Common.Helpers
         /// 确保窗口全屏的Hook
         /// 使用HandleProcessCorruptedStateExceptions，防止访问内存过程中因为一些致命异常导致程序崩溃
         /// </summary>
+#pragma warning disable SYSLIB0032 // 类型或成员已过时
         [HandleProcessCorruptedStateExceptions]
+#pragma warning restore SYSLIB0032 // 类型或成员已过时
         private static IntPtr KeepFullScreenHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             //处理WM_WINDOWPOSCHANGING消息
@@ -181,7 +183,9 @@ namespace QianShi.Music.Common.Helpers
                 try
                 {
                     //得到WINDOWPOS结构体
+#pragma warning disable CS8605 // 取消装箱可能为 null 的值。
                     var pos = (WindowPosition)Marshal.PtrToStructure(lParam, typeof(WindowPosition));
+#pragma warning restore CS8605 // 取消装箱可能为 null 的值。
 
                     if ((pos.Flags & WindowPositionFlags.SWP_NOMOVE) != 0 &&
                         (pos.Flags & WindowPositionFlags.SWP_NOSIZE) != 0)

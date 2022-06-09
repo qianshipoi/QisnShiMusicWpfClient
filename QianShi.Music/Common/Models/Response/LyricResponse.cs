@@ -14,13 +14,13 @@ namespace QianShi.Music.Common.Models.Response
         public bool Qfy { get; set; }
 
         [JsonPropertyName("lrc")]
-        public LyricData Lrc { get; set; }
+        public LyricData? Lrc { get; set; }
 
         [JsonPropertyName("klyric")]
-        public LyricData Klyric { get; set; }
+        public LyricData? Klyric { get; set; }
 
         [JsonPropertyName("tlyric")]
-        public LyricData Tlyric { get; set; }
+        public LyricData? Tlyric { get; set; }
 
         [JsonPropertyName("code")]
         public int Code { get; set; }
@@ -31,7 +31,7 @@ namespace QianShi.Music.Common.Models.Response
             public int Version { get; set; }
 
             [JsonPropertyName("lyric")]
-            public string Lyric { get; set; }
+            public string? Lyric { get; set; }
         }
     }
 }

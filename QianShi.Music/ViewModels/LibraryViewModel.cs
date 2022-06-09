@@ -1,4 +1,5 @@
-﻿using Prism.Ioc;
+﻿using Prism.Commands;
+using Prism.Ioc;
 using Prism.Regions;
 
 using QianShi.Music.Common;
@@ -6,27 +7,36 @@ using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 using System.Collections.ObjectModel;
-using Prism.Commands;
-using QianShi.Music.Extensions;
-using QianShi.Music.Views;
+
 using static QianShi.Music.Common.Models.Response.UserCloudResponse;
 
 namespace QianShi.Music.ViewModels
 {
     public class LibraryViewModel : NavigationViewModel
     {
+        private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
-        private readonly IRegionManager _regionManager;
+        private ObservableCollection<Album> _albums = new();
+        private ObservableCollection<PlayRecord> _allRecord = new();
+        private ObservableCollection<Artist> _artists = new();
+        private ObservableCollection<CloudItem> _cloudItems = new();
+        private bool _isFirstJoin = true;
+        private DelegateCommand _jumpToFondPageCommand = default!;
+        private Playlist? _likePlaylist;
+        private ObservableCollection<MovieVideoSubject> _movieVideos = new();
+        private ObservableCollection<Playlist> _playlists = new();
+        private ObservableCollection<Song> _songs = new();
+        private ObservableCollection<PlayRecord> _weekRecord = new();
 
-        private ObservableCollection<MovieVideoSubject> _movieVideos;
-
-        public ObservableCollection<MovieVideoSubject> MovieVideos
+        public LibraryViewModel(
+            IContainerProvider containerProvider,
+            IPlaylistService playlistService,
+            INavigationService navigationService)
+            : base(containerProvider)
         {
-            get => _movieVideos;
-            set => SetProperty(ref _movieVideos, value);
+            _playlistService = playlistService;
+            _navigationService = navigationService;
         }
-
-        private ObservableCollection<Album> _albums;
 
         public ObservableCollection<Album> Albums
         {
@@ -34,7 +44,11 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _albums, value);
         }
 
-        private ObservableCollection<Artist> _artists;
+        public ObservableCollection<PlayRecord> AllRecord
+        {
+            get => _allRecord;
+            set => SetProperty(ref _allRecord, value);
+        }
 
         public ObservableCollection<Artist> Artists
         {
@@ -42,47 +56,32 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _artists, value);
         }
 
-        private Playlist _likePlaylist;
-
-        public Playlist LikePlaylist
-        {
-            get => _likePlaylist;
-            set => SetProperty(ref _likePlaylist, value);
-        }
-
-        private ObservableCollection<Playlist> _playlists;
-
-        public ObservableCollection<Playlist> Playlists
-        {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
-        }
-
-        private ObservableCollection<CloudItem> _cloudItems;
-
         public ObservableCollection<CloudItem> CloudItems
         {
             get => _cloudItems;
             set => SetProperty(ref _cloudItems, value);
         }
 
-        private ObservableCollection<PlayRecord> _allRecord;
+        public DelegateCommand JumpToFondPageCommand =>
+            _jumpToFondPageCommand ??= new(() => _navigationService.NavigateToFondPlaylist(LikePlaylist!.Id));
 
-        public ObservableCollection<PlayRecord> AllRecord
+        public Playlist? LikePlaylist
         {
-            get => _allRecord;
-            set => SetProperty(ref _allRecord, value);
+            get => _likePlaylist;
+            set => SetProperty(ref _likePlaylist, value);
         }
 
-        private ObservableCollection<PlayRecord> _weekRecord;
-
-        public ObservableCollection<PlayRecord> WeekRecord
+        public ObservableCollection<MovieVideoSubject> MovieVideos
         {
-            get => _weekRecord;
-            set => SetProperty(ref _weekRecord, value);
+            get => _movieVideos;
+            set => SetProperty(ref _movieVideos, value);
         }
 
-        private ObservableCollection<Song> _songs;
+        public ObservableCollection<Playlist> Playlists
+        {
+            get => _playlists;
+            set => SetProperty(ref _playlists, value);
+        }
 
         public ObservableCollection<Song> Songs
         {
@@ -92,34 +91,11 @@ namespace QianShi.Music.ViewModels
 
         public UserData UserInfo => UserData.Instance;
 
-        private DelegateCommand _jumpToFondPageCommand;
-        public DelegateCommand JumpToFondPageCommand =>
-            _jumpToFondPageCommand ??= new(ExecuteCommandName);
-
-        void ExecuteCommandName()
+        public ObservableCollection<PlayRecord> WeekRecord
         {
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(FondPlaylistView), new NavigationParameters
-            {
-                {FondPlaylistViewModel.PlaylistIdParameterName, LikePlaylist.Id}
-            });
+            get => _weekRecord;
+            set => SetProperty(ref _weekRecord, value);
         }
-
-        public LibraryViewModel(IContainerProvider containerProvider, IPlaylistService playlistService, IRegionManager regionManager) : base(containerProvider)
-        {
-            _movieVideos = new();
-            _playlists = new();
-            _albums = new();
-            _cloudItems = new();
-            _allRecord = new();
-            _weekRecord = new();
-            _songs = new();
-            _artists = new();
-            _likePlaylist = new();
-            _playlistService = playlistService;
-            _regionManager = regionManager;
-        }
-
-        private bool _isFirstJoin = true;
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -152,39 +128,6 @@ namespace QianShi.Music.ViewModels
             return playlist;
         }
 
-        private async Task GetMyPlaylists()
-        {
-            var myPlaylists = await _playlistService.UserPlaylist(new Common.Models.Request.UserPlaylistRequest
-            {
-                Limit = 200,
-                Uid = UserData.Instance.Id
-            });
-
-            if (myPlaylists.Code == 200 && myPlaylists.Playlist.Count > 0)
-            {
-                var playlists = myPlaylists.Playlist.Select(FormatCover);
-
-                LikePlaylist = playlists.ToList()[0];
-                Playlists.AddRange(playlists.Skip(1));
-                await GetMyLikeSongs();
-            }
-        }
-
-        private async Task GetMyLikeSongs()
-        {
-            var response = await _playlistService.GetPlaylistDetailAsync(LikePlaylist.Id);
-            if (response.Code == 200)
-            {
-                var songs = response.PlaylistDetail.Tracks.Take(12);
-                Songs.AddRange(songs.Select(x =>
-                {
-                    if (!string.IsNullOrWhiteSpace(x.Album?.CoverImgUrl))
-                        x.Album.CoverImgUrl += "?param=48y48";
-                    return x;
-                }));
-            }
-        }
-
         private async Task GetMyAlbums()
         {
             var response = await _playlistService.AlbumSublist(new Common.Models.Request.PagedRequestBase
@@ -209,6 +152,38 @@ namespace QianShi.Music.ViewModels
             }
         }
 
+        private async Task GetMyCloud()
+        {
+            var response = await _playlistService.UserCloud(new Common.Models.Request.PagedRequestBase
+            {
+                Limit = 200,
+            });
+            if (response.Code == 200)
+            {
+                CloudItems.AddRange(response.Data.Select(x =>
+                {
+                    if (!string.IsNullOrWhiteSpace(x.SimpleSong.Album?.CoverImgUrl))
+                        x.SimpleSong.Album.CoverImgUrl += "?param=48y48";
+                    return x;
+                }));
+            }
+        }
+
+        private async Task GetMyLikeSongs()
+        {
+            var response = await _playlistService.GetPlaylistDetailAsync(LikePlaylist!.Id);
+            if (response.Code == 200)
+            {
+                var songs = response.PlaylistDetail.Tracks.Take(12);
+                Songs.AddRange(songs.Select(x =>
+                {
+                    if (!string.IsNullOrWhiteSpace(x.Album?.CoverImgUrl))
+                        x.Album.CoverImgUrl += "?param=48y48";
+                    return x;
+                }));
+            }
+        }
+
         private async Task GetMyMvs()
         {
             var response = await _playlistService.MvSublist(new Common.Models.Request.PagedRequestBase
@@ -225,20 +200,21 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private async Task GetMyCloud()
+        private async Task GetMyPlaylists()
         {
-            var response = await _playlistService.UserCloud(new Common.Models.Request.PagedRequestBase
+            var myPlaylists = await _playlistService.UserPlaylist(new Common.Models.Request.UserPlaylistRequest
             {
                 Limit = 200,
+                Uid = UserData.Instance.Id
             });
-            if (response.Code == 200)
+
+            if (myPlaylists.Code == 200 && myPlaylists.Playlist.Count > 0)
             {
-                CloudItems.AddRange(response.Data.Select(x =>
-                {
-                    if (!string.IsNullOrWhiteSpace(x.SimpleSong.Album?.CoverImgUrl))
-                        x.SimpleSong.Album.CoverImgUrl += "?param=48y48";
-                    return x;
-                }));
+                var playlists = myPlaylists.Playlist.Select(FormatCover);
+
+                LikePlaylist = playlists.ToList()[0];
+                Playlists.AddRange(playlists.Skip(1));
+                await GetMyLikeSongs();
             }
         }
 
