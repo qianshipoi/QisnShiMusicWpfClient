@@ -56,7 +56,7 @@
                             Margin="0,0,20,0"
                             HorizontalAlignment="Left"
                             Cursor="Hand"
-                            Source="{Binding Item.Album.CoverImgUrl ,FallbackValue=https://oss.kuriyama.top/static/background.png, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
+                            Source="{Binding Item.Album.CoverImgUrl, FallbackValue=https://oss.kuriyama.top/static/background.png, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
                             <Image.Clip>
                                 <RectangleGeometry
                                     RadiusX="12"
@@ -104,12 +104,12 @@
                                             <TextBlock
                                                 FontSize="13"
                                                 Style="{StaticResource UnderlineTextBlock}"
-                                                Text="{Binding Item.Name}"
+                                                Text="{Binding Name}"
                                                 TextTrimming="CharacterEllipsis"
                                                 ToolTip="{Binding Path=(helpers:ItemsControlHelper.ItemIndex), RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}">
                                                 <i:Interaction.Triggers>
                                                     <i:EventTrigger EventName="MouseLeftButtonUp">
-                                                        <i:InvokeCommandAction Command="{Binding JumpToPlayListCommand}" CommandParameter="{Binding}" />
+                                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SongItem}}, Path=JumpToPlayListCommand}" CommandParameter="{Binding}" />
                                                     </i:EventTrigger>
                                                 </i:Interaction.Triggers>
                                             </TextBlock>

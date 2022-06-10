@@ -14,6 +14,8 @@ namespace QianShi.Music.Services
         bool HasNext { get; }
         bool HasPrev { get; }
 
+        Task AddPlaylistAsync(long playlistId);
+
         Task AddPlaylistAsync(long playlistId, IEnumerable<Song> songs);
 
         Task AddJumpToQueueSongAsync(Song song);

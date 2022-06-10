@@ -1,4 +1,9 @@
-﻿using System.Windows;
+﻿using Prism.Commands;
+using Prism.Ioc;
+
+using QianShi.Music.Services;
+
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -9,6 +14,10 @@ namespace QianShi.Music.Common.UserControls
     /// </summary>
     public partial class PlaylistCard : UserControl
     {
+        private INavigationService _navigationService => App.Current.Container.Resolve<INavigationService>();
+        private IPlayStoreService _playStoreService => App.Current.Container.Resolve<IPlayStoreService>();
+
+
         public string Title
         {
             get => (string)GetValue(TitleProperty);
@@ -120,6 +129,16 @@ namespace QianShi.Music.Common.UserControls
         {
             if (OpenPlaylistCommand != null && OpenPlaylistCommand.CanExecute(Playlist))
                 OpenPlaylistCommand.Execute(Playlist);
+        }
+
+        private DelegateCommand _playCommand = default!;
+        public DelegateCommand PlayCommand =>
+            _playCommand ?? (_playCommand = new DelegateCommand(ExecutePlayCommand));
+
+        async void ExecutePlayCommand()
+        {
+            await _playStoreService.AddPlaylistAsync(Playlist.Id);
+            _playStoreService.Play();
         }
     }
 }

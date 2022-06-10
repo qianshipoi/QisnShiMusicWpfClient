@@ -85,6 +85,36 @@ namespace QianShi.Music.Services
             return result.First();
         }
 
+        public async Task AddPlaylistAsync(long playlistId)
+        {
+            if (_playlistId == playlistId)
+            {
+                return;
+            }
+
+            var playlistResponse = await _playlistService.GetPlaylistDetailAsync(playlistId);
+
+            if(playlistResponse.Code == 200)
+            {
+                var songs = new List<Song>();
+                if(playlistResponse.PlaylistDetail.TrackIds.Count > 20)
+                {
+                    var requestCount = (int)Math.Ceiling(playlistResponse.PlaylistDetail.TrackIds.Count * 0.1 / 20);
+                    for (int i = 0; i < requestCount; i++)
+                    {
+                        var ids = string.Join(',', playlistResponse.PlaylistDetail.TrackIds.Skip(i).Take(20).Select(x=>x.Id));
+                        var songsResponse = await _playlistService.SongDetail(ids);
+                        if (songsResponse.Code == 200)
+                        {
+                            songs.AddRange(songsResponse.Songs);
+                        }
+                    }
+                }
+
+                await AddPlaylistAsync(playlistId, songs);
+            }
+        }
+
         public async Task AddPlaylistAsync(long playlistId, IEnumerable<Song> songs)
         {
             if (_playlistId == playlistId)

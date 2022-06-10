@@ -16,6 +16,7 @@ namespace QianShi.Music.ViewModels
     {
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
+        private readonly IPlayStoreService _playStoreService;
         private ObservableCollection<Album> _albums = new();
         private ObservableCollection<PlayRecord> _allRecord = new();
         private ObservableCollection<Artist> _artists = new();
@@ -27,15 +28,35 @@ namespace QianShi.Music.ViewModels
         private ObservableCollection<Playlist> _playlists = new();
         private ObservableCollection<Song> _songs = new();
         private ObservableCollection<PlayRecord> _weekRecord = new();
+        private readonly List<Song> _likeSongs = new();
 
         public LibraryViewModel(
             IContainerProvider containerProvider,
             IPlaylistService playlistService,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            IPlayStoreService playStoreService)
             : base(containerProvider)
         {
             _playlistService = playlistService;
             _navigationService = navigationService;
+            _playStoreService = playStoreService;
+        }
+
+        private DelegateCommand<Song?> _playSongCommand = default!;
+        public DelegateCommand<Song?> PlaySongCommand =>
+            _playSongCommand ?? (_playSongCommand = new DelegateCommand<Song?>(ExecutePlayCommand));
+
+        async void ExecutePlayCommand(Song? parameter)
+        {
+            if (parameter == null)
+            {
+                await _playStoreService.AddPlaylistAsync(_likePlaylist!.Id, _likeSongs);
+                _playStoreService.Play();
+            }
+            else
+            {
+                await _playStoreService.PlayAsync(parameter);
+            }
         }
 
         public ObservableCollection<Album> Albums
@@ -174,6 +195,8 @@ namespace QianShi.Music.ViewModels
             var response = await _playlistService.GetPlaylistDetailAsync(LikePlaylist!.Id);
             if (response.Code == 200)
             {
+                _likeSongs.Clear();
+                _likeSongs.AddRange(response.PlaylistDetail.Tracks);
                 var songs = response.PlaylistDetail.Tracks.Take(12);
                 Songs.AddRange(songs.Select(x =>
                 {

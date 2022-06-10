@@ -1,12 +1,12 @@
 ﻿<UserControl
     x:Class="QianShi.Music.Common.UserControls.SongMiniCard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helper="clr-namespace:QianShi.Music.Common.Helpers"
-    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     d:DataContext="{d:DesignInstance Type=response:Song}"
     d:DesignHeight="54"
     d:DesignWidth="310"
@@ -30,8 +30,10 @@
                 Width="38"
                 Height="38"
                 CornerRadius="6"
+                Cursor="Hand"
                 DockPanel.Dock="Left"
-                ImageSource="{Binding Album.CoverImgUrl}" />
+                ImageSource="{Binding Album.CoverImgUrl}"
+                MouseLeftButtonUp="FilletImage_MouseLeftButtonUp" />
             <UniformGrid Margin="14,0" Rows="2">
                 <UniformGrid.Resources>
                     <Style TargetType="TextBlock">
@@ -71,6 +73,7 @@
                                     TextTrimming="WordEllipsis" />
                                 <TextBlock
                                     Cursor="Hand"
+                                    MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"
                                     Style="{StaticResource UnderlineTextBlock}"
                                     Text="{Binding Name}"
                                     TextTrimming="WordEllipsis" />

@@ -67,6 +67,7 @@
                                     Padding="0"
                                     materialDesign:ButtonAssist.CornerRadius="100"
                                     materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                    Command="{Binding PlaySongCommand}"
                                     Cursor="Hand"
                                     DockPanel.Dock="Right">
                                     <materialDesign:PackIcon
@@ -109,7 +110,13 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <uc:SongMiniCard />
+                                <uc:SongMiniCard>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseDoubleClick">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, Path=DataContext.PlaySongCommand}" CommandParameter="{Binding}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </uc:SongMiniCard>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -169,7 +176,8 @@
                                             Margin="8,8,8,10"
                                             VerticalAlignment="Top"
                                             Cover="{Binding CoverImgUrl}"
-                                            Description="{Binding Creator.Nickname, StringFormat={}by {0}}" />
+                                            Description="{Binding Creator.Nickname, StringFormat={}by {0}}"
+                                            Playlist="{Binding}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -203,7 +211,8 @@
                                             Margin="8"
                                             VerticalAlignment="Top"
                                             Cover="{Binding CoverImgUrl}"
-                                            Description="{Binding Artists[0].Name}" />
+                                            Description="{Binding Artists[0].Name}"
+                                            Playlist="{Binding}" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
