@@ -94,20 +94,29 @@ namespace QianShi.Music.Services
 
             var playlistResponse = await _playlistService.GetPlaylistDetailAsync(playlistId);
 
-            if(playlistResponse.Code == 200)
+            if (playlistResponse.Code == 200)
             {
                 var songs = new List<Song>();
-                if(playlistResponse.PlaylistDetail.TrackIds.Count > 20)
+                if (playlistResponse.PlaylistDetail.TrackIds.Count > 20)
                 {
                     var requestCount = (int)Math.Ceiling(playlistResponse.PlaylistDetail.TrackIds.Count * 0.1 / 20);
                     for (int i = 0; i < requestCount; i++)
                     {
-                        var ids = string.Join(',', playlistResponse.PlaylistDetail.TrackIds.Skip(i).Take(20).Select(x=>x.Id));
+                        var ids = string.Join(',', playlistResponse.PlaylistDetail.TrackIds.Skip(i).Take(20).Select(x => x.Id));
                         var songsResponse = await _playlistService.SongDetail(ids);
                         if (songsResponse.Code == 200)
                         {
                             songs.AddRange(songsResponse.Songs);
                         }
+                    }
+                }
+                else
+                {
+                    var ids = string.Join(',', playlistResponse.PlaylistDetail.TrackIds.Select(x => x.Id));
+                    var songsResponse = await _playlistService.SongDetail(ids);
+                    if (songsResponse.Code == 200)
+                    {
+                        songs.AddRange(songsResponse.Songs);
                     }
                 }
 
@@ -117,7 +126,7 @@ namespace QianShi.Music.Services
 
         public async Task AddPlaylistAsync(long playlistId, IEnumerable<Song> songs)
         {
-            if (_playlistId == playlistId)
+            if (_playlistId == playlistId || songs.Count() == 0)
             {
                 return;
             }
