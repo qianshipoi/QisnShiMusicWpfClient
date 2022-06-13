@@ -23,7 +23,6 @@ namespace QianShi.Music.ViewModels
         public const string ParameterRedirectUri = "RedirectUri";
 
         private readonly IPlaylistService _playlistService;
-        private readonly UserData _userData;
         private string? _account;
         private DispatcherTimer? _dispatcherTimer;
         private IRegionNavigationJournal _journal = default!;
@@ -34,14 +33,12 @@ namespace QianShi.Music.ViewModels
         private string? _qrKey;
         private string? _redirectUri;
         private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
-
         public LoginViewModel(
             IContainerProvider containerProvider,
             IPlaylistService playlistService)
             : base(containerProvider)
         {
             _playlistService = playlistService;
-            _userData = UserData.Instance;
         }
 
         public string? Account
@@ -51,7 +48,6 @@ namespace QianShi.Music.ViewModels
         }
 
         public bool KeepAlive => false;
-
         public DelegateCommand LoginCommand =>
             _loginCommand ??= new(ExecuteLoginCommand);
 
@@ -60,11 +56,13 @@ namespace QianShi.Music.ViewModels
             get { return _loginMode; }
             set { SetProperty(ref _loginMode, value); }
         }
+
         public string? Password
         {
             get => _password;
             set => SetProperty(ref _password, value);
         }
+
         public ImageSource? QrCodeSource
         {
             get => _qrCodeSource;
@@ -74,6 +72,7 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<LoginMode?> SwitchLoginModeCommand =>
             _switchLoginModeCommand ??= new(ExecuteSwitchLoginModeCommand);
 
+        private UserData _userData => UserData.Instance;
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
@@ -217,6 +216,7 @@ namespace QianShi.Music.ViewModels
                 response.Account?.VipType ?? 0,
                 response.Cookie);
         }
+
         private void StartCheck()
         {
             EndCheck();

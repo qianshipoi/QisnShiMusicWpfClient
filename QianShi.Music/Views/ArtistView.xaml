@@ -20,7 +20,7 @@
         <converters:IsNullConverter x:Key="IsNullConverter" />
         <converters:ListCountIsGtZeroConverter x:Key="ListCountIsGtZeroConverter" />
     </UserControl.Resources>
-    <materialDesign:DialogHost IsOpen="{Binding Loading}">
+    <materialDesign:DialogHost IsOpen="{Binding IsBusy}">
         <materialDesign:DialogHost.DialogContent>
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>

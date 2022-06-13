@@ -15,30 +15,19 @@ namespace QianShi.Music.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
         private int _limit = 100;
-        private bool _loading;
         private bool _more = false;
+        private DelegateCommand<ItemsControl> _morePlaylistCommand = default!;
         private int _offset = 0;
-        private ObservableCollection<IPlaylist> _playlists;
+        private DelegateCommand<IPlaylist> _openPlaylistCommand = default!;
 
         public PlaylistCardViewModel(
-            IContainerProvider containerProvider,
+                    IContainerProvider containerProvider,
             IPlaylistService playlistService,
-            IRegionManager regionManager,
             INavigationService navigationService)
             : base(containerProvider)
         {
-            _loading = false;
-            _playlists = new ObservableCollection<IPlaylist>();
             _playlistService = playlistService;
-            OpenPlaylistCommand = new DelegateCommand<IPlaylist>(OpenPlaylist);
-            MorePlaylistCommand = new DelegateCommand<ItemsControl>(MorePlaylist);
             _navigationService = navigationService;
-        }
-
-        public bool Loading
-        {
-            get => _loading;
-            set => SetProperty(ref _loading, value);
         }
 
         public bool More
@@ -47,19 +36,16 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _more, value);
         }
 
-        public DelegateCommand<ItemsControl> MorePlaylistCommand { get; private set; }
+        public DelegateCommand<ItemsControl> MorePlaylistCommand =>
+            _morePlaylistCommand ??= new(MorePlaylist);
+        public DelegateCommand<IPlaylist> OpenPlaylistCommand =>
+            _openPlaylistCommand ??= new(OpenPlaylist);
 
-        public DelegateCommand<IPlaylist> OpenPlaylistCommand { get; private set; }
-
-        public ObservableCollection<IPlaylist> Playlists
-        {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
-        }
+        public ObservableCollection<IPlaylist> Playlists { get; } = new();
 
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (_playlists.Count == 0)
+            if (Playlists.Count == 0)
             {
                 await LoadPlaylist();
             }
@@ -69,7 +55,7 @@ namespace QianShi.Music.ViewModels
 
         private async Task LoadPlaylist(bool clear = false)
         {
-            Loading = true;
+            IsBusy = true;
             var response = await _playlistService.GetAlbumNewAsync(new Common.Models.Request.AlbumNewRequest
             {
                 Limit = _limit,
@@ -83,7 +69,7 @@ namespace QianShi.Music.ViewModels
                     More = true;
                 }
             }
-            Loading = false;
+            IsBusy = false;
         }
 
         /// <summary>

@@ -20,7 +20,6 @@ namespace QianShi.Music.ViewModels
         private Artist _artist = default!;
         private long _artistId;
         private DelegateCommand<MovieVideo> _jumpToMvPageCommand = default!;
-        private bool _loading;
         private MovieVideo? _movieVideo;
         private DelegateCommand<IPlaylist> _openArtistCommand = default!;
         private DelegateCommand<Album> _openPlaylistCommand = default!;
@@ -35,13 +34,16 @@ namespace QianShi.Music.ViewModels
             _navigationService = navigationService;
         }
 
+        public ObservableCollection<Album> Albums { get; } = new();
+        public ObservableCollection<Artist> Artists { get; } = new();
+        public ObservableCollection<MovieVideo> MovieVideos { get; } = new();
+        public ObservableCollection<Song> Songs { get; } = new();
+
         public Album? Album
         {
             get => _album;
             set => SetProperty(ref _album, value);
         }
-
-        public ObservableCollection<Album> Albums { get; } = new();
 
         public Artist Artist
         {
@@ -49,34 +51,22 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _artist, value);
         }
 
-        public ObservableCollection<Artist> Artists { get; } = new();
-
-        public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
-            _jumpToMvPageCommand ??= new((mv) => _navigationService.NavigateToMv(mv.Id));
 
         public bool KeepAlive => false;
-
-        public bool Loading
-        {
-            get => _loading;
-            set => SetProperty(ref _loading, value);
-        }
 
         public MovieVideo? MovieVideo
         {
             get => _movieVideo;
             set => SetProperty(ref _movieVideo, value);
         }
-
-        public ObservableCollection<MovieVideo> MovieVideos { get; } = new();
+        public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
+            _jumpToMvPageCommand ??= new((mv) => _navigationService.NavigateToMv(mv.Id));
 
         public DelegateCommand<IPlaylist> OpenArtistCommand =>
             _openArtistCommand ??= new((playlist) => _navigationService.NavigateToArtist(playlist.Id));
 
         public DelegateCommand<Album> OpenPlaylistCommand =>
             _openPlaylistCommand ??= new((album) => _navigationService.NavigateToAlbum(album.Id));
-
-        public ObservableCollection<Song> Songs { get; } = new();
 
         public override bool IsNavigationTarget(NavigationContext navigationContext)
         {
@@ -95,7 +85,7 @@ namespace QianShi.Music.ViewModels
             var parameters = navigationContext.Parameters;
 
             _artistId = parameters.GetValue<long>(ArtistIdParameterName);
-            Loading = true;
+            IsBusy = true;
             try
             {
                 await GetHotSongs();
@@ -105,7 +95,7 @@ namespace QianShi.Music.ViewModels
             }
             finally
             {
-                Loading = false;
+                IsBusy = false;
             }
         }
 

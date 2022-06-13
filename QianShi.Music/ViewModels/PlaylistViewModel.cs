@@ -23,11 +23,8 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistStoreService _playlistStoreService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
-        private PlaylistDetail _detail = new();
-        private bool _loading;
         private DelegateCommand<Song?> _playCommand = default!;
         private long _playlistId;
-        private ObservableCollection<Song> _songs = new();
 
         public PlaylistViewModel(IContainerProvider containerProvider,
             IPlaylistService playlistService,
@@ -43,26 +40,12 @@ namespace QianShi.Music.ViewModels
             _playlistStoreService = playlistStoreService;
         }
 
-        public PlaylistDetail Detail
-        {
-            get => _detail;
-            set => SetProperty(ref _detail, value);
-        }
-
-        public bool Loading
-        {
-            get => _loading;
-            set => SetProperty(ref _loading, value);
-        }
+        public PlaylistDetail Detail { get; set; } = new();
 
         public DelegateCommand<Song?> PlayCommand =>
             _playCommand ??= new(Play);
 
-        public ObservableCollection<Song> Songs
-        {
-            get => _songs;
-            set => SetProperty(ref _songs, value);
-        }
+        public ObservableCollection<Song> Songs { get; set; } = new();
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
@@ -83,7 +66,7 @@ namespace QianShi.Music.ViewModels
             Title = _playlistId.ToString();
             if (Detail.Id != _playlistId)
             {
-                Loading = true;
+                IsBusy = true;
                 var response = await _playlistService.GetPlaylistDetailAsync(_playlistId);
                 if (response.Code == 200)
                 {
@@ -95,7 +78,7 @@ namespace QianShi.Music.ViewModels
                     Detail.Count = response.PlaylistDetail.TrackCount;
                     Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
                     Detail.CreatorId = response.PlaylistDetail.Creator?.UserId ?? 0;
-                    _songs.Clear();
+                    Songs.Clear();
 
                     // 获取所有歌曲
                     var ids = Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
@@ -107,7 +90,7 @@ namespace QianShi.Music.ViewModels
                         {
                             song.Album.CoverImgUrl += "?param=48y48";
                             song.IsLike = _playlistStoreService.HasLikedSong(song);
-                            _songs.Add(song);
+                            Songs.Add(song);
                             i++;
                             if (i % 5 == 0)
                             {
@@ -121,7 +104,7 @@ namespace QianShi.Music.ViewModels
                         }
                     }
                 }
-                Loading = false;
+                IsBusy = false;
             }
 
             _playStoreService.CurrentChanged -= CurrentChanged;

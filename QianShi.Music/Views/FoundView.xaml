@@ -28,7 +28,7 @@
                 <Setter Property="Opacity" Value=".65" />
                 <Setter Property="Margin" Value="6,4" />
                 <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="IsEnabled" Value="{Binding DataContext.Loading, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertBooleanConverter}}" />
+                <Setter Property="IsEnabled" Value="{Binding DataContext.IsBusy, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource InvertBooleanConverter}}" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsActivation}" Value="True">
                         <Setter Property="Opacity" Value="1" />

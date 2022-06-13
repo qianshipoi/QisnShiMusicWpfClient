@@ -14,21 +14,14 @@ namespace QianShi.Music.ViewModels
 {
     public class LibraryViewModel : NavigationViewModel
     {
+        private readonly List<Song> _likeSongs = new();
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayStoreService _playStoreService;
-        private ObservableCollection<Album> _albums = new();
-        private ObservableCollection<PlayRecord> _allRecord = new();
-        private ObservableCollection<Artist> _artists = new();
-        private ObservableCollection<CloudItem> _cloudItems = new();
         private bool _isFirstJoin = true;
         private DelegateCommand _jumpToFondPageCommand = default!;
         private Playlist? _likePlaylist;
-        private ObservableCollection<MovieVideoSubject> _movieVideos = new();
-        private ObservableCollection<Playlist> _playlists = new();
-        private ObservableCollection<Song> _songs = new();
-        private ObservableCollection<PlayRecord> _weekRecord = new();
-        private readonly List<Song> _likeSongs = new();
+        private DelegateCommand<Song?> _playSongCommand = default!;
 
         public LibraryViewModel(
             IContainerProvider containerProvider,
@@ -42,47 +35,10 @@ namespace QianShi.Music.ViewModels
             _playStoreService = playStoreService;
         }
 
-        private DelegateCommand<Song?> _playSongCommand = default!;
-        public DelegateCommand<Song?> PlaySongCommand =>
-            _playSongCommand ?? (_playSongCommand = new DelegateCommand<Song?>(ExecutePlayCommand));
-
-        async void ExecutePlayCommand(Song? parameter)
-        {
-            if (parameter == null)
-            {
-                await _playStoreService.AddPlaylistAsync(_likePlaylist!.Id, _likeSongs);
-                _playStoreService.Play();
-            }
-            else
-            {
-                await _playStoreService.PlayAsync(parameter);
-            }
-        }
-
-        public ObservableCollection<Album> Albums
-        {
-            get => _albums;
-            set => SetProperty(ref _albums, value);
-        }
-
-        public ObservableCollection<PlayRecord> AllRecord
-        {
-            get => _allRecord;
-            set => SetProperty(ref _allRecord, value);
-        }
-
-        public ObservableCollection<Artist> Artists
-        {
-            get => _artists;
-            set => SetProperty(ref _artists, value);
-        }
-
-        public ObservableCollection<CloudItem> CloudItems
-        {
-            get => _cloudItems;
-            set => SetProperty(ref _cloudItems, value);
-        }
-
+        public ObservableCollection<Album> Albums { get; } = new();
+        public ObservableCollection<PlayRecord> AllRecord { get; } = new();
+        public ObservableCollection<Artist> Artists { get; } = new();
+        public ObservableCollection<CloudItem> CloudItems { get; } = new();
         public DelegateCommand JumpToFondPageCommand =>
             _jumpToFondPageCommand ??= new(() => _navigationService.NavigateToFondPlaylist(LikePlaylist!.Id));
 
@@ -92,32 +48,17 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _likePlaylist, value);
         }
 
-        public ObservableCollection<MovieVideoSubject> MovieVideos
-        {
-            get => _movieVideos;
-            set => SetProperty(ref _movieVideos, value);
-        }
+        public ObservableCollection<MovieVideoSubject> MovieVideos { get; } = new();
 
-        public ObservableCollection<Playlist> Playlists
-        {
-            get => _playlists;
-            set => SetProperty(ref _playlists, value);
-        }
+        public ObservableCollection<Playlist> Playlists { get; } = new();
 
-        public ObservableCollection<Song> Songs
-        {
-            get => _songs;
-            set => SetProperty(ref _songs, value);
-        }
+        public DelegateCommand<Song?> PlaySongCommand =>
+            _playSongCommand ?? (_playSongCommand = new DelegateCommand<Song?>(ExecutePlayCommand));
+
+        public ObservableCollection<Song> Songs { get; } = new();
 
         public UserData UserInfo => UserData.Instance;
-
-        public ObservableCollection<PlayRecord> WeekRecord
-        {
-            get => _weekRecord;
-            set => SetProperty(ref _weekRecord, value);
-        }
-
+        public ObservableCollection<PlayRecord> WeekRecord { get; } = new();
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (!UserInfo.IsLogin || UserInfo.Id == 0)
@@ -143,6 +84,18 @@ namespace QianShi.Music.ViewModels
             base.OnNavigatedTo(navigationContext);
         }
 
+        private async void ExecutePlayCommand(Song? parameter)
+        {
+            if (parameter == null)
+            {
+                await _playStoreService.AddPlaylistAsync(_likePlaylist!.Id, _likeSongs);
+                _playStoreService.Play();
+            }
+            else
+            {
+                await _playStoreService.PlayAsync(parameter);
+            }
+        }
         private T FormatCover<T>(T playlist) where T : IPlaylist
         {
             playlist.CoverImgUrl += "?param=200y200";

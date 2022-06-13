@@ -19,10 +19,8 @@ namespace QianShi.Music.ViewModels
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
         private DelegateCommand<Song?> _playCommand = default!;
-        private Playlist _playlist = default!;
         private long _playlistId;
         private string? _searchText;
-
         private ObservableCollection<Song> _songs = new();
 
         public FondPlaylistViewModel(
@@ -34,7 +32,7 @@ namespace QianShi.Music.ViewModels
             _playService = playService;
             _playStoreService = playStoreService;
 
-            SongsListView = new ListCollectionView(Songs)
+            SongsListView = new ListCollectionView(_songs)
             {
                 Filter = (obj) =>
                 {
@@ -62,11 +60,6 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<Song?> PlayCommand =>
             _playCommand ??= new(Play);
 
-        public Playlist Playlist
-        {
-            get => _playlist;
-            set => SetProperty(ref _playlist, value);
-        }
         public string? SearchText
         {
             get => _searchText;
@@ -77,17 +70,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        public ObservableCollection<Song> Songs
-        {
-            get => _songs;
-            set => SetProperty(ref _songs, value);
-        }
-
-        public ListCollectionView SongsListView
-        {
-            get;
-            set;
-        }
+        public ListCollectionView SongsListView { get; set; }
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
@@ -116,7 +99,7 @@ namespace QianShi.Music.ViewModels
 
             _playlistId = playlistId;
 
-            Songs.Clear();
+            _songs.Clear();
 
             var response = await _playlistService.GetPlaylistDetailAsync(_playlistId);
 
@@ -132,7 +115,7 @@ namespace QianShi.Music.ViewModels
             {
                 song.Album.CoverImgUrl += "?param=48y48";
                 song.IsLike = true;
-                Songs.Add(song);
+                _songs.Add(song);
                 i++;
                 if (i % 5 == 0)
                 {
@@ -149,13 +132,13 @@ namespace QianShi.Music.ViewModels
             var songId = e.NewSong?.Id;
             if (songId.HasValue)
             {
-                Songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
-                var song = Songs.FirstOrDefault(x => x.Id == songId.Value);
+                _songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
+                var song = _songs.FirstOrDefault(x => x.Id == songId.Value);
                 if (song != null) song.IsPlaying = true;
             }
             else
             {
-                Songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
+                _songs.Where(x => x.IsPlaying).ToList().ForEach(item => item.IsPlaying = false);
             }
         }
 
@@ -167,7 +150,7 @@ namespace QianShi.Music.ViewModels
             }
             else
             {
-                await _playStoreService.AddPlaylistAsync(_playlistId, Songs);
+                await _playStoreService.AddPlaylistAsync(_playlistId, _songs);
                 _playStoreService.Pause();
                 if (!_playService.IsPlaying)
                 {

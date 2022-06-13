@@ -29,6 +29,14 @@ namespace QianShi.Music.ViewModels
             _navigationService = navigationService;
         }
 
+        public ObservableCollection<IPlaylist> NewAlbumList { get; } = new();
+
+        public ObservableCollection<IPlaylist> RankingList { get; } = new();
+
+        public ObservableCollection<IPlaylist> RecommendPlayList { get; } = new();
+
+        public ObservableCollection<IPlaylist> RecommendSingerList { get; } = new();
+
         public DelegateCommand<string> JumpFoundCommand =>
             _jumpFoundCommand ?? (_jumpFoundCommand = new DelegateCommand<string>((obj) =>
             {
@@ -41,8 +49,6 @@ namespace QianShi.Music.ViewModels
                     _navigationService.NavigateToFound(obj);
                 }
             }));
-
-        public ObservableCollection<IPlaylist> NewAlbumList { get; } = new();
 
         public DelegateCommand<IPlaylist> OpenArtistCommand =>
             _openArtistCommand ??= new((playlist) => _navigationService.NavigateToArtist(playlist.Id));
@@ -59,12 +65,6 @@ namespace QianShi.Music.ViewModels
                     _navigationService.NavigateToPlaylist(obj.Id);
                 }
             });
-
-        public ObservableCollection<IPlaylist> RankingList { get; } = new();
-
-        public ObservableCollection<IPlaylist> RecommendPlayList { get; } = new();
-
-        public ObservableCollection<IPlaylist> RecommendSingerList { get; } = new();
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {

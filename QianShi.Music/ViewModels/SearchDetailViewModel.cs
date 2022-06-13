@@ -15,12 +15,11 @@ namespace QianShi.Music.ViewModels
     {
         public static string SearchKeywordsParameterName = "Keywords";
         public static string SearchTypeParameterName = "Type";
+
         private readonly IPlaylistService _playlistService;
         private bool _hasMore;
-        private ObservableCollection<object> _items;
-        private string _keywords = String.Empty;
+        private string _keywords = string.Empty;
         private int _limit = 30;
-        private bool _loading;
         private DelegateCommand<ItemsControl> _moreCommand = default!;
         private int _offset = 0;
         private SearchType _searchType = SearchType.单曲;
@@ -31,7 +30,6 @@ namespace QianShi.Music.ViewModels
             : base(containerProvider)
         {
             _playlistService = playlistService;
-            _items = new ObservableCollection<object>();
         }
 
         public bool HasMore
@@ -39,11 +37,8 @@ namespace QianShi.Music.ViewModels
             get { return _hasMore; }
             set { SetProperty(ref _hasMore, value); }
         }
-        public ObservableCollection<object> Items
-        {
-            get { return _items; }
-            set { SetProperty(ref _items, value); }
-        }
+
+        public ObservableCollection<object> Items { get; } = new();
 
         public bool KeepAlive => false;
 
@@ -53,19 +48,15 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _keywords, value); }
         }
 
-        public bool Loading
-        {
-            get { return _loading; }
-            set { SetProperty(ref _loading, value); }
-        }
-
-        public DelegateCommand<ItemsControl> MoreCommand => _moreCommand ??= new DelegateCommand<ItemsControl>(More);
+        public DelegateCommand<ItemsControl> MoreCommand 
+            => _moreCommand ??= new(More);
 
         public SearchType SearchType
         {
             get { return _searchType; }
             set { SetProperty(ref _searchType, value); }
         }
+
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
@@ -84,6 +75,7 @@ namespace QianShi.Music.ViewModels
             control.Focus();
             await Search();
         }
+
         private async Task Search(bool clear = false)
         {
             if (clear)
@@ -92,7 +84,7 @@ namespace QianShi.Music.ViewModels
                 HasMore = false;
                 Items.Clear();
             }
-            Loading = true;
+            IsBusy = true;
             var request = new SearchRequest
             {
                 Keywords = Keywords,
@@ -193,7 +185,7 @@ namespace QianShi.Music.ViewModels
             }
 
             _offset += _limit;
-            Loading = false;
+            IsBusy = false;
         }
     }
 }

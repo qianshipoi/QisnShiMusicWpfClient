@@ -21,7 +21,7 @@
             <conver:NewlineFilterConverter x:Key="NewlineFilterConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <materialDesign:DialogHost Identifier="{x:Static ext:PrismManager.PlaylistDialogName}" IsOpen="{Binding Loading}">
+    <materialDesign:DialogHost Identifier="{x:Static ext:PrismManager.PlaylistDialogName}" IsOpen="{Binding IsBusy}">
         <materialDesign:DialogHost.DialogContent>
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
