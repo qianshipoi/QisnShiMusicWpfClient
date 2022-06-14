@@ -41,6 +41,7 @@
                 Cursor="Hand"
                 FontSize="{Binding TitleFontSize}"
                 FontWeight="Bold"
+                MouseLeftButtonUp="JumpToPlaylist"
                 Style="{StaticResource UnderlineTextBlock}"
                 Text="{Binding Title}"
                 TextWrapping="WrapWithOverflow">

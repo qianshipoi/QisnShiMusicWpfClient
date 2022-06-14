@@ -102,7 +102,7 @@
             <s:Boolean x:Key="True">True</s:Boolean>
             <s:Boolean x:Key="False">False</s:Boolean>
             <converters:IsNullConverter x:Key="IsNullConverter" />
-            <converters:ListCountIsGtZeroConverter x:Key="ListCountIsGtZeroConverter" />
+            <converters:IsListNotNullOrEmptyConverter x:Key="IsListNotNullOrEmptyConverter" />
             <converters:NumberConverter x:Key="NumberConverter" />
             <converters:TimeSpanToDoubleConverter x:Key="TimeSpanToDoubleConverter" />
             <converters:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />

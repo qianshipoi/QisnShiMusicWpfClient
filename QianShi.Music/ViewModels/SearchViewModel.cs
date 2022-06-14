@@ -43,6 +43,91 @@ namespace QianShi.Music.ViewModels
         public ObservableCollection<Playlist> Playlists { get; set; }
         public ObservableCollection<Song> Songs { get; set; }
 
+        void FormatCover(IPlaylist playlist, int w = 200, int h = 200)
+            => playlist.CoverImgUrl += $"?param={w}y{h}";
+
+        void FormatCoverDefault(IPlaylist playlist)
+            => FormatCover(playlist);
+
+        private async Task GetSongsAsync()
+        {
+            var response = await _playlistService.SearchSong(new SearchRequest
+            {
+                Limit = 16,
+                Keywords = _currentSearchKeywords,
+                Type = SearchType.单曲
+            });
+
+            if (response.Code == 200)
+            {
+                if (response.Result.SongCount > 0)
+                {
+                    var ids = string.Join(',', response.Result.Songs.Select(s => s.Id));
+                    var songDetailResponse = await _playlistService.SongDetail(ids);
+                    if (songDetailResponse.Code == 200)
+                    {
+                        songDetailResponse.Songs.ForEach(s => FormatCover(s.Album, 48, 48));
+                        Songs.AddRange(songDetailResponse.Songs);
+                    }
+                }
+            }
+        }
+        private async Task GetAlbumsAsync()
+        {
+            var response = await _playlistService.SearchAlbum(new SearchRequest
+            {
+                Limit = 3,
+                Keywords = _currentSearchKeywords,
+                Type = SearchType.专辑
+            });
+            if (response.Code == 200)
+            {
+                response.Result.Albums.ForEach(FormatCoverDefault);
+                Albums.AddRange(response.Result.Albums);
+            }
+        }
+        private async Task GetArtistsAsync()
+        {
+            var response = await _playlistService.SearchArtist(new SearchRequest
+            {
+                Limit = 3,
+                Keywords = _currentSearchKeywords,
+                Type = SearchType.歌手
+            });
+            if (response.Code == 200)
+            {
+                response.Result.Artists.ForEach(FormatCoverDefault);
+                Artists.AddRange(response.Result.Artists);
+            }
+        }
+        private async Task GetPlaylistsAsync()
+        {
+            var response = await _playlistService.SearchPlaylist(new SearchRequest
+            {
+                Limit = 3,
+                Keywords = _currentSearchKeywords,
+                Type = SearchType.歌单
+            });
+            if (response.Code == 200)
+            {
+                response.Result.Playlists.ForEach(FormatCoverDefault);
+                Playlists.AddRange(response.Result.Playlists);
+            }
+        }
+        private async Task GetMovieVideosAsync()
+        {
+            var response = await _playlistService.SearchMovieVideo(new SearchRequest
+            {
+                Limit = 3,
+                Keywords = _currentSearchKeywords,
+                Type = SearchType.MV
+            });
+            if (response.Code == 200 && response.Result.MovieVideos?.Count > 0)
+            {
+                MovieVideos.AddRange(response.Result.MovieVideos);
+            }
+        }
+
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
@@ -65,81 +150,7 @@ namespace QianShi.Music.ViewModels
                     Playlists.Clear();
                     MovieVideos.Clear();
                 }
-
-                var searchTypes = new List<(SearchType type, int limit)>();
-                searchTypes.Add((SearchType.专辑, 3));
-                searchTypes.Add((SearchType.歌手, 3));
-                searchTypes.Add((SearchType.MV, 5));
-                searchTypes.Add((SearchType.歌单, 12));
-                searchTypes.Add((SearchType.单曲, 16));
-
-                void FormatCover(IPlaylist playlist, int w = 200, int h = 200)
-                    => playlist.CoverImgUrl += $"?param={w}y{h}";
-
-                void FormatCoverDefault(IPlaylist playlist)
-                    => FormatCover(playlist);
-
-                foreach (var searchType in searchTypes)
-                {
-                    var response = await _playlistService.Search(new Common.Models.Request.SearchRequest
-                    {
-                        Keywords = searchText,
-                        Type = searchType.type,
-                        Limit = searchType.limit,
-                    });
-                    if (response.Code == 200)
-                    {
-                        switch (searchType.type)
-                        {
-                            case SearchType.单曲:
-                                var songSearchResult = (SongSearchResult)response.Result;
-                                if (songSearchResult.SongCount > 0)
-                                {
-                                    var ids = string.Join(',', songSearchResult.Songs.Select(s => s.Id));
-                                    var songDetailResponse = await _playlistService.SongDetail(ids);
-                                    if (songDetailResponse.Code == 200)
-                                    {
-                                        songDetailResponse.Songs.ForEach(s => FormatCover(s.Album, 48, 48));
-                                        Songs.AddRange(songDetailResponse.Songs);
-                                    }
-                                }
-                                break;
-
-                            case SearchType.专辑:
-                                var albumSearchResult = (AlbumSearchResult)response.Result;
-                                albumSearchResult.Albums.ForEach(FormatCoverDefault);
-                                Albums.AddRange(albumSearchResult.Albums);
-                                break;
-
-                            case SearchType.歌手:
-                                var artistSearchResult = (ArtistSearchResult)response.Result;
-                                artistSearchResult.Artists.ForEach(FormatCoverDefault);
-                                Artists.AddRange(artistSearchResult.Artists);
-                                break;
-
-                            case SearchType.歌单:
-                                var playlistSearchResult = (PlaylistSearchResult)response.Result;
-                                playlistSearchResult.Playlists.ForEach(FormatCoverDefault);
-                                Playlists.AddRange(playlistSearchResult.Playlists);
-                                break;
-
-                            case SearchType.MV:
-                                var mvSearchResult = (MovieVideoSearchResult)response.Result;
-                                if (mvSearchResult.MovieVideos != null)
-                                    MovieVideos.AddRange(mvSearchResult.MovieVideos);
-                                break;
-
-                            case SearchType.用户:
-                            case SearchType.歌词:
-                            case SearchType.电台:
-                            case SearchType.视频:
-                            case SearchType.综合:
-                            case SearchType.声音:
-                            default:
-                                break;
-                        }
-                    }
-                }
+                await Task.WhenAll(GetSongsAsync(), GetAlbumsAsync(), GetArtistsAsync(), GetPlaylistsAsync(), GetMovieVideosAsync());
             }
         }
 

@@ -50,7 +50,7 @@
                         ItemsSource="{Binding Artists}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Rows="1" />
+                                <UniformGrid Columns="3" Rows="1" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -96,114 +96,121 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
-                <uc:TitleControl
-                    Title="歌曲"
-                    Margin="0,20,0,10"
-                    LookAllCammand="{Binding MoreCommand}"
-                    LookAllCommandParameter="{x:Static request:SearchType.单曲}"
-                    ShowLookAll="True" />
-                <ItemsControl ItemsSource="{Binding Songs}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="4" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Padding="8" CornerRadius="8">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="#F5F5F7" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                                <StackPanel Height="38" Orientation="Horizontal">
-                                    <uc:FilletImage
-                                        Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type StackPanel}}, Path=ActualHeight}"
-                                        CornerRadius="8"
-                                        Cursor="Hand"
-                                        ImageSource="{Binding Album.CoverImgUrl}" />
-                                    <UniformGrid
-                                        Margin="10,0"
-                                        Columns="1"
-                                        Rows="2">
-                                        <TextBlock FontSize="16" Text="{Binding Name}" />
-                                        <TextBlock
+                <StackPanel>
+                    <uc:TitleControl
+                        Title="歌曲"
+                        Margin="0,20,0,10"
+                        LookAllCammand="{Binding MoreCommand}"
+                        LookAllCommandParameter="{x:Static request:SearchType.单曲}"
+                        ShowLookAll="True" />
+                    <ItemsControl ItemsSource="{Binding Songs}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Padding="8" CornerRadius="8">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#F5F5F7" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel Height="38" Orientation="Horizontal">
+                                        <uc:FilletImage
+                                            Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type StackPanel}}, Path=ActualHeight}"
+                                            CornerRadius="8"
                                             Cursor="Hand"
-                                            FontSize="12"
-                                            Opacity=".68"
-                                            Text="{Binding Artists[0].Name}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="TextDecorations" Value="Underline" />
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </UniformGrid>
+                                            ImageSource="{Binding Album.CoverImgUrl}" />
+                                        <UniformGrid
+                                            Margin="10,0"
+                                            Columns="1"
+                                            Rows="2">
+                                            <TextBlock FontSize="16" Text="{Binding Name}" />
+                                            <TextBlock
+                                                Cursor="Hand"
+                                                FontSize="12"
+                                                Opacity=".68"
+                                                Text="{Binding Artists[0].Name}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="TextDecorations" Value="Underline" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </UniformGrid>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <StackPanel>
+                    <uc:TitleControl
+                        Title="视频"
+                        Margin="0,20,0,10"
+                        LookAllCammand="{Binding MoreCommand}"
+                        LookAllCommandParameter="{x:Static request:SearchType.MV}"
+                        ShowLookAll="True" />
+                    <ItemsControl ItemsSource="{Binding MovieVideos}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4" Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="8,0">
+                                    <uc:FilletImage
+                                        Height="120"
+                                        CornerRadius="12"
+                                        Cursor="Hand"
+                                        ImageSource="{Binding Cover}" />
+                                    <TextBlock FontSize="16" Text="{Binding Name}" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Opacity=".68"
+                                        Text="{Binding Artists[0].Name}" />
                                 </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <uc:TitleControl
-                    Title="视频"
-                    Margin="0,20,0,10"
-                    LookAllCammand="{Binding MoreCommand}"
-                    LookAllCommandParameter="{x:Static request:SearchType.MV}"
-                    ShowLookAll="True" />
-                <ItemsControl ItemsSource="{Binding MovieVideos}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Rows="1" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Margin="8,0">
-                                <uc:FilletImage
-                                    Height="120"
-                                    CornerRadius="12"
-                                    Cursor="Hand"
-                                    ImageSource="{Binding Cover}" />
-                                <TextBlock FontSize="16" Text="{Binding Name}" />
-                                <TextBlock
-                                    FontSize="12"
-                                    Opacity=".68"
-                                    Text="{Binding Artists[0].Name}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <uc:TitleControl
-                    Title="歌单"
-                    Margin="0,20,0,10"
-                    LookAllCammand="{Binding MoreCommand}"
-                    LookAllCommandParameter="{x:Static request:SearchType.歌单}"
-                    ShowLookAll="True" />
-                <ItemsControl ItemsSource="{Binding Playlists}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="6" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <uc:PlaylistCard
-                                Title="{Binding Name}"
-                                Margin="4,10"
-                                Cover="{Binding CoverImgUrl}"
-                                TitleFontSize="14" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+                <StackPanel>
+                    <uc:TitleControl
+                        Title="歌单"
+                        Margin="0,20,0,10"
+                        LookAllCammand="{Binding MoreCommand}"
+                        LookAllCommandParameter="{x:Static request:SearchType.歌单}"
+                        ShowLookAll="True" />
+                    <ItemsControl ItemsSource="{Binding Playlists}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="6" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <uc:PlaylistCard
+                                    Title="{Binding Name}"
+                                    Margin="4,10"
+                                    Cover="{Binding CoverImgUrl}"
+                                    Playlist="{Binding}"
+                                    TitleFontSize="14" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
             </StackPanel>
         </Border>
     </uc:ScrollViewerAnimation>

@@ -300,9 +300,10 @@ namespace QianShi.Music.Services
 
         public async Task<SearchResponse<ArtistSearchResult>> SearchArtist(SearchRequest parameters)
         {
+            var request = new RestRequest(SearchApi);
             parameters.Type = SearchType.歌手;
-            return ((await Search(parameters)) as SearchResponse<ArtistSearchResult>) ??
-                   new SearchResponse<ArtistSearchResult>();
+            request.AddQueryParameters(parameters);
+            return await Get<SearchResponse<ArtistSearchResult>>(request) ?? new();
         }
 
         public async Task<SearchResponse<MovieVideoSearchResult>> SearchMovieVideo(SearchRequest parameters)

@@ -1,19 +1,21 @@
-﻿using System.Globalization;
+﻿using System.Collections;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace QianShi.Music.Common.Converters
 {
-    internal class ListCountIsGtZeroConverter : IValueConverter
+    internal class IsListNotNullOrEmptyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is System.Collections.IList vals)
+            if (value is IEnumerable values)
             {
-                return vals.Count > 0;
+                return values.GetEnumerator().MoveNext();
             }
 
-            return true;
+            return false;
         }
+
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
