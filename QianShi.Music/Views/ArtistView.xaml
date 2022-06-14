@@ -19,7 +19,7 @@
     <UserControl.Resources>
         <converters:IsNullConverter x:Key="IsNullConverter" />
     </UserControl.Resources>
-    <materialDesign:DialogHost IsOpen="{Binding Loading}">
+    <materialDesign:DialogHost IsOpen="{Binding IsBusy}">
         <materialDesign:DialogHost.DialogContent>
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>

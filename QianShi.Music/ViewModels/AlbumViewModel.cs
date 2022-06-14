@@ -26,10 +26,9 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
-        private PlaylistDetail _detail = new();
-        private bool _loading;
+        private DelegateCommand<Song?> _playCommand = default!;
         private long _playlistId;
-        private ObservableCollection<Song> _songs;
+        private DelegateCommand _showDescriptionCommand = default!;
 
         public AlbumViewModel(
             IContainerProvider containerProvider,
@@ -38,44 +37,32 @@ namespace QianShi.Music.ViewModels
             IPlayStoreService playStoreService)
             : base(containerProvider)
         {
-            _songs = new ObservableCollection<Song>();
-
-            PlayCommand = new DelegateCommand<Song?>(Play);
-            PlayImmediatelyCommand = new DelegateCommand<Song?>(Play);
             _playlistService = playlistService;
             _playService = playService;
             _playStoreService = playStoreService;
             _containerProvider = containerProvider;
-            ShowDescriptionCommand = new DelegateCommand(ShowDescription);
         }
 
-        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
+        public PlaylistDetail Detail { get; } = new();
 
         public bool KeepAlive => false;
-
-        public bool Loading
-        {
-            get => _loading;
-            set => SetProperty(ref _loading, value);
-        }
 
         /// <summary>
         /// 播放歌单
         /// </summary>
-        public DelegateCommand<Song?> PlayCommand { get; private set; }
+        public DelegateCommand<Song?> PlayCommand
+            => _playCommand ??= new(Play);
 
         /// <summary>
         /// 立即播放
         /// </summary>
-        public DelegateCommand<Song?> PlayImmediatelyCommand { get; private set; }
+        public DelegateCommand<Song?> PlayImmediatelyCommand
+            => _playCommand ??= new(Play);
 
-        public DelegateCommand ShowDescriptionCommand { get; private set; }
+        public DelegateCommand ShowDescriptionCommand
+            => _showDescriptionCommand ??= new(ShowDescription);
 
-        public ObservableCollection<Song> Songs
-        {
-            get => _songs;
-            set => SetProperty(ref _songs, value);
-        }
+        public ObservableCollection<Song> Songs { get; } = new();
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
@@ -95,7 +82,7 @@ namespace QianShi.Music.ViewModels
             Title = _playlistId.ToString();
             if (Detail.Id != _playlistId)
             {
-                Loading = true;
+                IsBusy = true;
                 var response = await _playlistService.GetAblumAsync(_playlistId);
                 if (response.Code == 200)
                 {
@@ -106,7 +93,7 @@ namespace QianShi.Music.ViewModels
                     Detail.PicUrl = response.Album.CoverImgUrl;
                     Detail.Count = response.Album.Size;
                     Detail.Creator = response.Album.Artist.Name;
-                    _songs.Clear();
+                    Songs.Clear();
 
                     Songs.AddRange(response.Songs);
 
@@ -115,7 +102,7 @@ namespace QianShi.Music.ViewModels
                         CurrentChanged(null, new(_playStoreService.Current));
                     }
                 }
-                Loading = false;
+                IsBusy = false;
             }
 
             _playStoreService.CurrentChanged -= CurrentChanged;

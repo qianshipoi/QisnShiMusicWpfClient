@@ -5,9 +5,7 @@ using Prism.Regions;
 using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
-using QianShi.Music.Extensions;
 using QianShi.Music.Services;
-using QianShi.Music.Views;
 
 using System.Collections.ObjectModel;
 
@@ -17,31 +15,34 @@ namespace QianShi.Music.ViewModels
     {
         public const string SearchTextParameter = nameof(SearchTextParameter);
 
-        private readonly IPlaylistService _playlistService;
         private readonly INavigationService _navigationService;
+        private readonly IPlaylistService _playlistService;
         private string _currentSearchKeywords = string.Empty;
 
+        private DelegateCommand<SearchType?> _moreCommand = default!;
+
         public SearchViewModel(
-            IContainerProvider containerProvider,
+                    IContainerProvider containerProvider,
             IPlaylistService playlistService,
-            INavigationService navigationService) : base(containerProvider)
+            INavigationService navigationService)
+            : base(containerProvider)
         {
             _playlistService = playlistService;
-            Artists = new();
-            Albums = new();
-            Songs = new();
-            Playlists = new();
-            MovieVideos = new();
-            MoreCommand = new(More);
             _navigationService = navigationService;
         }
 
-        public ObservableCollection<Album> Albums { get; set; }
-        public ObservableCollection<Artist> Artists { get; set; }
-        public DelegateCommand<SearchType?> MoreCommand { get; private set; }
-        public ObservableCollection<MovieVideo> MovieVideos { get; set; }
-        public ObservableCollection<Playlist> Playlists { get; set; }
-        public ObservableCollection<Song> Songs { get; set; }
+        public ObservableCollection<Album> Albums { get; } = new();
+
+        public ObservableCollection<Artist> Artists { get; } = new();
+
+        public DelegateCommand<SearchType?> MoreCommand
+            => _moreCommand ??= new(More);
+
+        public ObservableCollection<MovieVideo> MovieVideos { get; } = new();
+
+        public ObservableCollection<Playlist> Playlists { get; } = new();
+
+        public ObservableCollection<Song> Songs { get; } = new();
 
         void FormatCover(IPlaylist playlist, int w = 200, int h = 200)
             => playlist.CoverImgUrl += $"?param={w}y{h}";

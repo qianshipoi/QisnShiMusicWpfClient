@@ -14,7 +14,6 @@ namespace QianShi.Music.ViewModels
 {
     public class PlayViewModel : NavigationViewModel
     {
-        private readonly IContainerProvider _containerProvider;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
@@ -39,10 +38,10 @@ namespace QianShi.Music.ViewModels
             IContainerProvider provider,
             IRegionManager regionManager,
             IPlaylistService playlistService,
-            IPlayService playService, IPlayStoreService playStoreService)
+            IPlayService playService,
+            IPlayStoreService playStoreService)
             : base(provider)
         {
-            _containerProvider = provider;
             _regionManager = regionManager;
             _playlistService = playlistService;
             _playService = playService;
@@ -62,8 +61,6 @@ namespace QianShi.Music.ViewModels
                 CurrentSong = e.NewSong;
             };
         }
-
-        public static PlayViewModel PlayViewModelDesign => App.Current.Container.Resolve<PlayViewModel>();
 
         public DelegateCommand CloseCommand =>
             _closeCommand ??= new(() => Display = false);
@@ -131,7 +128,7 @@ namespace QianShi.Music.ViewModels
         }
 
         public DelegateCommand NextCommand =>
-                                    _nextCommand ??= new(_playStoreService.Next);
+            _nextCommand ??= new(_playStoreService.Next);
 
         public DelegateCommand PauseCommand =>
             _pauseCommand ??= new(_playStoreService.Pause);
@@ -154,7 +151,7 @@ namespace QianShi.Music.ViewModels
         }
 
         public DelegateCommand PreviousCommand =>
-                                    _previousCommand ??= new(_playStoreService.Previous);
+            _previousCommand ??= new(_playStoreService.Previous);
 
         public DelegateCommand<double?> SetPositionCommand =>
             _setPositionCommand ??= new((value) =>
@@ -167,7 +164,7 @@ namespace QianShi.Music.ViewModels
             });
 
         public DelegateCommand<double?> StartSetPositionCommand =>
-            _startSetPositionCommand ??= new(ExecuteStartSetPositionCommand);
+            _startSetPositionCommand ??= new(_ => _settingUp = true);
 
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
@@ -181,11 +178,6 @@ namespace QianShi.Music.ViewModels
                     _playView = view as PlayView;
                 }
             }
-        }
-
-        private void ExecuteStartSetPositionCommand(double? value)
-        {
-            _settingUp = true;
         }
 
         private async Task<string> GetLyric(long songId)

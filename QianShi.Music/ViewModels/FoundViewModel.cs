@@ -22,7 +22,6 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<Cat> _addCatCommand = default!;
         private long _before = 0;
         private Cat? _currentCat = null;
-        private bool _loading = false;
         private bool _more = false;
         private Visibility _moreCat = Visibility.Collapsed;
         private DelegateCommand<ItemsControl> _morePlaylistCommand = default!;
@@ -41,18 +40,11 @@ namespace QianShi.Music.ViewModels
             _navigationService = navigationService;
         }
 
-        public DelegateCommand<Cat> AddCatCommand
-            => _addCatCommand ??= new(AddCat);
-
         public ObservableCollection<CatOption> CatOptions { get; } = new();
 
         public ObservableCollection<Cat> Cats { get; } = new();
 
-        public bool Loading
-        {
-            get => _loading;
-            set => SetProperty(ref _loading, value);
-        }
+        public ObservableCollection<IPlaylist> Playlists { get; } = new();
 
         public bool More
         {
@@ -63,16 +55,17 @@ namespace QianShi.Music.ViewModels
         public Visibility MoreCat
         {
             get => _moreCat;
-            set { _moreCat = value; RaisePropertyChanged(); }
+            set => SetProperty(ref _moreCat, value);
         }
+
+        public DelegateCommand<Cat> AddCatCommand
+            => _addCatCommand ??= new(AddCat);
 
         public DelegateCommand<ItemsControl> MorePlaylistCommand
             => _morePlaylistCommand ??= new(MorePlaylist);
 
         public DelegateCommand<IPlaylist> OpenPlaylistCommand
             => _openPlaylistCommand ??= new(OpenPlaylist);
-
-        public ObservableCollection<IPlaylist> Playlists { get; } = new();
 
         public DelegateCommand<Cat> SelectedCatCommand
             => _selectedCatCommand ??= new(SelectedCat);
@@ -148,7 +141,7 @@ namespace QianShi.Music.ViewModels
 
         private async Task CallApi(Cat cat, bool isClear = false)
         {
-            Loading = true;
+            IsBusy = true;
             try
             {
                 List<IPlaylist> playlists = new List<IPlaylist>();
@@ -171,12 +164,9 @@ namespace QianShi.Music.ViewModels
                         break;
                 }
             }
-            catch (Exception)
-            {
-            }
             finally
             {
-                Loading = false;
+                IsBusy = false;
             }
         }
 

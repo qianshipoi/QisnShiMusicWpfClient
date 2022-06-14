@@ -16,11 +16,11 @@ namespace QianShi.Music.ViewModels
 {
     public class MainWindowViewModel : BindableBase, IConfigureService
     {
+        private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
         private readonly IRegionManager _regionManager;
-        private readonly INavigationService _navigationService;
         private Song? _currentSong = null;
         private DelegateCommand _goBackCommand = default!;
         private DelegateCommand _goForwardCommand = default!;
@@ -43,7 +43,6 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<double?> _setVolumeCommand = default!;
         private double _songDuration = 1d;
         private double _songPosition = 0d;
-        private UserData _userData;
         private double _volume = 0.5;
 
         public MainWindowViewModel(
@@ -55,9 +54,9 @@ namespace QianShi.Music.ViewModels
         {
             _regionManager = regionManager;
             _playlistService = playlistService;
-            _userData = UserData.Instance;
             _playService = playService;
             _playStoreService = playStoreService;
+            _navigationService = navigationService;
             _playService.IsPlayingChanged += (s, e) => IsPlaying = e.NewValue;
             _playService.ProgressChanged += (s, e) =>
             {
@@ -68,7 +67,6 @@ namespace QianShi.Music.ViewModels
             _playService.VolumeChanged += (s, e) => Volume = e.NewValue;
             _playService.IsMutedChanged += (s, e) => IsMuted = e.NewValue;
             _playStoreService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
-            _navigationService = navigationService;
         }
 
         public Song? CurrentSong
@@ -76,18 +74,20 @@ namespace QianShi.Music.ViewModels
             get => _currentSong;
             set => SetProperty(ref _currentSong, value);
         }
+
         public DelegateCommand GoBackCommand =>
-            _goBackCommand ?? (_goBackCommand = new DelegateCommand(() =>
-            {
-                if (_journal.CanGoBack)
-                    _journal.GoBack();
-            }));
+            _goBackCommand ?? (_goBackCommand = new(() =>
+           {
+               if (_journal.CanGoBack)
+                   _journal.GoBack();
+           }));
+
         public DelegateCommand GoForwardCommand =>
-            _goForwardCommand ?? (_goForwardCommand = new DelegateCommand(() =>
-            {
-                if (_journal.CanGoForward)
-                    _journal.GoForward();
-            }));
+            _goForwardCommand ?? (_goForwardCommand = new(() =>
+           {
+               if (_journal.CanGoForward)
+                   _journal.GoForward();
+           }));
 
         public bool IsMuted
         {
@@ -102,13 +102,15 @@ namespace QianShi.Music.ViewModels
         }
 
         public DelegateCommand LoginCommand =>
-            _loginCommand ?? (_loginCommand = new DelegateCommand(() => Login()));
+            _loginCommand ?? (_loginCommand = new(() => _navigationService.MainRegionNavigation(nameof(LoginView))));
+
         public DelegateCommand LogoutCommand =>
-            _logoutCommand ?? (_logoutCommand = new DelegateCommand(async () => await Logout()));
+            _logoutCommand ?? (_logoutCommand = new(async () => await Logout()));
 
         public ObservableCollection<MenuBar> MenuBars { get; } = new();
+
         public DelegateCommand<MenuBar> NavigateCommand =>
-            _navigateCommand ?? (_navigateCommand = new DelegateCommand<MenuBar>(Navigate));
+            _navigateCommand ?? (_navigateCommand = new(Navigate));
 
         public MenuBar? NavigateCurrentItem
         {
@@ -124,15 +126,16 @@ namespace QianShi.Music.ViewModels
         }
 
         public DelegateCommand NextCommand =>
-            _nextCommand ??= new DelegateCommand(_playStoreService.Next);
+            _nextCommand ??= new(_playStoreService.Next);
+
         public DelegateCommand<ContentControl> OpenPlayViewCommand =>
-            _openPlayViewCommand ?? (_openPlayViewCommand = new DelegateCommand<ContentControl>(OpenPlayView));
+            _openPlayViewCommand ?? (_openPlayViewCommand = new(OpenPlayView));
 
         public DelegateCommand PauseCommand =>
-            _pauseCommand ??= new DelegateCommand(_playStoreService.Pause);
+            _pauseCommand ??= new(_playStoreService.Pause);
 
         public DelegateCommand PlayCommand =>
-            _playCommand ??= new DelegateCommand(_playStoreService.Play);
+            _playCommand ??= new(_playStoreService.Play);
 
         public DelegateCommand PlayingListSwitchCommand =>
             _playingListSwitchCommand ??= new(() =>
@@ -151,6 +154,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand PreviousCommand =>
             _previousCommand ??= new(_playStoreService.Previous);
+
         public DelegateCommand<string> SearchCommand =>
             _searchCommand ??= new(Search);
 
@@ -159,6 +163,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand SettingCommand =>
             _settingCommand ??= new(() => _navigationService.MainRegionNavigation(nameof(SettingView)));
+
         public DelegateCommand<double?> SetVolumeCommand =>
             _setVolumeCommand ??= new((value) => _playService.SetVolume(value ?? _playService.Volume));
 
@@ -174,11 +179,7 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _songPosition, value);
         }
 
-        public UserData UserData
-        {
-            get => _userData;
-            set => SetProperty(ref _userData, value);
-        }
+        public UserData UserData => UserData.Instance;
 
         public double Volume
         {
@@ -241,8 +242,6 @@ namespace QianShi.Music.ViewModels
                 _playService.SetMute(parameter.Value);
             }
         }
-
-        private void Login() => _navigationService.MainRegionNavigation(nameof(LoginView));
 
         private async Task Logout()
         {

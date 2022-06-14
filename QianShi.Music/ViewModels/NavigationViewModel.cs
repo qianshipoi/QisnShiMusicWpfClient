@@ -29,6 +29,7 @@ namespace QianShi.Music.ViewModels
             get => _title;
             set { _ = SetProperty(ref _title, value); }
         }
+
         public virtual void ConfirmNavigationRequest(NavigationContext navigationContext, Action<bool> continuationCallback)
         {
             continuationCallback(true);
@@ -42,6 +43,7 @@ namespace QianShi.Music.ViewModels
         public virtual void OnNavigatedFrom(NavigationContext navigationContext)
         {
         }
+
         public virtual void OnNavigatedTo(NavigationContext navigationContext)
         {
         }

@@ -97,17 +97,17 @@ namespace QianShi.Music.ViewModels
             _playCommand ??= new(_videoPlayService.Play);
 
         public DelegateCommand<MovieVideo> PlayMvCommand =>
-            _playMvCommand ?? (_playMvCommand = new DelegateCommand<MovieVideo>(async (mv) =>
-            {
-                if (mv != null && _mvId != mv.Id)
-                {
-                    _mvId = mv.Id;
-                    PauseCommand.Execute();
-                    SetPositionCommand.Execute(0d);
-                    ShowCover = true;
-                    await _videoPlayStoreService.SetMovieVideo(_mvId);
-                }
-            }));
+            _playMvCommand ?? (_playMvCommand = new(async (mv) =>
+           {
+               if (mv != null && _mvId != mv.Id)
+               {
+                   _mvId = mv.Id;
+                   PauseCommand.Execute();
+                   SetPositionCommand.Execute(0d);
+                   ShowCover = true;
+                   await _videoPlayStoreService.SetMovieVideo(_mvId);
+               }
+           }));
 
         public double Position => _videoPlayService.Position;
 
@@ -167,7 +167,9 @@ namespace QianShi.Music.ViewModels
             get => _videoControl;
             set => SetProperty(ref _videoControl, value);
         }
+
         public double Volume => _videoPlayService.Volume;
+
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);
