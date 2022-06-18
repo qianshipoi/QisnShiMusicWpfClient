@@ -1,4 +1,6 @@
-﻿namespace QianShi.Music.Common.UserControls
+﻿using QianShi.Music.Services;
+
+namespace QianShi.Music.Common.UserControls
 {
     /// <summary>
     /// PlaylistCard.xaml 的交互逻辑
