@@ -39,13 +39,13 @@ namespace QianShi.Music.ViewModels
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            if (DialogHost.IsDialogOpen(Extensions.PrismManager.PlaylistDialogName))
-            {
-                var session = DialogHost.GetDialogSession(Extensions.PrismManager.PlaylistDialogName);
-                if (session != null)
-                    session.UpdateContent(new LoadingDialog());
-                DialogHost.Close(Extensions.PrismManager.PlaylistDialogName);
-            }
+            //if (DialogHost.IsDialogOpen(Extensions.PrismManager.PlaylistDialogName))
+            //{
+            //    var session = DialogHost.GetDialogSession(Extensions.PrismManager.PlaylistDialogName);
+            //    if (session != null)
+            //        session.UpdateContent(new LoadingDialog());
+            //    DialogHost.Close(Extensions.PrismManager.PlaylistDialogName);
+            //}
             _playStoreService.CurrentChanged -= CurrentChanged;
             base.OnNavigatedFrom(navigationContext);
         }

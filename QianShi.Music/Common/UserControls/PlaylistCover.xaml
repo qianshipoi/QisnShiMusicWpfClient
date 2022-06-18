@@ -20,9 +20,11 @@
     </UserControl.Resources>
     <Border>
         <Grid
+            x:Name="panel"
             Cursor="Hand"
             DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistCover}}}">
             <Image
+                d:Source="https://oss.kuriyama.top/static/akua.png"
                 MouseLeftButtonUp="ImageControl_MouseLeftButtonUp"
                 Source="{Binding ImageSource}"
                 Stretch="UniformToFill">

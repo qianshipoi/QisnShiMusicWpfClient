@@ -34,6 +34,7 @@ namespace QianShi.Music
                 }
             }
             return Container.Resolve<MainWindow>();
+            //return new TestControlsWindows();
         }
 
         protected override void OnInitialized()

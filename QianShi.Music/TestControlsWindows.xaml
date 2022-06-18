@@ -1,0 +1,19 @@
+﻿<Window
+    x:Class="QianShi.Music.TestControlsWindows"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:QianShi.Music.Common.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:QianShi.Music"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="TestControlsWindows"
+    Width="800"
+    Height="450"
+    mc:Ignorable="d">
+    <StackPanel>
+        <controls:FilletImage
+            Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth}"
+            CornerRadius="20"
+            Source="https://oss.kuriyama.top/static/nakiri.png" />
+    </StackPanel>
+</Window>

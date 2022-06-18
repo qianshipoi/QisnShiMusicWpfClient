@@ -38,7 +38,6 @@
                                 Margin="10"
                                 Cover="{Binding CoverImgUrl}"
                                 Description="{Binding Copywriter}"
-                                OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
                                 Playlist="{Binding}" />
                         </StackPanel>
                     </DataTemplate>
@@ -197,7 +196,6 @@
                                 DescriptionCanClick="True"
                                 DescriptionCommand="{Binding DataContext.OpenArtistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
                                 DescriptionCommandParameter="{Binding Artist}"
-                                OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
                                 Playlist="{Binding}" />
                         </StackPanel>
                     </DataTemplate>
@@ -224,7 +222,6 @@
                                 Margin="10"
                                 Cover="{Binding CoverImgUrl}"
                                 Description="{Binding UpdateFrequency}"
-                                OpenPlaylistCommand="{Binding DataContext.OpenPlaylistCommand, RelativeSource={RelativeSource AncestorType={x:Type local:IndexView}}}"
                                 Playlist="{Binding}" />
                         </StackPanel>
                     </DataTemplate>
