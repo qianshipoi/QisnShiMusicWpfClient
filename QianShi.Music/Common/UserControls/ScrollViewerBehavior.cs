@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace QianShi.Music.Common.UserControls
+﻿namespace QianShi.Music.Common.UserControls
 {
     public static class ScrollViewerBehavior
     {

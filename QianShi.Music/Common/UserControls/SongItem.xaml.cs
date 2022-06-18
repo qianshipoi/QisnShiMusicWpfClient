@@ -1,11 +1,5 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Windows;
-using System.Windows.Input;
 
 namespace QianShi.Music.Common.UserControls
 {
@@ -57,9 +51,11 @@ namespace QianShi.Music.Common.UserControls
                 case Album album:
                     _navigationService.NavigateToAlbum(album.Id);
                     break;
+
                 case Artist artist:
                     _navigationService.NavigateToArtist(artist.Id);
                     break;
+
                 default:
                     break;
             }

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Globalization;
-using System.Windows.Data;
-
-namespace QianShi.Music.Common.Converters
+﻿namespace QianShi.Music.Common.Converters
 {
     internal class IsListNotNullOrEmptyConverter : IValueConverter
     {
@@ -15,7 +11,6 @@ namespace QianShi.Music.Common.Converters
 
             return false;
         }
-
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {

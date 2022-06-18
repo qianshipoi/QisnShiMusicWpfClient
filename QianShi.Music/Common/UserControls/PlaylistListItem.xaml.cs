@@ -1,9 +1,5 @@
 ﻿using QianShi.Music.Common.Models;
 
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-
 namespace QianShi.Music.Common.UserControls
 {
     /// <summary>

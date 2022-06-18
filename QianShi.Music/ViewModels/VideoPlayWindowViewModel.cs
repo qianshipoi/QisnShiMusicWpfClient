@@ -1,10 +1,5 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 using MvUrl = QianShi.Music.Common.Models.MvUrl;
 
@@ -25,6 +20,7 @@ namespace QianShi.Music.ViewModels
         private bool _showSwitchDialog = false;
         private DelegateCommand<MvUrl> _switchBrCommand = default!;
         private object? _videoControl;
+
         public VideoPlayWindowViewModel(IVideoPlayService videoPlayService, IVideoPlayStoreService videoPlayStoreService)
         {
             _videoPlayService = videoPlayService;
@@ -134,6 +130,7 @@ namespace QianShi.Music.ViewModels
             get => _videoControl;
             set => SetProperty(ref _videoControl, value);
         }
+
         public double Volume => _videoPlayService.Volume;
     }
 }

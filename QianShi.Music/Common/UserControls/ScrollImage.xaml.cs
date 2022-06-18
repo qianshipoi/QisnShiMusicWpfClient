@@ -1,9 +1,4 @@
-﻿using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-
-namespace QianShi.Music.Common.UserControls
+﻿namespace QianShi.Music.Common.UserControls
 {
     /// <summary>
     /// ScrollImage.xaml 的交互逻辑

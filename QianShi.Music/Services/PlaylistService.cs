@@ -2,10 +2,6 @@
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 
-using RestSharp;
-
-using System.Net;
-
 namespace QianShi.Music.Services
 {
     public class PlaylistService : IPlaylistService
@@ -376,6 +372,7 @@ namespace QianShi.Music.Services
 
         public async Task<UserRecordResponse> UserRecord(UserRecordRequest parameters)
             => await Request<UserRecordResponse>("/user/record", parameters);
+
         private Task<T?> Get<T>(RestRequest request) => Client.GetAsync<T>(request);
 
         private async Task<T> Request<T>(string route, object parameters) where T : new()

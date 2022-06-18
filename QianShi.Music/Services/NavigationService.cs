@@ -1,6 +1,4 @@
-﻿using Prism.Regions;
-
-using QianShi.Music.Common.Models.Request;
+﻿using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Extensions;
 using QianShi.Music.ViewModels;
 using QianShi.Music.Views;

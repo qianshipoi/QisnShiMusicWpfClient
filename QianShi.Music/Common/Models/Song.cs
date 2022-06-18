@@ -1,6 +1,4 @@
-﻿using Prism.Mvvm;
-
-namespace QianShi.Music.Common.Models.Response
+﻿namespace QianShi.Music.Common.Models.Response
 {
     public partial class Song : BindableBase
     {
@@ -15,6 +13,7 @@ namespace QianShi.Music.Common.Models.Response
         public string? Url { get; set; }
 
         private bool _isLike;
+
         public bool IsLike
         {
             get => _isLike;

@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using System.Windows.Data;
-
-namespace QianShi.Music.Common.Converters
+﻿namespace QianShi.Music.Common.Converters
 {
     internal class LongToTimeSpanConverter : IValueConverter
     {

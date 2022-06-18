@@ -1,11 +1,5 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 using MvUrl = QianShi.Music.Common.Models.MvUrl;
 

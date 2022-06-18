@@ -5,7 +5,6 @@
 
 using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Interop;
 
 namespace QianShi.Music.Common.Helpers
@@ -172,8 +171,8 @@ namespace QianShi.Music.Common.Helpers
         /// 使用HandleProcessCorruptedStateExceptions，防止访问内存过程中因为一些致命异常导致程序崩溃
         /// </summary>
 #pragma warning disable SYSLIB0032 // 类型或成员已过时
+
         [HandleProcessCorruptedStateExceptions]
-#pragma warning restore SYSLIB0032 // 类型或成员已过时
         private static IntPtr KeepFullScreenHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             //处理WM_WINDOWPOSCHANGING消息

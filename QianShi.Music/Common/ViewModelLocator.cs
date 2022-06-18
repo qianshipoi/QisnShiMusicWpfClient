@@ -1,6 +1,4 @@
-﻿using Prism.Ioc;
-
-using QianShi.Music.ViewModels;
+﻿using QianShi.Music.ViewModels;
 
 namespace QianShi.Music.Common
 {

@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace QianShi.Music.Extensions;
+﻿namespace QianShi.Music.Extensions;
 
 public class MediaElementAttached : DependencyObject
 {

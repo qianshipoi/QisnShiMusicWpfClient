@@ -1,13 +1,7 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 namespace QianShi.Music.ViewModels
 {
@@ -44,10 +38,10 @@ namespace QianShi.Music.ViewModels
 
         public ObservableCollection<Song> Songs { get; } = new();
 
-        void FormatCover(IPlaylist playlist, int w = 200, int h = 200)
+        private void FormatCover(IPlaylist playlist, int w = 200, int h = 200)
             => playlist.CoverImgUrl += $"?param={w}y{h}";
 
-        void FormatCoverDefault(IPlaylist playlist)
+        private void FormatCoverDefault(IPlaylist playlist)
             => FormatCover(playlist);
 
         private async Task GetSongsAsync()
@@ -73,6 +67,7 @@ namespace QianShi.Music.ViewModels
                 }
             }
         }
+
         private async Task GetAlbumsAsync()
         {
             var response = await _playlistService.SearchAlbum(new SearchRequest
@@ -87,6 +82,7 @@ namespace QianShi.Music.ViewModels
                 Albums.AddRange(response.Result.Albums);
             }
         }
+
         private async Task GetArtistsAsync()
         {
             var response = await _playlistService.SearchArtist(new SearchRequest
@@ -101,6 +97,7 @@ namespace QianShi.Music.ViewModels
                 Artists.AddRange(response.Result.Artists);
             }
         }
+
         private async Task GetPlaylistsAsync()
         {
             var response = await _playlistService.SearchPlaylist(new SearchRequest
@@ -115,6 +112,7 @@ namespace QianShi.Music.ViewModels
                 Playlists.AddRange(response.Result.Playlists);
             }
         }
+
         private async Task GetMovieVideosAsync()
         {
             var response = await _playlistService.SearchMovieVideo(new SearchRequest

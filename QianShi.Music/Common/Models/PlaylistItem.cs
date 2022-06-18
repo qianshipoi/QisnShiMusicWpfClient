@@ -1,8 +1,4 @@
-﻿using Prism.Mvvm;
-
-using System.Windows.Media;
-
-namespace QianShi.Music.Common.Models
+﻿namespace QianShi.Music.Common.Models
 {
     public class PlaylistItem : BindableBase
     {

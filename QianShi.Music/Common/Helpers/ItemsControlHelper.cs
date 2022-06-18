@@ -1,8 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-
-namespace QianShi.Music.Common.Helpers
+﻿namespace QianShi.Music.Common.Helpers
 {
     public class ItemsControlHelper
     {

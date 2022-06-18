@@ -1,9 +1,4 @@
-﻿using RestSharp;
-
-using System.ComponentModel;
-using System.Reflection;
-
-namespace QianShi.Music.Extensions
+﻿namespace QianShi.Music.Extensions
 {
     public static class IRequestExtensions
     {

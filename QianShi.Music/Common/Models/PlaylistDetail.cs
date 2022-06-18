@@ -1,6 +1,4 @@
-﻿using Prism.Mvvm;
-
-namespace QianShi.Music.Common.Models
+﻿namespace QianShi.Music.Common.Models
 {
     public class PlaylistDetail : BindableBase
     {

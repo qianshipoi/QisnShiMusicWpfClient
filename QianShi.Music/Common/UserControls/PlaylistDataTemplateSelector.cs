@@ -1,8 +1,5 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
-using System.Windows;
-using System.Windows.Controls;
-
 namespace QianShi.Music.Common.UserControls
 {
     public class PlaylistDataTemplateSelector : DataTemplateSelector

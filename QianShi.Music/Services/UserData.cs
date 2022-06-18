@@ -1,9 +1,4 @@
-﻿using Prism.Mvvm;
-
-using System.IO;
-using System.Text.Json;
-
-namespace QianShi.Music.Services
+﻿namespace QianShi.Music.Services
 {
     public class UserData : BindableBase
     {

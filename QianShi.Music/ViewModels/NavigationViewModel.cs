@@ -1,9 +1,4 @@
-﻿using Prism.Events;
-using Prism.Ioc;
-using Prism.Mvvm;
-using Prism.Regions;
-
-namespace QianShi.Music.ViewModels
+﻿namespace QianShi.Music.ViewModels
 {
     public class NavigationViewModel : BindableBase, IConfirmNavigationRequest
     {

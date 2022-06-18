@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace QianShi.Music.Common.Helpers
+﻿namespace QianShi.Music.Common.Helpers
 {
     public static class PasswordBoxHelper
     {
@@ -15,7 +12,7 @@ namespace QianShi.Music.Common.Helpers
 
         private static void OnPasswordContentPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if(d is PasswordBox box)
+            if (d is PasswordBox box)
             {
                 box.PasswordChanged -= OnPasswordChanged;
                 var password = (string)e.NewValue;
@@ -27,7 +24,7 @@ namespace QianShi.Music.Common.Helpers
 
         private static void OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if(sender is PasswordBox box)
+            if (sender is PasswordBox box)
             {
                 SetPasswordContent(box, box.Password);
             }

@@ -1,8 +1,6 @@
 ﻿using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
 
-using System.Net;
-
 namespace QianShi.Music.Services
 {
     public interface IPlaylistService

@@ -1,15 +1,7 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
 {

@@ -1,10 +1,4 @@
-﻿using Prism.Ioc;
-
-using QianShi.Music.Views;
-
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Threading;
+﻿using QianShi.Music.Views;
 
 namespace QianShi.Music.Services
 {

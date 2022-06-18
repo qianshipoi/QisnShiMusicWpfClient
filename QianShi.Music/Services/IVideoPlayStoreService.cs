@@ -1,7 +1,5 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
-using System.Collections.ObjectModel;
-
 using MvUrl = QianShi.Music.Common.Models.MvUrl;
 
 namespace QianShi.Music.Services

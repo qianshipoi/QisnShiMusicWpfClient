@@ -1,16 +1,10 @@
-﻿using Prism.Ioc;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
 using QianShi.Music.ViewModels.Dialogs;
 using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
-
-using System.IO;
-using System.Text.Json;
-using System.Windows;
 
 namespace QianShi.Music
 {

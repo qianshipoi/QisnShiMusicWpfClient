@@ -1,12 +1,6 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 namespace QianShi.Music.ViewModels
 {
@@ -51,7 +45,6 @@ namespace QianShi.Music.ViewModels
             set => SetProperty(ref _artist, value);
         }
 
-
         public bool KeepAlive => false;
 
         public MovieVideo? MovieVideo
@@ -59,6 +52,7 @@ namespace QianShi.Music.ViewModels
             get => _movieVideo;
             set => SetProperty(ref _movieVideo, value);
         }
+
         public DelegateCommand<MovieVideo> JumpToMvPageCommand =>
             _jumpToMvPageCommand ??= new((mv) => _navigationService.NavigateToMv(mv.Id));
 

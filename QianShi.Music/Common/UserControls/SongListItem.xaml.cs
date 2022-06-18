@@ -1,9 +1,4 @@
-﻿using QianShi.Music.ViewModels;
-
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Models.Response;
 
 namespace QianShi.Music.Common.UserControls
 {

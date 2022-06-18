@@ -4,7 +4,6 @@ namespace QianShi.Music.Common.Models.Response
 {
     public class PlaylistDetailResponse : BaseResponse
     {
-
         [JsonPropertyName("playlist")]
         public Playlist PlaylistDetail { get; set; } = new Playlist();
 

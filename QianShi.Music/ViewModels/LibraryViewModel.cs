@@ -1,12 +1,6 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 using static QianShi.Music.Common.Models.Response.UserCloudResponse;
 
@@ -39,6 +33,7 @@ namespace QianShi.Music.ViewModels
         public ObservableCollection<PlayRecord> AllRecord { get; } = new();
         public ObservableCollection<Artist> Artists { get; } = new();
         public ObservableCollection<CloudItem> CloudItems { get; } = new();
+
         public DelegateCommand JumpToFondPageCommand =>
             _jumpToFondPageCommand ??= new(() => _navigationService.NavigateToFondPlaylist(LikePlaylist!.Id));
 
@@ -59,6 +54,7 @@ namespace QianShi.Music.ViewModels
 
         public UserData UserInfo => UserData.Instance;
         public ObservableCollection<PlayRecord> WeekRecord { get; } = new();
+
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (!UserInfo.IsLogin || UserInfo.Id == 0)
@@ -96,6 +92,7 @@ namespace QianShi.Music.ViewModels
                 await _playStoreService.PlayAsync(parameter);
             }
         }
+
         private T FormatCover<T>(T playlist) where T : IPlaylist
         {
             playlist.CoverImgUrl += "?param=200y200";

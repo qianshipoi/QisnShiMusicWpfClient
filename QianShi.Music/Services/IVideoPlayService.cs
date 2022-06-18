@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace QianShi.Music.Services
+﻿namespace QianShi.Music.Services
 {
     public interface IVideoPlayService
     {

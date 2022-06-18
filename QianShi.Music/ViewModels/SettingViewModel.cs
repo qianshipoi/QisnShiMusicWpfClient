@@ -1,6 +1,4 @@
-﻿using Prism.Ioc;
-
-namespace QianShi.Music.ViewModels
+﻿namespace QianShi.Music.ViewModels
 {
     public class SettingViewModel : NavigationViewModel
     {

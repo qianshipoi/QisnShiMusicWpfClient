@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace QianShi.Music.Common.Models.Request;
+﻿namespace QianShi.Music.Common.Models.Request;
 
 public class LoginCellphoneRequest : BaseRequest
 {

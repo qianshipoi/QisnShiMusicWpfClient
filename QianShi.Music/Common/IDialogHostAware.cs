@@ -1,7 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Services.Dialogs;
-
-namespace QianShi.Music.Common
+﻿namespace QianShi.Music.Common
 {
     public interface IDialogHostAware
     {

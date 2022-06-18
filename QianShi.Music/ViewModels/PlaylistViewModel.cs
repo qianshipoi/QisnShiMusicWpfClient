@@ -1,17 +1,7 @@
-﻿using MaterialDesignThemes.Wpf;
-
-using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common.Models;
+﻿using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 using QianShi.Music.Views.Dialogs;
-
-using System.Collections.ObjectModel;
-
-using static System.String;
 
 namespace QianShi.Music.ViewModels
 {
@@ -72,7 +62,7 @@ namespace QianShi.Music.ViewModels
                 {
                     Detail.Id = response.PlaylistDetail.Id;
                     Detail.Name = response.PlaylistDetail.Name;
-                    Detail.Description = response.PlaylistDetail.Description ?? Empty;
+                    Detail.Description = response.PlaylistDetail.Description ?? string.Empty;
                     Detail.LastUpdateTime = response.PlaylistDetail.UpdateTime;
                     Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
                     Detail.Count = response.PlaylistDetail.TrackCount;
@@ -81,7 +71,7 @@ namespace QianShi.Music.ViewModels
                     Songs.Clear();
 
                     // 获取所有歌曲
-                    var ids = Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
+                    var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
                     var songResponse = await _playlistService.SongDetail(ids);
                     if (songResponse.Code == 200)
                     {

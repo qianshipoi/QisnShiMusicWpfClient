@@ -1,20 +1,10 @@
-﻿using MaterialDesignThemes.Wpf;
-
-using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-using Prism.Services.Dialogs;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels.Dialogs;
 using QianShi.Music.Views.Dialogs;
-
-using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace QianShi.Music.ViewModels
 {

@@ -1,7 +1,5 @@
 ﻿using QianShi.Music.Common.Models.Response;
 
-using System.Collections.ObjectModel;
-
 namespace QianShi.Music.Services
 {
     public class PlayStoreService : IPlayStoreService

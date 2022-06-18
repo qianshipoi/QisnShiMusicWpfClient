@@ -1,19 +1,8 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common.Helpers;
+﻿using QianShi.Music.Common.Helpers;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
-
-using QRCoder;
-
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 
 namespace QianShi.Music.ViewModels
 {
@@ -33,6 +22,7 @@ namespace QianShi.Music.ViewModels
         private string? _qrKey;
         private string? _redirectUri;
         private DelegateCommand<LoginMode?> _switchLoginModeCommand = default!;
+
         public LoginViewModel(
             IContainerProvider containerProvider,
             IPlaylistService playlistService)
@@ -48,6 +38,7 @@ namespace QianShi.Music.ViewModels
         }
 
         public bool KeepAlive => false;
+
         public DelegateCommand LoginCommand =>
             _loginCommand ??= new(ExecuteLoginCommand);
 
@@ -73,6 +64,7 @@ namespace QianShi.Music.ViewModels
             _switchLoginModeCommand ??= new(ExecuteSwitchLoginModeCommand);
 
         private UserData _userData => UserData.Instance;
+
         public override void OnNavigatedTo(NavigationContext navigationContext)
         {
             base.OnNavigatedTo(navigationContext);

@@ -1,12 +1,5 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
 {
@@ -38,6 +31,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand<ItemsControl> MorePlaylistCommand =>
             _morePlaylistCommand ??= new(MorePlaylist);
+
         public DelegateCommand<IPlaylist> OpenPlaylistCommand =>
             _openPlaylistCommand ??= new(OpenPlaylist);
 

@@ -272,6 +272,7 @@ namespace QianShi.Music.Common.Helpers
             }
 
 #pragma warning disable CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
+
             public override bool Equals(object obj)
 #pragma warning restore CS8765 // 参数类型的为 Null 性与重写成员不匹配(可能是由于为 Null 性特性)。
             {

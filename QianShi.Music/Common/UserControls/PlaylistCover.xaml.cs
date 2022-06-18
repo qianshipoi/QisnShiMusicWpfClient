@@ -1,8 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-
-namespace QianShi.Music.Common.UserControls
+﻿namespace QianShi.Music.Common.UserControls
 {
     /// <summary>
     /// PlaylistCover.xaml 的交互逻辑

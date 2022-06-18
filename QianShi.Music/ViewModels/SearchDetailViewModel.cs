@@ -1,13 +1,6 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-using Prism.Regions;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace QianShi.Music.ViewModels
 {
@@ -48,7 +41,7 @@ namespace QianShi.Music.ViewModels
             set { SetProperty(ref _keywords, value); }
         }
 
-        public DelegateCommand<ItemsControl> MoreCommand 
+        public DelegateCommand<ItemsControl> MoreCommand
             => _moreCommand ??= new(More);
 
         public SearchType SearchType

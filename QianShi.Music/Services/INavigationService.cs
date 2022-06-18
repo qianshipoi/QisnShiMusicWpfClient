@@ -1,6 +1,4 @@
-﻿using Prism.Regions;
-
-using QianShi.Music.Common.Models.Request;
+﻿using QianShi.Music.Common.Models.Request;
 
 namespace QianShi.Music.Services
 {

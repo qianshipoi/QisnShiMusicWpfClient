@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace QianShi.Music.Views
+﻿namespace QianShi.Music.Views
 {
     /// <summary>
     /// ArtistView.xaml 的交互逻辑

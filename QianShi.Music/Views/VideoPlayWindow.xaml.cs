@@ -1,8 +1,5 @@
 ﻿using QianShi.Music.Common.Helpers;
 
-using System.Windows;
-using System.Windows.Controls.Primitives;
-
 namespace QianShi.Music.Views
 {
     /// <summary>

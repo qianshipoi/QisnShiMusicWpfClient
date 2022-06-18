@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace QianShi.Music.Extensions
+﻿namespace QianShi.Music.Extensions
 {
     public static class EnumExtensions
     {

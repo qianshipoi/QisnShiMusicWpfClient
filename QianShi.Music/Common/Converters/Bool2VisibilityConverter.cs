@@ -1,8 +1,4 @@
-﻿using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-
-namespace QianShi.Music.Common.Converters
+﻿namespace QianShi.Music.Common.Converters
 {
     public class Bool2VisibilityConverter : IValueConverter
     {

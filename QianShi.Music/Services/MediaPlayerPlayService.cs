@@ -1,7 +1,4 @@
-﻿using System.Windows.Media;
-using System.Windows.Threading;
-
-namespace QianShi.Music.Services
+﻿namespace QianShi.Music.Services
 {
     public class MediaPlayerPlayService : IPlayService
     {

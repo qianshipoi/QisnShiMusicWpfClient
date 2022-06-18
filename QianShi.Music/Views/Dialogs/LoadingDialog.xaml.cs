@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace QianShi.Music.Views.Dialogs
+﻿namespace QianShi.Music.Views.Dialogs
 {
     /// <summary>
     /// LoadingDialog.xaml 的交互逻辑

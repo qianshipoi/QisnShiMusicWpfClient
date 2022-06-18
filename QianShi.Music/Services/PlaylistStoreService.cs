@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-using QianShi.Music.Common.Models.Request;
+﻿using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Common.Models.Response;
 
 namespace QianShi.Music.Services;
@@ -32,7 +30,6 @@ public class PlaylistStoreService : IPlaylistStoreService
             });
             if (likedPlaylistResponse.Code == 200)
             {
-
                 var likePlaylist = likedPlaylistResponse.Playlist.FirstOrDefault();
                 if (likePlaylist != null)
                 {
@@ -65,5 +62,4 @@ public class PlaylistStoreService : IPlaylistStoreService
         if (!_userInfo.IsLogin) return false;
         return _likedSongs.Any(x => x.Id == id);
     }
-
 }

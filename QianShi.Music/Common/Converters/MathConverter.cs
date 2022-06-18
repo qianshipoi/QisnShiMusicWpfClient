@@ -2,9 +2,6 @@
 /// The author: https://www.cnblogs.com/HQFZ/p/4205304.html
 ///
 
-using System.Globalization;
-using System.Windows.Data;
-
 namespace QianShi.Music.Common.Converters
 {
     // Does a math equation on the bound value.

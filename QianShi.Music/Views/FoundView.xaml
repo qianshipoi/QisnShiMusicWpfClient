@@ -104,7 +104,7 @@
             <uc:PlaylistDataTemplateSelector x:Key="PlaylistDataTemplateSelector" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <materialDesign:DialogHost IsOpen="{Binding Loading}">
+    <materialDesign:DialogHost IsOpen="{Binding IsBusy}">
         <materialDesign:DialogHost.DialogContent>
             <StackPanel Margin="16">
                 <ProgressBar

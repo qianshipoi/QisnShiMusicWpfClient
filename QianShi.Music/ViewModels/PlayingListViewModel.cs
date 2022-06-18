@@ -1,10 +1,5 @@
-﻿using Prism.Commands;
-using Prism.Ioc;
-
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System.Collections.ObjectModel;
 
 namespace QianShi.Music.ViewModels
 {
