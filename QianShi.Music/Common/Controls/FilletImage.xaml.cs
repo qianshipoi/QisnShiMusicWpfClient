@@ -34,6 +34,23 @@
         public FilletImage()
         {
             InitializeComponent();
+
+            Loaded += FilletImage_Loaded;
+        }
+
+        private void FilletImage_Loaded(object sender, RoutedEventArgs e)
+        {
+            rg.Rect = new Rect(0,0,ActualWidth, ActualHeight);
+            rg.RadiusX = CornerRadius.TopRight;
+            rg.RadiusY = CornerRadius.TopRight;
+        }
+
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            rg.Rect = new Rect(sizeInfo.NewSize);
+            rg.RadiusX = CornerRadius.TopRight;
+            rg.RadiusY = CornerRadius.TopRight;
         }
     }
 }

@@ -12,6 +12,7 @@
     mc:Ignorable="d">
     <StackPanel>
         <controls:FilletImage
+            Width="400"
             Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth}"
             CornerRadius="20"
             Source="https://oss.kuriyama.top/static/nakiri.png" />

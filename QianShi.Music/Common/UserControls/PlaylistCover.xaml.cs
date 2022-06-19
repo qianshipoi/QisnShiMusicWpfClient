@@ -65,7 +65,7 @@
             InitializeComponent();
         }
 
-        private void ImageControl_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void ImageControlClick(object sender, RoutedEventArgs e)
         {
             var args = new RoutedEventArgs(ImageClickEvent, this);
             RaiseEvent(args);

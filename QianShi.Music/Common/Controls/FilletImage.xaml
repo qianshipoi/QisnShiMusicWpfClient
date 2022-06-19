@@ -7,26 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ucs="clr-namespace:QianShi.Music.Common.UserControls"
     x:Name="uc"
+    Padding="0"
     d:DesignHeight="400"
     d:DesignWidth="400"
     mc:Ignorable="d">
-    <UserControl.Resources>
-        <ucs:WidthAndHeightToRectConverter x:Key="WidthAndHeightToRectConverter" />
-    </UserControl.Resources>
     <UserControl.Clip>
         <RectangleGeometry
             x:Name="rg"
             d:RadiusX="20"
-            d:RadiusY="20"
-            RadiusX="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FilletImage}}, Path=CornerRadius.TopLeft}"
-            RadiusY="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:FilletImage}}, Path=CornerRadius.TopLeft}">
-            <RectangleGeometry.Rect>
-                <MultiBinding Converter="{StaticResource WidthAndHeightToRectConverter}">
-                    <Binding Path="ActualWidth" RelativeSource="{RelativeSource AncestorType={x:Type local:FilletImage}}" />
-                    <Binding Path="ActualHeight" RelativeSource="{RelativeSource AncestorType={x:Type local:FilletImage}}" />
-                </MultiBinding>
-            </RectangleGeometry.Rect>
-        </RectangleGeometry>
+            d:RadiusY="20" />
     </UserControl.Clip>
     <Image
         Width="{Binding ElementName=uc, Path=ActualWidth}"
