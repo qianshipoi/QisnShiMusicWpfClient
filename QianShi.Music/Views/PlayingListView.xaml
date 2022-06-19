@@ -33,7 +33,7 @@
                     <Style TargetType="StackPanel">
                         <Setter Property="Visibility" Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding JumpPlayeds, Converter={StaticResource ListCountIsGtZeroConverter}}" Value="True">
+                            <DataTrigger Binding="{Binding JumpPlayeds, Converter={StaticResource IsListNotNullOrEmptyConverter}}" Value="True">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
