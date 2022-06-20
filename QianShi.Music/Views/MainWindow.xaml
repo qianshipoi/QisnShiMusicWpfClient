@@ -89,8 +89,11 @@
                                             Background="Transparent"
                                             Cursor="Hand"
                                             Orientation="Horizontal">
-                                            <materialDesign:PackIcon Foreground="White" Kind="{Binding Icon}" />
-                                            <TextBlock Foreground="White" Text="{Binding Title}" />
+                                            <materialDesign:PackIcon Foreground="{DynamicResource PrimaryHueLightForegroundBrush}" Kind="{Binding Icon}" />
+                                            <TextBlock
+                                                Margin="4,0,0,0"
+                                                Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                                                Text="{Binding Title}" />
                                         </StackPanel>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
@@ -190,6 +193,7 @@
                     Padding="16,8"
                     materialDesign:ShadowAssist.ShadowDepth="Depth3"
                     materialDesign:ShadowAssist.ShadowEdges="Top"
+                    ClipContent="True"
                     DockPanel.Dock="Bottom">
                     <Grid MaxWidth="1280">
                         <Grid.ColumnDefinitions>
