@@ -33,6 +33,7 @@ namespace QianShi.Music
                     }
                 }
             }
+
             return Container.Resolve<MainWindow>();
             //return new TestControlsWindows();
         }
@@ -54,6 +55,7 @@ namespace QianShi.Music
             containerRegistry.RegisterSingleton<IVideoPlayStoreService, VideoPlayStoreService>();
             containerRegistry.RegisterSingleton<IPlaylistStoreService, PlaylistStoreService>();
             containerRegistry.RegisterSingleton<INavigationService, NavigationService>();
+            containerRegistry.RegisterSingleton<IPreferenceService, JsonFilePreferenceService>();
 
             containerRegistry.Register<VideoPlayWindow>();
 

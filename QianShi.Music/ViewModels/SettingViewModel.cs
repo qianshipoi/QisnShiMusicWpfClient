@@ -2,12 +2,14 @@
 
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
+using QianShi.Music.Services;
 
 namespace QianShi.Music.ViewModels
 {
     public class SettingViewModel : NavigationViewModel
     {
         private readonly PaletteHelper _paletteHelper = new PaletteHelper();
+        private readonly IPreferenceService _preferenceService;
         private Color? _primaryColor;
         private Color? _secondaryColor;
         private Color? _primaryForegroundColor;
@@ -51,7 +53,7 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        public SettingViewModel(IContainerProvider containerProvider) : base(containerProvider)
+        public SettingViewModel(IContainerProvider containerProvider, IPreferenceService preferenceService) : base(containerProvider)
         {
             Title = "Setting View";
 
@@ -61,6 +63,19 @@ namespace QianShi.Music.ViewModels
             _secondaryColor = theme.SecondaryMid.Color;
 
             SelectedColor = _primaryColor;
+            _preferenceService = preferenceService;
+
+            if (_preferenceService.ContainsKey("color_r") &&
+                _preferenceService.ContainsKey("color_g") &&
+                _preferenceService.ContainsKey("color_b") &&
+                _preferenceService.ContainsKey("color_a"))
+            {
+                var r = (byte)_preferenceService.Get("color_r", -1);
+                var g = (byte)_preferenceService.Get("color_g", -1);
+                var b = (byte)_preferenceService.Get("color_b", -1);
+                var a = (byte)_preferenceService.Get("color_a", -1);
+                ExecuteChangeHueCommand(Color.FromArgb(a, r, g, b));
+            }
         }
 
         private DelegateCommand<Color?> _changeHueCommand;
@@ -94,6 +109,11 @@ namespace QianShi.Music.ViewModels
                 SetSecondaryForegroundToSingleColor(hue);
                 _secondaryForegroundColor = hue;
             }
+
+            _preferenceService.Set("color_r", hue.R);
+            _preferenceService.Set("color_g", hue.G);
+            _preferenceService.Set("color_b", hue.B);
+            _preferenceService.Set("color_a", hue.A);
         }
 
         private void ChangeCustomColor(object? obj)
