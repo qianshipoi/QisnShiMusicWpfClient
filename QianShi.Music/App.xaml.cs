@@ -3,8 +3,10 @@ using QianShi.Music.Common.Models;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
 using QianShi.Music.ViewModels.Dialogs;
+using QianShi.Music.ViewModels.Navigation;
 using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
+using QianShi.Music.Views.Navigation;
 
 namespace QianShi.Music
 {
@@ -75,6 +77,7 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<MvView, MvViewModel>();
             containerRegistry.RegisterForNavigation<FondPlaylistView, FondPlaylistViewModel>();
             containerRegistry.RegisterForNavigation<SettingView, SettingViewModel>();
+            containerRegistry.RegisterForNavigation<NavigationBarView, NavigationBarViewModel>();
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -1,9 +1,9 @@
 ﻿using QianShi.Music.Common;
-using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
+using QianShi.Music.Views.Navigation;
 
 namespace QianShi.Music.ViewModels
 {
@@ -15,22 +15,14 @@ namespace QianShi.Music.ViewModels
         private readonly IPlayStoreService _playStoreService;
         private readonly IRegionManager _regionManager;
         private Song? _currentSong = null;
-        private DelegateCommand _goBackCommand = default!;
-        private DelegateCommand _goForwardCommand = default!;
         private bool _isMuted = false;
         private bool _isPlaying = false;
-        private IRegionNavigationJournal _journal = null!;
-        private DelegateCommand _loginCommand = default!;
-        private DelegateCommand _logoutCommand = default!;
-        private DelegateCommand<MenuBar> _navigateCommand = default!;
-        private MenuBar? _navigateCurrentItem;
         private DelegateCommand _nextCommand = default!;
         private DelegateCommand<ContentControl> _openPlayViewCommand = default!;
         private DelegateCommand _pauseCommand = default!;
         private DelegateCommand _playCommand = default!;
         private DelegateCommand _playingListSwitchCommand = default!;
         private DelegateCommand _previousCommand = default!;
-        private DelegateCommand<string> _searchCommand = default!;
         private DelegateCommand<bool?> _setMutedCommand = default!;
         private DelegateCommand _settingCommand = default!;
         private DelegateCommand<double?> _setVolumeCommand = default!;
@@ -67,21 +59,6 @@ namespace QianShi.Music.ViewModels
             get => _currentSong;
             set => SetProperty(ref _currentSong, value);
         }
-
-        public DelegateCommand GoBackCommand =>
-            _goBackCommand ?? (_goBackCommand = new(() =>
-           {
-               if (_journal.CanGoBack)
-                   _journal.GoBack();
-           }));
-
-        public DelegateCommand GoForwardCommand =>
-            _goForwardCommand ?? (_goForwardCommand = new(() =>
-           {
-               if (_journal.CanGoForward)
-                   _journal.GoForward();
-           }));
-
         public bool IsMuted
         {
             get => _isMuted;
@@ -93,31 +70,6 @@ namespace QianShi.Music.ViewModels
             get => _isPlaying;
             set => SetProperty(ref _isPlaying, value);
         }
-
-        public DelegateCommand LoginCommand =>
-            _loginCommand ?? (_loginCommand = new(() => _navigationService.MainRegionNavigation(nameof(LoginView))));
-
-        public DelegateCommand LogoutCommand =>
-            _logoutCommand ?? (_logoutCommand = new(async () => await Logout()));
-
-        public ObservableCollection<MenuBar> MenuBars { get; } = new();
-
-        public DelegateCommand<MenuBar> NavigateCommand =>
-            _navigateCommand ?? (_navigateCommand = new(Navigate));
-
-        public MenuBar? NavigateCurrentItem
-        {
-            get => _navigateCurrentItem;
-            set
-            {
-                if (_navigateCurrentItem != value && null != value)
-                {
-                    NavigateCommand.Execute(value);
-                }
-                SetProperty(ref _navigateCurrentItem, value);
-            }
-        }
-
         public DelegateCommand NextCommand =>
             _nextCommand ??= new(_playStoreService.Next);
 
@@ -137,19 +89,17 @@ namespace QianShi.Music.ViewModels
 
                 if (view is PlayingListView playingListView)
                 {
-                    _journal.GoBack();
+                    if (_navigationService.CanGoBack)
+                        _navigationService.GoBack();
                 }
                 else
                 {
-                    _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(nameof(PlayingListView));
+                    _navigationService.NavigateToPlayingList();
                 }
             });
 
         public DelegateCommand PreviousCommand =>
             _previousCommand ??= new(_playStoreService.Previous);
-
-        public DelegateCommand<string> SearchCommand =>
-            _searchCommand ??= new(Search);
 
         public DelegateCommand<bool?> SetMutedCommand =>
             _setMutedCommand ??= new(ExecuteSetMutedCommand);
@@ -185,8 +135,6 @@ namespace QianShi.Music.ViewModels
         /// </summary>
         public async void Configure()
         {
-            CreateMenuBar();
-
             var response = await _playlistService.LoginStatus();
             if (response.Data.Code == 200)
             {
@@ -203,12 +151,7 @@ namespace QianShi.Music.ViewModels
                 }
                 UserData.Save();
             }
-
-            _regionManager.Regions[PrismManager.MainViewRegionName].NavigationService.Navigated += NavigationService_Navigated;
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate(MenuBars[0].NameSpace, back =>
-            {
-                _journal = back.Context.NavigationService.Journal;
-            });
+            _regionManager.Regions[PrismManager.NavigateBarRegionName].RequestNavigate(nameof(NavigationBarView));
 
             _regionManager.Regions[PrismManager.FullScreenRegionName].RequestNavigate("PlayView");
 
@@ -221,13 +164,6 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private void CreateMenuBar()
-        {
-            MenuBars.Add(new MenuBar() { Icon = "Home", Title = "首页", NameSpace = "IndexView" });
-            MenuBars.Add(new MenuBar() { Icon = "NotebookOutline", Title = "发现", NameSpace = "FoundView" });
-            MenuBars.Add(new MenuBar() { Icon = "NotebookPlus", Title = "音乐库", NameSpace = "LibraryView", Auth = true });
-        }
-
         private void ExecuteSetMutedCommand(bool? parameter)
         {
             if (parameter.HasValue)
@@ -236,55 +172,12 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private async Task Logout()
-        {
-            var response = await _playlistService.Logout();
-            if (response.Code == 200)
-            {
-                UserData.Clear();
-                UserData.Save();
-            }
-        }
-
-        private void Navigate(MenuBar obj)
-        {
-            if (string.IsNullOrWhiteSpace(obj.NameSpace))
-                return;
-            _navigationService.MainRegionNavigation(obj.NameSpace);
-        }
-
-        private void NavigationService_Navigated(object? sender, RegionNavigationEventArgs e)
-        {
-            var viewName = e.Uri.OriginalString;
-            var menuBar = MenuBars.FirstOrDefault(x => x.NameSpace == viewName);
-
-            if (menuBar != null && menuBar != NavigateCurrentItem)
-            {
-                _navigateCurrentItem = menuBar;
-            }
-            else
-            {
-                _navigateCurrentItem = null;
-            }
-            RaisePropertyChanged(nameof(NavigateCurrentItem));
-        }
-
         private void OpenPlayView(ContentControl obj)
         {
             if (obj.Content is PlayView playView)
             {
                 ((PlayViewModel)playView.DataContext).Display = true;
             }
-        }
-
-        private void Search(string searchText)
-        {
-            if (string.IsNullOrWhiteSpace(searchText)) return;
-
-            var regions = _regionManager.Regions[PrismManager.MainViewRegionName];
-
-            var uri = _journal.CurrentEntry.Uri;   // TODO 导航BUG 待修复
-            regions.RequestNavigate(nameof(SearchView), new NavigationParameters { { SearchViewModel.SearchTextParameter, searchText } });
         }
     }
 }

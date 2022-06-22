@@ -1,4 +1,5 @@
 ﻿using QianShi.Music.ViewModels;
+using QianShi.Music.ViewModels.Navigation;
 
 namespace QianShi.Music.Common
 {
@@ -21,5 +22,7 @@ namespace QianShi.Music.Common
         public SearchDetailViewModel SearchDetailViewModel => App.Current.Container.Resolve<SearchDetailViewModel>();
         public VideoPlayWindowViewModel VideoPlayWindowViewModel => App.Current.Container.Resolve<VideoPlayWindowViewModel>();
         public SettingViewModel SettingViewModel => App.Current.Container.Resolve<SettingViewModel>();
+
+        public NavigationBarViewModel NavigationBarViewModel => App.Current.Container.Resolve<NavigationBarViewModel>();
     }
 }

@@ -2,6 +2,7 @@
 {
     internal static class PrismManager
     {
+        public static readonly string NavigateBarRegionName = "NavihateBarRegion";
         /// <summary>
         /// 首页区域
         /// </summary>

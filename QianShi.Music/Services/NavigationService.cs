@@ -8,10 +8,56 @@ namespace QianShi.Music.Services
     public class NavigationService : INavigationService
     {
         private readonly IRegionManager _regionManager;
+        private IRegionNavigationJournal _regionNavigationJournal
+            => _regionManager.Regions[PrismManager.MainViewRegionName].NavigationService.Journal;
+
+        public bool CanGoBack => _regionNavigationJournal.CanGoBack;
+
+        public bool CanGoForward => _regionNavigationJournal.CanGoForward;
 
         public NavigationService(IRegionManager regionManager)
         {
             _regionManager = regionManager;
+        }
+
+        public void GoBack()
+        {
+            if (CanGoBack)
+            {
+                _regionNavigationJournal.GoBack();
+            }
+        }
+
+        public void GoForward()
+        {
+            if (CanGoForward)
+            {
+                _regionNavigationJournal.GoForward();
+            }
+        }
+
+        public void NavigateToLogin()
+        {
+            if (!EqualsCurrentView<LoginView>())
+            {
+                MainRegionNavigation(nameof(LoginView));
+            }
+        }
+
+        public void NavigateToSetting()
+        {
+            if (!EqualsCurrentView<SettingView>())
+            {
+                MainRegionNavigation(nameof(SettingView));
+            }
+        }
+
+        public void NavigateToPlayingList()
+        {
+            if (!EqualsCurrentView<PlaylistCardView>())
+            {
+                MainRegionNavigation(nameof(PlaylistCardView));
+            }
         }
 
         public void Navigation(string region, string viewName, NavigationParameters? parameters = null)
@@ -101,5 +147,16 @@ namespace QianShi.Music.Services
             => MainRegionNavigation(nameof(FondPlaylistView), new NavigationParameters {
                     {  FondPlaylistViewModel.PlaylistIdParameterName ,id},
                 });
+
+        /// <summary>
+        /// 匹配当前页面
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private bool EqualsCurrentView<T>() where T : UserControl
+        {
+            return _regionManager.Regions[PrismManager.MainViewRegionName].ActiveViews.FirstOrDefault() is T;
+        }
+
     }
 }

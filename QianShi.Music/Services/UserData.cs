@@ -44,6 +44,18 @@
         public long Id { get; set; }
         public sbyte VipType { get; set; }
 
+        public async Task LogoutAsync()
+        {
+            var playlistService = App.Current.Container.Resolve<IPlaylistService>();
+
+            var response = await playlistService.Logout();
+            if (response.Code == 200)
+            {
+                Clear();
+                Save();
+            }
+        }
+
         public void Clear()
         {
             IsLogin = false;

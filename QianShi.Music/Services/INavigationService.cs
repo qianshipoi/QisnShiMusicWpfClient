@@ -2,8 +2,45 @@
 
 namespace QianShi.Music.Services
 {
+    /// <summary>
+    /// 导航服务
+    /// </summary>
     public interface INavigationService
     {
+        /// <summary>
+        /// 能否向前导航
+        /// </summary>
+        bool CanGoForward { get; }
+
+        /// <summary>
+        /// 能否向后导航
+        /// </summary>
+        bool CanGoBack { get; }
+
+        /// <summary>
+        /// 向后导航
+        /// </summary>
+        void GoBack();
+
+        /// <summary>
+        /// 向前导航
+        /// </summary>
+        void GoForward();
+
+        /// <summary>
+        /// 导航到登录页
+        /// </summary>
+        void NavigateToLogin();
+
+        /// <summary>
+        /// 导航到设置页面
+        /// </summary>
+        void NavigateToSetting();
+        /// <summary>
+        /// 导航到播放列表页面
+        /// </summary>
+        void NavigateToPlayingList();
+
         /// <summary>
         /// 导航到专辑
         /// </summary>
