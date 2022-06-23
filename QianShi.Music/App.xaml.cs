@@ -1,5 +1,6 @@
 ﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
 using QianShi.Music.ViewModels.Dialogs;
@@ -45,8 +46,36 @@ namespace QianShi.Music
             var service = App.Current.MainWindow.DataContext as IConfigureService;
             if (service != null)
                 service.Configure();
+
+            // init theme
+            var prefernceService = Container.Resolve<IPreferenceService>();
+            var helper = new PaletteHelper();
+            if (prefernceService.ContainsKey("color_r") &&
+               prefernceService.ContainsKey("color_g") &&
+               prefernceService.ContainsKey("color_b") &&
+               prefernceService.ContainsKey("color_a"))
+            {
+                var r = (byte)prefernceService.Get("color_r", -1);
+                var g = (byte)prefernceService.Get("color_g", -1);
+                var b = (byte)prefernceService.Get("color_b", -1);
+                var a = (byte)prefernceService.Get("color_a", -1);
+                var color = Color.FromArgb(a, r, g, b);
+
+                helper.ChangePrimaryColor(color);
+            }
+
+            if(prefernceService.ContainsKey("base_theme"))
+            {
+                var isDark = prefernceService.Get("base_theme", false);
+
+                helper.ChangeBaseTheme(isDark ? Theme.Dark : Theme.Light);
+            }
+
             base.OnInitialized();
         }
+
+
+
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {

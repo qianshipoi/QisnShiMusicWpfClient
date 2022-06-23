@@ -13,12 +13,8 @@
     d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=LoginViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
-    Background="White"
     mc:Ignorable="d">
-    <StackPanel
-        MaxWidth="1280"
-        VerticalAlignment="Center"
-        Background="White">
+    <StackPanel MaxWidth="1280" VerticalAlignment="Center">
         <Image
             Width="64"
             Height="64"

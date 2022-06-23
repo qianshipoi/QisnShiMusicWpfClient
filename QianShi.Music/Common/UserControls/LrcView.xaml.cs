@@ -184,7 +184,7 @@ namespace QianShi.Music.Common.UserControls
             if (gf == null) return;
             Point p = gf.Transform(new Point(0, 0));
             //滚动条当前位置
-            Debug.WriteLine(ScrollViewerControl.VerticalOffset + "/" + p.Y);
+            //Debug.WriteLine(ScrollViewerControl.VerticalOffset + "/" + p.Y);
 
             //计算滚动位置（p.Y是焦点歌词控件(c_LrcTb)相对于父级控件c_lrc_items(StackPanel)的位置）
             //拿焦点歌词位置减去滚动区域控件高度除以2的值得到的【大概】就是歌词焦点在滚动区域控件的位置

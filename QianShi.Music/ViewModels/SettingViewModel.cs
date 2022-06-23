@@ -10,6 +10,7 @@ namespace QianShi.Music.ViewModels
     {
         private readonly PaletteHelper _paletteHelper = new PaletteHelper();
         private readonly IPreferenceService _preferenceService;
+
         private Color? _primaryColor;
         private Color? _secondaryColor;
         private Color? _primaryForegroundColor;
@@ -21,10 +22,7 @@ namespace QianShi.Music.ViewModels
         public ColorScheme ActiveScheme
         {
             get => _activeScheme;
-            set
-            {
-                SetProperty(ref _activeScheme, value);
-            }
+            set => SetProperty(ref _activeScheme, value);
         }
 
         private Color? _selectedColor;
@@ -53,17 +51,33 @@ namespace QianShi.Music.ViewModels
             }
         }
 
+        private bool _isDark;
+        public bool IsDark
+        {
+            get => _isDark;
+            set
+            {
+                if (SetProperty(ref _isDark, value))
+                {
+                    _paletteHelper.ChangeBaseTheme(value ? Theme.Dark : Theme.Light);
+                    _preferenceService.Set("base_theme", value);
+                }
+            }
+        }
+
         public SettingViewModel(IContainerProvider containerProvider, IPreferenceService preferenceService) : base(containerProvider)
         {
+            _preferenceService = preferenceService;
             Title = "Setting View";
 
             ITheme theme = _paletteHelper.GetTheme();
+
+            IsDark = theme.GetBaseTheme() == BaseTheme.Dark;
 
             _primaryColor = theme.PrimaryMid.Color;
             _secondaryColor = theme.SecondaryMid.Color;
 
             SelectedColor = _primaryColor;
-            _preferenceService = preferenceService;
 
             if (_preferenceService.ContainsKey("color_r") &&
                 _preferenceService.ContainsKey("color_g") &&
@@ -80,7 +94,7 @@ namespace QianShi.Music.ViewModels
 
         private DelegateCommand<Color?> _changeHueCommand;
         public DelegateCommand<Color?> ChangeHueCommand =>
-            _changeHueCommand ?? (_changeHueCommand = new DelegateCommand<Color?>(ExecuteChangeHueCommand));
+            _changeHueCommand ??= new(ExecuteChangeHueCommand);
 
         void ExecuteChangeHueCommand(Color? obj)
         {
@@ -101,12 +115,12 @@ namespace QianShi.Music.ViewModels
             }
             else if (ActiveScheme == ColorScheme.PrimaryForeground)
             {
-                SetPrimaryForegroundToSingleColor(hue);
+                _paletteHelper.SetPrimaryForegroundToSingleColor(hue);
                 _primaryForegroundColor = hue;
             }
             else if (ActiveScheme == ColorScheme.SecondaryForeground)
             {
-                SetSecondaryForegroundToSingleColor(hue);
+                _paletteHelper.SetSecondaryForegroundToSingleColor(hue);
                 _secondaryForegroundColor = hue;
             }
 
@@ -132,38 +146,14 @@ namespace QianShi.Music.ViewModels
             }
             else if (ActiveScheme == ColorScheme.PrimaryForeground)
             {
-                SetPrimaryForegroundToSingleColor(color);
+                _paletteHelper.SetPrimaryForegroundToSingleColor(color);
                 _primaryForegroundColor = color;
             }
             else if (ActiveScheme == ColorScheme.SecondaryForeground)
             {
-                SetSecondaryForegroundToSingleColor(color);
+                _paletteHelper.SetSecondaryForegroundToSingleColor(color);
                 _secondaryForegroundColor = color;
             }
         }
-
-
-        private void SetPrimaryForegroundToSingleColor(Color color)
-        {
-            ITheme theme = _paletteHelper.GetTheme();
-
-            theme.PrimaryLight = new ColorPair(theme.PrimaryLight.Color, color);
-            theme.PrimaryMid = new ColorPair(theme.PrimaryMid.Color, color);
-            theme.PrimaryDark = new ColorPair(theme.PrimaryDark.Color, color);
-
-            _paletteHelper.SetTheme(theme);
-        }
-
-        private void SetSecondaryForegroundToSingleColor(Color color)
-        {
-            ITheme theme = _paletteHelper.GetTheme();
-
-            theme.SecondaryLight = new ColorPair(theme.SecondaryLight.Color, color);
-            theme.SecondaryMid = new ColorPair(theme.SecondaryMid.Color, color);
-            theme.SecondaryDark = new ColorPair(theme.SecondaryDark.Color, color);
-
-            _paletteHelper.SetTheme(theme);
-        }
-
     }
 }

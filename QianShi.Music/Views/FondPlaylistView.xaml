@@ -11,7 +11,7 @@
     d:DesignHeight="720"
     d:DesignWidth="1280"
     mc:Ignorable="d">
-    <uc:ScrollViewerAnimation Background="White">
+    <uc:ScrollViewerAnimation>
         <StackPanel MaxWidth="1280">
             <DockPanel Margin="10" LastChildFill="True">
                 <uc:FilletImage

@@ -11,7 +11,7 @@
     d:DesignWidth="1280"
     mc:Ignorable="d">
     <uc:ScrollViewerAnimation>
-        <StackPanel MaxWidth="1280" Background="White">
+        <StackPanel MaxWidth="1280">
             <uc:TitleControl
                 Title="正在播放"
                 Margin="18"

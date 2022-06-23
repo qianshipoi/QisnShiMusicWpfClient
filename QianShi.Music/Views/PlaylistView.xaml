@@ -26,10 +26,7 @@
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
         <uc:ScrollViewerAnimation>
-            <Border
-                MaxWidth="1280"
-                Padding="20"
-                Background="White">
+            <Border MaxWidth="1280" Padding="20">
                 <StackPanel>
                     <Grid Margin="0,0,0,72">
                         <Grid.ColumnDefinitions>

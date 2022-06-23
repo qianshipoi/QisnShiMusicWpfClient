@@ -98,7 +98,13 @@
         </DataTemplate>
     </UserControl.Resources>
     <ucs:ScrollViewerAnimation>
-        <StackPanel Margin="20">
+        <StackPanel MaxWidth="1280" Margin="20">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="Light" />
+                <ToggleButton Margin="8,0,16,0" IsChecked="{Binding IsDark}" />
+                <TextBlock VerticalAlignment="Center" Text="Dark" />
+            </StackPanel>
+
             <StackPanel Orientation="Horizontal">
                 <StackPanel.Resources>
                     <Style TargetType="TextBlock">

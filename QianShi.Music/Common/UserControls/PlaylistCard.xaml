@@ -17,10 +17,7 @@
             <conver:NumberConverter x:Key="NumberConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    <Border
-        Background="White"
-        BorderThickness="0"
-        CornerRadius="10">
+    <Border BorderThickness="0" CornerRadius="10">
         <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistCard}}}">
             <local:PlaylistCover
                 Margin="0,0,0,10"

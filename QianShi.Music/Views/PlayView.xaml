@@ -21,7 +21,7 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         d:Background="White"
-        Background="White">
+        Background="{DynamicResource MaterialDesignPaper}">
         <Grid.RowDefinitions>
             <RowDefinition Height="30" />
             <RowDefinition />

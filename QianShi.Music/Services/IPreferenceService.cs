@@ -8,6 +8,7 @@
         float Get(string key, float defaultValue);
         DateTime Get(string key, DateTime defaultValue);
         long Get(string key, long defaultValue);
+        bool Get(string key, bool defaultValue);
 
         void Set(string key, string value);
         void Set(string key, int value);
@@ -18,9 +19,9 @@
         void Set(string key, long value);
 
         bool ContainsKey(string key);
-
         void RemoveKey(string key);
-
         void Clear();
+
+        void Save();
     }
 }

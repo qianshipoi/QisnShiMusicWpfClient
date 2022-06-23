@@ -23,7 +23,7 @@
         <materialDesign:DialogHost.DialogContent>
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
-        <uc:ScrollViewerAnimation Padding="20,0" Background="White">
+        <uc:ScrollViewerAnimation Padding="20,0">
             <StackPanel MaxWidth="1280">
                 <DockPanel
                     Height="265"

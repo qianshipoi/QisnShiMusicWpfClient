@@ -19,10 +19,7 @@
     mc:Ignorable="d">
 
     <uc:ScrollViewerAnimation ScrollChanged="ScrollViewer_OnScrollChanged">
-        <Border
-            MaxWidth="1280"
-            Padding="10"
-            Background="White">
+        <Border MaxWidth="1280" Padding="10">
             <StackPanel>
                 <uc:VideoPlay
                     x:Name="VideoPlay"

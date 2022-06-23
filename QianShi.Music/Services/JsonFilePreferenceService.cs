@@ -12,7 +12,7 @@
         public JsonFilePreferenceService()
         {
             Initialization();
-            Application.Current.Exit += Current_Exit;
+            Application.Current.Exit += (_,_) => Save();
         }
 
         private void Initialization()
@@ -31,7 +31,7 @@
             _cache = cache ?? new Dictionary<string, object>();
         }
 
-        private void Current_Exit(object sender, ExitEventArgs e)
+        public void Save()
         {
             var jsonPath = Path.Combine(_baseDir, FileName);
             var jsonStr = JsonSerializer.Serialize(_cache);
@@ -171,6 +171,21 @@
             lock (locker)
             {
                 _cache.Clear();
+            }
+        }
+
+        public bool Get(string key, bool defaultValue)
+        {
+            lock (locker)
+            {
+                if (_cache.ContainsKey(key))
+                {
+                    return bool.TryParse(_cache[key].ToString(), out bool result) ? result : defaultValue;
+                }
+                else
+                {
+                    return defaultValue;
+                }
             }
         }
     }

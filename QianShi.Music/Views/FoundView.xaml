@@ -120,7 +120,7 @@
             </StackPanel>
         </materialDesign:DialogHost.DialogContent>
         <uc:ScrollViewerAnimation>
-            <StackPanel MaxWidth="1280" Background="#FFFFFF">
+            <StackPanel MaxWidth="1280">
                 <TextBlock
                     Margin="20,10"
                     FontSize="60"

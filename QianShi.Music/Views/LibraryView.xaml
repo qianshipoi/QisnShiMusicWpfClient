@@ -18,10 +18,7 @@
         <converters:LongToTimeSpanConverter x:Key="LongToTimeSpanConverter" />
     </UserControl.Resources>
     <uc:ScrollViewerAnimation>
-        <Border
-            MaxWidth="1280"
-            Padding="20"
-            Background="White">
+        <Border MaxWidth="1280" Padding="20">
             <StackPanel>
                 <DockPanel
                     Margin="0,0,0,20"

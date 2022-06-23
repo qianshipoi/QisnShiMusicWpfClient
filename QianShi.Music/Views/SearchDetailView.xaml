@@ -18,7 +18,7 @@
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
         <uc:ScrollViewerAnimation>
-            <StackPanel MaxWidth="1280" Background="White">
+            <StackPanel MaxWidth="1280">
                 <StackPanel Margin="20,32,20,28" Orientation="Horizontal">
                     <TextBlock
                         FontSize="32"
