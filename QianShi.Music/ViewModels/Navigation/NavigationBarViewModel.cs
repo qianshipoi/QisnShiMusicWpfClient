@@ -10,6 +10,7 @@ namespace QianShi.Music.ViewModels.Navigation
         private readonly IRegionManager _regionManager;
 
         private MenuBar? _navigateCurrentItem;
+        private bool _popupIsOpen;
         private DelegateCommand _goForwardCommand = default!;
         private DelegateCommand _goBackCommand = default!;
         private DelegateCommand<string> _searchCommand = default!;
@@ -23,6 +24,12 @@ namespace QianShi.Music.ViewModels.Navigation
         public ObservableCollection<MenuBar> MenuBars { get; } = new();
 
         public UserData UserData => UserData.Instance;
+
+        public bool PopupIsOpen
+        {
+            get => _popupIsOpen;
+            set => SetProperty(ref _popupIsOpen, value);
+        }
 
         public MenuBar? NavigateCurrentItem
         {
