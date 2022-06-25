@@ -17,25 +17,6 @@
             <local:ControlToAnimationConverter x:Key="ControlToAnimationConverter" />
             <local:WidthAndHeightToRectConverter x:Key="WidthAndHeightToRectConverter" />
             <conver:IsNullConverter x:Key="IsNullConverter" />
-            <Style x:Key="NoneButtonStyle" TargetType="Button">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="VerticalContentAlignment" Value="Stretch" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border Margin="{TemplateBinding Margin}">
-                                <ContentPresenter
-                                    Margin="{TemplateBinding Padding}"
-                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid

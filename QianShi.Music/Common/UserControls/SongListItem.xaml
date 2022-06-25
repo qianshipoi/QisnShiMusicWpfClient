@@ -84,6 +84,7 @@
                             Height="20"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            Cursor="Hand"
                             Foreground="#335eea"
                             Kind="CardsHeartOutline"
                             Opacity=".88"
