@@ -14,13 +14,13 @@
     <Border Padding="8" CornerRadius="12">
         <Border.Style>
             <Style TargetType="Border">
-                <Setter Property="Background" Value="{DynamicResource DefaultColor}" />
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource HoverColor}" />
+                        <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}" />
                     </Trigger>
                     <DataTrigger Binding="{Binding IsPlaying}" Value="True">
-                        <Setter Property="Background" Value="{StaticResource ActiveColor}" />
+                        <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
