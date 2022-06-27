@@ -17,10 +17,10 @@
                 <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}" />
+                        <Setter Property="Background" Value="{StaticResource MaterialDesignToolBackground}" />
                     </Trigger>
                     <DataTrigger Binding="{Binding IsPlaying}" Value="True">
-                        <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}" />
+                        <Setter Property="Background" Value="{StaticResource MaterialDesignToolBackground}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
