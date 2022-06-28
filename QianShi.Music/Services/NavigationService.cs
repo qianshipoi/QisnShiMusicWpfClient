@@ -54,9 +54,9 @@ namespace QianShi.Music.Services
 
         public void NavigateToPlayingList()
         {
-            if (!EqualsCurrentView<PlaylistCardView>())
+            if (!EqualsCurrentView<PlayingListView>())
             {
-                MainRegionNavigation(nameof(PlaylistCardView));
+                MainRegionNavigation(nameof(PlayingListView));
             }
         }
 

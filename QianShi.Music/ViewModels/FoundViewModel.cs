@@ -3,14 +3,18 @@ using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
 
+using System.Text.Json.Serialization;
+
 namespace QianShi.Music.ViewModels
 {
     public class FoundViewModel : NavigationViewModel
     {
         public const string PlaylistTypeParameterName = "PlaylistType";
+        private const string _catsKey = nameof(Cats);
 
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
+        private readonly IPreferenceService _preferenceService;
         private DelegateCommand<Cat> _addCatCommand = default!;
         private long _before = 0;
         private Cat? _currentCat = null;
@@ -25,11 +29,13 @@ namespace QianShi.Music.ViewModels
         public FoundViewModel(
                                     IContainerProvider provider,
             IPlaylistService playlistService,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            IPreferenceService preferenceService)
             : base(provider)
         {
             _playlistService = playlistService;
             _navigationService = navigationService;
+            _preferenceService = preferenceService;
         }
 
         public ObservableCollection<CatOption> CatOptions { get; } = new();
@@ -69,12 +75,27 @@ namespace QianShi.Music.ViewModels
         {
             if (Cats.Count == 0)
             {
-                Cats.Add(new Cat { DisplayName = "全部", Name = "全部" });
-                Cats.Add(new Cat { DisplayName = "推荐歌单", Name = "推荐" });
-                Cats.Add(new Cat { DisplayName = "精品歌单", Name = "精品" });
-                Cats.Add(new Cat { DisplayName = "官方", Name = "官方" });
-                Cats.Add(new Cat { DisplayName = "排行榜", Name = "排行榜" });
-                Cats.Add(new Cat { DisplayName = "...", IsLastOne = true });
+                if (_preferenceService.ContainsKey(_catsKey))
+                {
+                    var value = _preferenceService.Get(_catsKey, string.Empty);
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        var cats = JsonSerializer.Deserialize<List<Cat>>(value);
+                        if (cats != null)
+                        {
+                            Cats.AddRange(cats);
+                        }
+                    }
+                }
+                if (Cats.Count == 0)
+                {
+                    Cats.Add(new Cat { DisplayName = "全部", Name = "全部" });
+                    Cats.Add(new Cat { DisplayName = "推荐歌单", Name = "推荐" });
+                    Cats.Add(new Cat { DisplayName = "精品歌单", Name = "精品" });
+                    Cats.Add(new Cat { DisplayName = "官方", Name = "官方" });
+                    Cats.Add(new Cat { DisplayName = "排行榜", Name = "排行榜" });
+                    Cats.Add(new Cat { DisplayName = "...", IsLastOne = true });
+                }
             }
 
             var parametes = navigationContext.Parameters;
@@ -103,13 +124,16 @@ namespace QianShi.Music.ViewModels
             {
                 var catlistResponse = await _playlistService.GetCatlistAsync();
                 catlistResponse.Sub?.ForEach(x => x.DisplayName = x.Name);
+                var catNames = Cats.Select(x => x.Name).ToHashSet();
                 foreach (var cat in catlistResponse.Categories)
                 {
+                    var cats = catlistResponse.Sub?.Where(x => x.Category == cat.Key).ToList();
+                    cats?.Where(x => catNames.Contains(x.Name)).ToList().ForEach(item => item.IsSelected = true);
                     CatOptions.Add(new CatOption
                     {
                         Type = cat.Key,
                         Name = cat.Value,
-                        Cats = catlistResponse.Sub?.Where(x => x.Category == cat.Key).ToList()
+                        Cats = cats
                     });
                 }
             }
@@ -119,16 +143,22 @@ namespace QianShi.Music.ViewModels
 
         private void AddCat(Cat cat)
         {
-            if (Cats.Any(x => x.Equals(cat)))
+            if (Cats.Any(x => x.Name != null && x.Name.Equals(cat.Name)))
             {
                 cat.IsSelected = false;
-                Cats.Remove(cat);
+                var toBeRemoved = Cats.FirstOrDefault(x => x.Name.Equals(cat.Name));
+                if (toBeRemoved != null)
+                {
+                    Cats.Remove(toBeRemoved);
+                }
             }
             else
             {
                 cat.IsSelected = true;
                 Cats.Insert(Cats.Count - 1, cat);
             }
+
+            _preferenceService.Set(_catsKey, JsonSerializer.Serialize(Cats));
         }
 
         private async Task CallApi(Cat cat, bool isClear = false)
