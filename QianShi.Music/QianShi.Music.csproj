@@ -6,7 +6,11 @@
     <AssemblyName>QianShi.Music</AssemblyName>
 	<Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
+	<ApplicationIcon>nakiri.ico</ApplicationIcon>
   </PropertyGroup>
+  <ItemGroup>
+    <Content Include="nakiri.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
