@@ -3,8 +3,6 @@ using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Services;
 
-using System.Text.Json.Serialization;
-
 namespace QianShi.Music.ViewModels
 {
     public class FoundViewModel : NavigationViewModel
