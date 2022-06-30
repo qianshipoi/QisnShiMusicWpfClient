@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:QianShi.Music.Common.Helpers"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -17,7 +18,7 @@
     <UserControl.Resources>
         <converters:LongToTimeSpanConverter x:Key="LongToTimeSpanConverter" />
     </UserControl.Resources>
-    <uc:ScrollViewerAnimation>
+    <uc:ScrollViewerAnimation x:Name="scrollControl">
         <Border MaxWidth="1280" Padding="20">
             <StackPanel>
                 <DockPanel
@@ -118,7 +119,10 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </Grid>
-                <materialDesign:Card Margin="0,54,0,0" materialDesign:ShadowAssist.ShadowDepth="Depth1">
+                <materialDesign:Card
+                    x:Name="playlistControl"
+                    Margin="0,54,0,0"
+                    materialDesign:ShadowAssist.ShadowDepth="Depth1">
                     <TabControl
                         MinHeight="540"
                         HorizontalContentAlignment="Right"
@@ -127,6 +131,11 @@
                         materialDesign:ShadowAssist.ShadowDepth="Depth1"
                         Style="{StaticResource MaterialDesignNavigationRailTabControl}"
                         TabStripPlacement="Top">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <helpers:ScrollToControlAction ScrollViewer="{Binding ElementName=scrollControl}" TargetControl="{Binding ElementName=playlistControl}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <TabControl.ItemContainerStyle>
                             <Style BasedOn="{StaticResource MaterialDesignNavigationRailTabItem}" TargetType="TabItem">
                                 <Setter Property="Height" Value="40" />

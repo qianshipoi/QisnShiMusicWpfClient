@@ -207,7 +207,7 @@ namespace QianShi.Music.Services
         }
 
         public async Task<MvSublistResponse> MvSublist(PagedRequestBase parameters)
-                            => await Request<MvSublistResponse>("/mv/sublist", parameters);
+            => await Request<MvSublistResponse>("/mv/sublist", parameters);
 
         public async Task<MvUrlResponse> MvUrl(MvUrlRequest parameters)
             => await Request<MvUrlResponse>("/mv/url", parameters);

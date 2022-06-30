@@ -71,26 +71,29 @@ namespace QianShi.Music.ViewModels
                     Songs.Clear();
 
                     // 获取所有歌曲
-                    var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
-                    var songResponse = await _playlistService.SongDetail(ids);
-                    if (songResponse.Code == 200)
+                    if (response.PlaylistDetail.TrackIds.Count > 0)
                     {
-                        int i = 0;
-                        foreach (var song in songResponse.Songs)
+                        var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
+                        var songResponse = await _playlistService.SongDetail(ids);
+                        if (songResponse.Code == 200)
                         {
-                            song.Album.CoverImgUrl += "?param=48y48";
-                            song.IsLike = _playlistStoreService.HasLikedSong(song);
-                            Songs.Add(song);
-                            i++;
-                            if (i % 5 == 0)
+                            int i = 0;
+                            foreach (var song in songResponse.Songs)
                             {
-                                await Task.Delay(20);
+                                song.Album.CoverImgUrl += "?param=48y48";
+                                song.IsLike = _playlistStoreService.HasLikedSong(song);
+                                Songs.Add(song);
+                                i++;
+                                if (i % 5 == 0)
+                                {
+                                    await Task.Delay(20);
+                                }
                             }
-                        }
 
-                        if ((_playStoreService.Current?.Id).HasValue)
-                        {
-                            CurrentChanged(null, new(_playStoreService.Current));
+                            if ((_playStoreService.Current?.Id).HasValue)
+                            {
+                                CurrentChanged(null, new(_playStoreService.Current));
+                            }
                         }
                     }
                 }
