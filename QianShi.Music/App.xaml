@@ -8,6 +8,7 @@
     xmlns:prism="http://prismlibrary.com/"
     xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls">
     <Application.Resources>
         <ResourceDictionary>
@@ -107,7 +108,6 @@
             <converters:TimeSpanToDoubleConverter x:Key="TimeSpanToDoubleConverter" />
             <converters:DoubleToTimeSpanConverter x:Key="DoubleToTimeSpanConverter" />
             <FontFamily x:Key="SourceHan">/QianShi.Music;Component/Resources/#SourceHanSerifSC-VF</FontFamily>
-
             <Style x:Key="NoneButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
@@ -127,6 +127,17 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <tb:TaskbarIcon x:Key="NotifyIcon" IconSource="/Assets/Ico/nakiri.ico">
+                <!--<tb:TaskbarIcon.TrayToolTip>
+                    <uc:TaskBarMenu />
+                </tb:TaskbarIcon.TrayToolTip>-->
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu Background="LightCoral">
+                        <MenuItem Header="First Menu Item" />
+                        <MenuItem Header="Second Menu Item" />
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

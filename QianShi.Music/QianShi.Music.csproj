@@ -9,14 +9,23 @@
 	<ApplicationIcon>nakiri.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="nakiri.ico" />
+    <None Remove="Assets\Ico\nakiri.ico" />
+  </ItemGroup>
+  <ItemGroup>
+	  <Resource Include="Assets\Ico\nakiri.ico" />
+	  <Content Include="nakiri.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
     <PackageReference Include="RestSharp" Version="107.3.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Assets\Image\" />
   </ItemGroup>
 </Project>

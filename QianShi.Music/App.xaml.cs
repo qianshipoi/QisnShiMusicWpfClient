@@ -1,4 +1,6 @@
-﻿using QianShi.Music.Common;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+
+using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
@@ -16,6 +18,7 @@ namespace QianShi.Music
     /// </summary>
     public partial class App
     {
+        private TaskbarIcon? _tbi = null;
         public new static App Current => (App)Application.Current;
 
         private IPlaylistService _playlistService = default!;
@@ -36,7 +39,7 @@ namespace QianShi.Music
                     }
                 }
             }
-
+            _tbi = (TaskbarIcon)FindResource("NotifyIcon");
             return Container.Resolve<MainWindow>();
             //return new TestControlsWindows();
         }
