@@ -26,10 +26,10 @@
                 <Setter Property="Background" Value="Transparent" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#f5f5f7" />
+                        <Setter Property="Background" Value="{StaticResource MaterialDesignTextFieldBoxBackground}" />
                     </Trigger>
                     <DataTrigger Binding="{Binding Item.IsPlaying}" Value="True">
-                        <Setter Property="Background" Value="#eaeffd" />
+                        <Setter Property="Background" Value="{StaticResource MaterialDesignTextFieldBoxHoverBackground}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
