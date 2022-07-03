@@ -35,6 +35,8 @@
 
         void SetMute(bool isMute);
 
+        void Stop();
+
         void FullScreen();
     }
 }

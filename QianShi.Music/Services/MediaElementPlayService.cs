@@ -147,6 +147,14 @@ namespace QianShi.Music.Services
             IsPlaying = false;
         }
 
+        public void Stop()
+        {
+            _mediaElement.Stop();
+            _timer.Stop();
+            IsPlaying = false;
+            Position = 0;
+        }
+
         public void SetVolume(double value)
         {
             if (value > 1) value = 1;

@@ -175,5 +175,15 @@ namespace QianShi.Music.ViewModels
                 await _videoPlayStoreService.SetMovieVideo(_mvId);
             }
         }
+
+        public override void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            if (_videoPlayService.IsPlaying)
+            {
+                _videoPlayService.Stop();
+            }
+
+            base.OnNavigatedFrom(navigationContext);
+        }
     }
 }

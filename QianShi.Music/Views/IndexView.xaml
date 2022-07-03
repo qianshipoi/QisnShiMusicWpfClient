@@ -49,7 +49,12 @@
                 Margin="20"
                 Columns="2"
                 Rows="1">
-                <uc:ScrollImage />
+                <materialDesign:Card
+                    Margin="10,0,0,0"
+                    Padding="18"
+                    UniformCornerRadius="6">
+                    <uc:ScrollImage CornerRadius="8" />
+                </materialDesign:Card>
                 <materialDesign:Card
                     Margin="10,0,0,0"
                     Padding="18"
