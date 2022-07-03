@@ -204,6 +204,7 @@ namespace QianShi.Music.Services
             {
                 _window = _containerProvider.Resolve<VideoPlayWindow>();
                 _window.Show();
+                _window.Owner = App.Current.MainWindow;
                 IsFullScreen = true;
             }
         }
