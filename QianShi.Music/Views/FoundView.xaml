@@ -119,78 +119,93 @@
                     Text="Loading..." />
             </StackPanel>
         </materialDesign:DialogHost.DialogContent>
-        <uc:ScrollViewerAnimation>
-            <StackPanel MaxWidth="1280">
-                <TextBlock
-                    Margin="20,10"
-                    FontSize="60"
-                    FontWeight="Bold"
-                    Text="发现" />
-                <ItemsControl
-                    Margin="10"
-                    ItemTemplateSelector="{StaticResource ItemsControlsDataTemplateSelector}"
-                    ItemsPanel="{StaticResource WrapPanel}"
-                    ItemsSource="{Binding Cats}" />
-                <Border
-                    Margin="10"
-                    Background="#F5F5F7"
-                    CornerRadius="10"
-                    Visibility="{Binding MoreCat}">
-                    <ItemsControl ItemsPanel="{StaticResource StackPanel}" ItemsSource="{Binding CatOptions}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="80" />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Top"
-                                        FontSize="22"
-                                        FontWeight="Bold"
-                                        Text="{Binding Name}" />
-                                    <ItemsControl
-                                        Grid.Column="1"
-                                        ItemsPanel="{StaticResource WrapPanel}"
-                                        ItemsSource="{Binding Cats}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Button
-                                                    Margin="6"
-                                                    Command="{Binding DataContext.AddCatCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding}"
-                                                    Content="{Binding Name}"
-                                                    Style="{DynamicResource SelectedCatBtn}" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Border>
-                <ItemsControl
-                    x:Name="PlaylistControl"
-                    Grid.Row="1"
-                    Margin="10,0"
-                    HorizontalAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    ItemTemplateSelector="{StaticResource PlaylistDataTemplateSelector}"
-                    ItemsPanel="{StaticResource UniformGridC5}"
-                    ItemsSource="{Binding Playlists}"
-                    ScrollViewer.IsDeferredScrollingEnabled="True"
-                    VirtualizingPanel.IsVirtualizing="True"
-                    VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-                    VirtualizingPanel.VirtualizationMode="Recycling" />
-                <Button
-                    Margin="0,20"
-                    HorizontalAlignment="Center"
-                    Command="{Binding MorePlaylistCommand}"
-                    CommandParameter="{Binding ElementName=PlaylistControl}"
-                    Content="加载更多"
-                    Visibility="{Binding More, Converter={StaticResource Bool2VisibilityConverter}}" />
-            </StackPanel>
-        </uc:ScrollViewerAnimation>
+        <Grid>
+            <uc:ScrollViewerAnimation x:Name="ScrollViewerControl">
+                <StackPanel MaxWidth="1280">
+                    <TextBlock
+                        Margin="20,10"
+                        FontSize="60"
+                        FontWeight="Bold"
+                        Text="发现" />
+                    <ItemsControl
+                        Margin="10"
+                        ItemTemplateSelector="{StaticResource ItemsControlsDataTemplateSelector}"
+                        ItemsPanel="{StaticResource WrapPanel}"
+                        ItemsSource="{Binding Cats}" />
+                    <Border
+                        Margin="10"
+                        Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
+                        CornerRadius="10"
+                        Visibility="{Binding MoreCat}">
+                        <ItemsControl ItemsPanel="{StaticResource StackPanel}" ItemsSource="{Binding CatOptions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Top"
+                                            FontSize="22"
+                                            FontWeight="Bold"
+                                            Text="{Binding Name}" />
+                                        <ItemsControl
+                                            Grid.Column="1"
+                                            ItemsPanel="{StaticResource WrapPanel}"
+                                            ItemsSource="{Binding Cats}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button
+                                                        Margin="6"
+                                                        Command="{Binding DataContext.AddCatCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="{Binding Name}"
+                                                        Style="{DynamicResource SelectedCatBtn}" />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
+                    <ItemsControl
+                        x:Name="PlaylistControl"
+                        Grid.Row="1"
+                        Margin="10,0"
+                        HorizontalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        ItemTemplateSelector="{StaticResource PlaylistDataTemplateSelector}"
+                        ItemsPanel="{StaticResource UniformGridC5}"
+                        ItemsSource="{Binding Playlists}"
+                        ScrollViewer.IsDeferredScrollingEnabled="True"
+                        VirtualizingPanel.IsVirtualizing="True"
+                        VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                        VirtualizingPanel.VirtualizationMode="Recycling" />
+                    <Button
+                        Margin="0,20"
+                        HorizontalAlignment="Center"
+                        Command="{Binding MorePlaylistCommand}"
+                        CommandParameter="{Binding ElementName=PlaylistControl}"
+                        Content="加载更多"
+                        Visibility="{Binding More, Converter={StaticResource Bool2VisibilityConverter}}" />
+                </StackPanel>
+            </uc:ScrollViewerAnimation>
+            <Button
+                x:Name="BackTopButton"
+                Margin="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Click="BackTopButton_Click"
+                Style="{StaticResource MaterialDesignIconButton}">
+                <materialDesign:PackIcon
+                    Width="32"
+                    Height="32"
+                    FontSize="32"
+                    Kind="ArrowUpBoldBox" />
+            </Button>
+        </Grid>
     </materialDesign:DialogHost>
 </UserControl>

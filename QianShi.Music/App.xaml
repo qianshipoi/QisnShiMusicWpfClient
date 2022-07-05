@@ -21,7 +21,7 @@
                 <ResourceDictionary Source="/Resources/ScrollBarResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <common:ViewModelLocator x:Key="ViewModelLocator" />
-            <DataTemplate x:Key="ArtistDataTemplate">
+            <DataTemplate x:Key="ArtistDataTemplate" DataType="{x:Type common:IPlaylist}">
                 <StackPanel Margin="20" HorizontalAlignment="Stretch">
                     <uc:PlaylistCover CornerRadius="200" ImageSource="{Binding CoverImgUrl}" />
                     <TextBlock
@@ -34,7 +34,7 @@
                         Text="{Binding Name}" />
                 </StackPanel>
             </DataTemplate>
-            <DataTemplate x:Key="AlbumDataTemplate">
+            <DataTemplate x:Key="AlbumDataTemplate" DataType="{x:Type common:IPlaylist}">
                 <uc:PlaylistCard
                     Title="{Binding Name}"
                     Margin="10"
@@ -44,7 +44,7 @@
             <DataTemplate x:Key="SongDataTemplate" DataType="{x:Type response:Song}">
                 <uc:SongItem Item="{Binding}" />
             </DataTemplate>
-            <DataTemplate x:Key="MovieVideoDataTemplate">
+            <DataTemplate x:Key="MovieVideoDataTemplate" DataType="{x:Type common:IPlaylist}">
                 <StackPanel Margin="10">
                     <uc:PlaylistCover
                         Height="120"
@@ -61,7 +61,7 @@
                         Text="{Binding Artists[0].Name}" />
                 </StackPanel>
             </DataTemplate>
-            <DataTemplate x:Key="PlaylistDataTemplate">
+            <DataTemplate x:Key="PlaylistDataTemplate" DataType="{x:Type common:IPlaylist}">
                 <uc:PlaylistCard
                     Title="{Binding Name}"
                     Margin="10"
