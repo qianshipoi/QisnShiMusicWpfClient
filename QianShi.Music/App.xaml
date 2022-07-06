@@ -5,9 +5,7 @@
     xmlns:common="clr-namespace:QianShi.Music.Common"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:prism="http://prismlibrary.com/"
-    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
-    xmlns:tb="http://www.hardcodet.net/taskbar"
-    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls">
+    xmlns:tb="http://www.hardcodet.net/taskbar">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

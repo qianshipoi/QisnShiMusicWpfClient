@@ -60,7 +60,7 @@ namespace QianShi.Music.ViewModels
                 if (SetProperty(ref _isDark, value))
                 {
                     _paletteHelper.ChangeBaseTheme(value ? Theme.Dark : Theme.Light);
-                    _preferenceService.Set("base_theme", value);
+                    _preferenceService.SaveTheme(value);
                 }
             }
         }
@@ -70,7 +70,7 @@ namespace QianShi.Music.ViewModels
             _preferenceService = preferenceService;
             Title = "Setting View";
 
-            ITheme theme = _paletteHelper.GetTheme();
+            var theme = _paletteHelper.GetTheme();
 
             IsDark = theme.GetBaseTheme() == BaseTheme.Dark;
 
@@ -79,24 +79,19 @@ namespace QianShi.Music.ViewModels
 
             SelectedColor = _primaryColor;
 
-            if (_preferenceService.ContainsKey("color_r") &&
-                _preferenceService.ContainsKey("color_g") &&
-                _preferenceService.ContainsKey("color_b") &&
-                _preferenceService.ContainsKey("color_a"))
+            var color = _preferenceService.GetCurrentColor();
+
+            if (color.HasValue)
             {
-                var r = (byte)_preferenceService.Get("color_r", -1);
-                var g = (byte)_preferenceService.Get("color_g", -1);
-                var b = (byte)_preferenceService.Get("color_b", -1);
-                var a = (byte)_preferenceService.Get("color_a", -1);
-                ExecuteChangeHueCommand(Color.FromArgb(a, r, g, b));
+                ExecuteChangeHueCommand(color.Value);
             }
         }
 
-        private DelegateCommand<Color?> _changeHueCommand;
+        private DelegateCommand<Color?> _changeHueCommand = default!;
         public DelegateCommand<Color?> ChangeHueCommand =>
             _changeHueCommand ??= new(ExecuteChangeHueCommand);
 
-        void ExecuteChangeHueCommand(Color? obj)
+        private void ExecuteChangeHueCommand(Color? obj)
         {
             if (obj == null) return;
             var hue = obj.Value;
@@ -124,10 +119,7 @@ namespace QianShi.Music.ViewModels
                 _secondaryForegroundColor = hue;
             }
 
-            _preferenceService.Set("color_r", hue.R);
-            _preferenceService.Set("color_g", hue.G);
-            _preferenceService.Set("color_b", hue.B);
-            _preferenceService.Set("color_a", hue.A);
+            _preferenceService.SaveTheme(hue);
         }
 
         private void ChangeCustomColor(object? obj)
