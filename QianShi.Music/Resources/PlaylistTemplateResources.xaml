@@ -1,0 +1,56 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:common="clr-namespace:QianShi.Music.Common"
+    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
+    xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls">
+    <DataTemplate x:Key="ArtistDataTemplate" DataType="{x:Type common:IPlaylist}">
+        <StackPanel Margin="20" HorizontalAlignment="Stretch">
+            <uc:PlaylistCover CornerRadius="200" ImageSource="{Binding CoverImgUrl}" />
+            <TextBlock
+                Margin="0,10,0,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                FontSize="16"
+                FontWeight="Bold"
+                Opacity=".65"
+                Text="{Binding Name}" />
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="AlbumDataTemplate" DataType="{x:Type common:IPlaylist}">
+        <uc:PlaylistCard
+            Title="{Binding Name}"
+            Margin="10"
+            Cover="{Binding CoverImgUrl}"
+            Description="{Binding Artist.Name}" />
+    </DataTemplate>
+    <DataTemplate x:Key="SongDataTemplate" DataType="{x:Type response:Song}">
+        <uc:SongItem Item="{Binding}" />
+    </DataTemplate>
+    <DataTemplate x:Key="MovieVideoDataTemplate" DataType="{x:Type common:IPlaylist}">
+        <StackPanel Margin="10">
+            <uc:PlaylistCover
+                Height="120"
+                CornerRadius="12"
+                Cursor="Hand"
+                ImageSource="{Binding Cover}" />
+            <TextBlock
+                Margin="0,6,0,2"
+                FontSize="16"
+                Text="{Binding Name}" />
+            <TextBlock
+                FontSize="12"
+                Opacity=".68"
+                Text="{Binding Artists[0].Name}" />
+        </StackPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="PlaylistDataTemplate" DataType="{x:Type common:IPlaylist}">
+        <uc:PlaylistCard
+            Title="{Binding Name}"
+            Margin="10"
+            Cover="{Binding CoverImgUrl}" />
+    </DataTemplate>
+
+    <uc:DefaultDataTemplateSelector x:Key="DefaultDataTemplateSelector" />
+    <uc:DefaultItemContainerStyleSelector x:Key="DefaultItemContainerStyleSelector" />
+</ResourceDictionary>
