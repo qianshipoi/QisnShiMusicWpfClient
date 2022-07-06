@@ -24,6 +24,7 @@ global using Prism.Services.Dialogs;
 global using Prism.Events;
 
 global using MaterialDesignThemes.Wpf;
+global using MaterialDesignColors;
 
 global using QRCoder;
 

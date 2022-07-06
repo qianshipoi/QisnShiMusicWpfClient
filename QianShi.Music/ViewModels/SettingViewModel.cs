@@ -1,6 +1,4 @@
-﻿using MaterialDesignColors;
-
-using QianShi.Music.Common.Models;
+﻿using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 
@@ -8,7 +6,7 @@ namespace QianShi.Music.ViewModels
 {
     public class SettingViewModel : NavigationViewModel
     {
-        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
+        private readonly PaletteHelper _paletteHelper;
         private readonly IPreferenceService _preferenceService;
 
         private Color? _primaryColor;
@@ -16,7 +14,7 @@ namespace QianShi.Music.ViewModels
         private Color? _primaryForegroundColor;
         private Color? _secondaryForegroundColor;
 
-        public IEnumerable<ISwatch> Swatches { get; } = SwatchHelper.Swatches;
+        public IEnumerable<ISwatch> Swatches => SwatchHelper.Swatches;
 
         private ColorScheme _activeScheme;
         public ColorScheme ActiveScheme
@@ -65,10 +63,13 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        public SettingViewModel(IContainerProvider containerProvider, IPreferenceService preferenceService) : base(containerProvider)
+        public SettingViewModel(
+            IContainerProvider containerProvider, 
+            IPreferenceService preferenceService) 
+            : base(containerProvider)
         {
+            _paletteHelper = new PaletteHelper();
             _preferenceService = preferenceService;
-            Title = "Setting View";
 
             var theme = _paletteHelper.GetTheme();
 
@@ -79,12 +80,7 @@ namespace QianShi.Music.ViewModels
 
             SelectedColor = _primaryColor;
 
-            var color = _preferenceService.GetCurrentColor();
-
-            if (color.HasValue)
-            {
-                ExecuteChangeHueCommand(color.Value);
-            }
+            ExecuteChangeHueCommand(_preferenceService.GetCurrentColor());
         }
 
         private DelegateCommand<Color?> _changeHueCommand = default!;
