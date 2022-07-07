@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:request="clr-namespace:QianShi.Music.Common.Models.Request"
+    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:viewmodel="clr-namespace:QianShi.Music.ViewModels"
     d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SearchViewModel}"
@@ -107,15 +108,18 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="{x:Type response:Song}">
                                 <Border Padding="8" CornerRadius="8">
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="Background" Value="Transparent" />
                                             <Style.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="#F5F5F7" />
+                                                    <Setter Property="Background" Value="{StaticResource MaterialDesignTextFieldBoxBackground}" />
                                                 </Trigger>
+                                                <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource MaterialDesignTextFieldBoxHoverBackground}" />
+                                                </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>

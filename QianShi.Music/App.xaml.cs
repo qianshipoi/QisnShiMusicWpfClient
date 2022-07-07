@@ -1,6 +1,4 @@
-﻿using Hardcodet.Wpf.TaskbarNotification;
-
-using QianShi.Music.Common;
+﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
@@ -10,9 +8,6 @@ using QianShi.Music.ViewModels.Navigation;
 using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 using QianShi.Music.Views.Navigation;
-
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QianShi.Music
 {
@@ -83,15 +78,9 @@ namespace QianShi.Music
             if (File.Exists(_cookieSavePath))
             {
                 var cookiesJson = File.ReadAllText(_cookieSavePath);
-                var cookies = JsonSerializer.Deserialize<List<CookieInfo>>(cookiesJson);
-                if (null != cookies)
-                {
-                    foreach (var cookie in cookies)
-                    {
-                        _playlistService.SetCookie(cookie.ToCookie());
-                    }
-                }
+                JsonSerializer.Deserialize<List<CookieInfo>>(cookiesJson)?.ToList().ForEach(x => _playlistService.SetCookie(x.ToCookie()));
             }
+
             _tbi = (TaskbarIcon)FindResource("NotifyIcon");
             return Container.Resolve<MainWindow>();
             //return new TestControlsWindows();
@@ -99,12 +88,8 @@ namespace QianShi.Music
 
         protected override void OnInitialized()
         {
-            var service = App.Current.MainWindow.DataContext as IConfigureService;
-            if (service != null)
-                service.Configure();
-
+            (MainWindow.DataContext as IConfigureService)?.Configure();
             Container.Resolve<IPreferenceService>()?.InitTheme();
-
             base.OnInitialized();
         }
 

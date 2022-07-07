@@ -16,7 +16,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<SearchType?> _moreCommand = default!;
 
         public SearchViewModel(
-                    IContainerProvider containerProvider,
+            IContainerProvider containerProvider,
             IPlaylistService playlistService,
             INavigationService navigationService)
             : base(containerProvider)
@@ -53,17 +53,14 @@ namespace QianShi.Music.ViewModels
                 Type = SearchType.单曲
             });
 
-            if (response.Code == 200)
+            if (response.Code == 200 && response.Result?.SongCount > 0)
             {
-                if (response.Result.SongCount > 0)
+                var ids = string.Join(',', response.Result.Songs.Select(s => s.Id));
+                var songDetailResponse = await _playlistService.SongDetail(ids);
+                if (songDetailResponse.Code == 200 && songDetailResponse.Songs?.Count > 0)
                 {
-                    var ids = string.Join(',', response.Result.Songs.Select(s => s.Id));
-                    var songDetailResponse = await _playlistService.SongDetail(ids);
-                    if (songDetailResponse.Code == 200)
-                    {
-                        songDetailResponse.Songs.ForEach(s => FormatCover(s.Album, 48, 48));
-                        Songs.AddRange(songDetailResponse.Songs);
-                    }
+                    songDetailResponse.Songs.ForEach(s => FormatCover(s.Album, 48, 48));
+                    Songs.AddRange(songDetailResponse.Songs);
                 }
             }
         }
@@ -76,7 +73,7 @@ namespace QianShi.Music.ViewModels
                 Keywords = _currentSearchKeywords,
                 Type = SearchType.专辑
             });
-            if (response.Code == 200)
+            if (response.Code == 200 && response.Result?.AlbumCount > 0)
             {
                 response.Result.Albums.ForEach(FormatCoverDefault);
                 Albums.AddRange(response.Result.Albums);
@@ -91,7 +88,7 @@ namespace QianShi.Music.ViewModels
                 Keywords = _currentSearchKeywords,
                 Type = SearchType.歌手
             });
-            if (response.Code == 200)
+            if (response.Code == 200 && response.Result?.ArtistCount > 0)
             {
                 response.Result.Artists.ForEach(FormatCoverDefault);
                 Artists.AddRange(response.Result.Artists);
@@ -106,7 +103,7 @@ namespace QianShi.Music.ViewModels
                 Keywords = _currentSearchKeywords,
                 Type = SearchType.歌单
             });
-            if (response.Code == 200)
+            if (response.Code == 200 && response.Result?.PlaylistCount > 0)
             {
                 response.Result.Playlists.ForEach(FormatCoverDefault);
                 Playlists.AddRange(response.Result.Playlists);
@@ -121,7 +118,7 @@ namespace QianShi.Music.ViewModels
                 Keywords = _currentSearchKeywords,
                 Type = SearchType.MV
             });
-            if (response.Code == 200 && response.Result.MovieVideos?.Count > 0)
+            if (response.Code == 200 && response.Result?.MovieVideoCount > 0)
             {
                 MovieVideos.AddRange(response.Result.MovieVideos);
             }
@@ -140,16 +137,20 @@ namespace QianShi.Music.ViewModels
                 {
                     return;
                 }
-                else
-                {
-                    _currentSearchKeywords = searchText;
-                    Artists.Clear();
-                    Albums.Clear();
-                    Songs.Clear();
-                    Playlists.Clear();
-                    MovieVideos.Clear();
-                }
-                await Task.WhenAll(GetSongsAsync(), GetAlbumsAsync(), GetArtistsAsync(), GetPlaylistsAsync(), GetMovieVideosAsync());
+
+                _currentSearchKeywords = searchText;
+                Artists.Clear();
+                Albums.Clear();
+                Songs.Clear();
+                Playlists.Clear();
+                MovieVideos.Clear();
+
+                await Task.WhenAll(
+                    GetSongsAsync(),
+                    GetAlbumsAsync(),
+                    GetArtistsAsync(),
+                    GetPlaylistsAsync(),
+                    GetMovieVideosAsync());
             }
         }
 
