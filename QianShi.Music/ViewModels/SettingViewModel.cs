@@ -14,8 +14,6 @@ namespace QianShi.Music.ViewModels
         private Color? _primaryForegroundColor;
         private Color? _secondaryForegroundColor;
 
-        public IEnumerable<ISwatch> Swatches => SwatchHelper.Swatches;
-
         private ColorScheme _activeScheme;
         public ColorScheme ActiveScheme
         {
