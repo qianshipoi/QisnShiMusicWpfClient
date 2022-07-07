@@ -11,6 +11,9 @@ using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 using QianShi.Music.Views.Navigation;
 
+using System.Text;
+using System.Threading.Tasks;
+
 namespace QianShi.Music
 {
     /// <summary>
@@ -18,11 +21,61 @@ namespace QianShi.Music
     /// </summary>
     public partial class App
     {
+        private readonly string _cookieSavePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cookie.json");
         private TaskbarIcon? _tbi = null;
+        private IPlaylistService _playlistService = default!;
+
         public new static App Current => (App)Application.Current;
 
-        private IPlaylistService _playlistService = default!;
-        private readonly string _cookieSavePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cookie.json");
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            // UI线程未捕获异常
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+            // Task线程未捕获异常
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+            // 非UI线程未捕获异常
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var sb = new StringBuilder();
+            if (e.IsTerminating)
+            {
+                sb.Append("非UI线程发生错误");
+            }
+            sb.Append("非UI线程异常：");
+            if (e.ExceptionObject is Exception exception)
+            {
+                sb.Append(exception.Message);
+            }
+            else
+            {
+                sb.Append(e.ExceptionObject);
+            }
+            MessageBox.Show(sb.ToString());
+        }
+
+        private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            MessageBox.Show("Task线程异常：" + e.Exception.Message);
+            e.SetObserved();
+        }
+
+        private void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            try
+            {
+                e.Handled = true;
+                MessageBox.Show("UI线程异常：" + e.Exception.Message);
+            }
+            catch
+            {
+                MessageBox.Show("UI线程发生致命错误！");
+            }
+        }
 
         protected override Window CreateShell()
         {

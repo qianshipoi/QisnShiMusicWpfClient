@@ -23,7 +23,8 @@
                 Height="40"
                 Background="{Binding Converter={StaticResource ColorToBrushConverter}}"
                 Command="{Binding DataContext.ChangeHueCommand, RelativeSource={RelativeSource AncestorType=local:SettingView}}"
-                CommandParameter="{Binding}">
+                CommandParameter="{Binding}"
+                Cursor="Hand">
                 <Button.Style>
                     <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="Button">
                         <Setter Property="helpers:ButtonAssist.UniformCornerRadius" Value="0" />
