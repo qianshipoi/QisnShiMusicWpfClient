@@ -8,7 +8,6 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
-    xmlns:viewmodels="clr-namespace:QianShi.Music.ViewModels"
     d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=PlayViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"

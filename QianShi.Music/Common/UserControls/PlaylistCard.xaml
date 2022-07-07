@@ -8,7 +8,6 @@
     xmlns:local="clr-namespace:QianShi.Music.Common.UserControls"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:views="clr-namespace:QianShi.Music.Views"
     d:DesignHeight="280"
     d:DesignWidth="210"
     mc:Ignorable="d">

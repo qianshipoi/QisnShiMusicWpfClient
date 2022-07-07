@@ -11,7 +11,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
-    xmlns:vm="clr-namespace:QianShi.Music.ViewModels"
     d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=ArtistViewModel}"
     d:DesignHeight="720"
     d:DesignWidth="1280"
