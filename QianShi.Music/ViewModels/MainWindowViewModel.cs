@@ -9,6 +9,7 @@ namespace QianShi.Music.ViewModels
 {
     public class MainWindowViewModel : BindableBase, IConfigureService
     {
+        private readonly ISnackbarMessageQueue _snackbarMessageQueue;
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
         private readonly IPlayService _playService;
@@ -29,13 +30,15 @@ namespace QianShi.Music.ViewModels
         private double _songDuration = 1d;
         private double _songPosition = 0d;
         private double _volume = 0.5;
+        public SnackbarMessageQueue SnackbarMessageQueue => (SnackbarMessageQueue)_snackbarMessageQueue;
 
         public MainWindowViewModel(
             IRegionManager regionManager,
             IPlaylistService playlistService,
             IPlayService playService,
             IPlayStoreService playStoreService,
-            INavigationService navigationService)
+            INavigationService navigationService,
+            ISnackbarMessageQueue snackbarMessageQueue)
         {
             _regionManager = regionManager;
             _playlistService = playlistService;
@@ -52,7 +55,11 @@ namespace QianShi.Music.ViewModels
             _playService.VolumeChanged += (s, e) => Volume = e.NewValue;
             _playService.IsMutedChanged += (s, e) => IsMuted = e.NewValue;
             _playStoreService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
+            _snackbarMessageQueue = snackbarMessageQueue;
+
+            _snackbarMessageQueue.Enqueue("Test", null, null, null, false, true, TimeSpan.FromSeconds(5));
         }
+
 
         public Song? CurrentSong
         {

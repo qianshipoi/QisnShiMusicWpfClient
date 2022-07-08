@@ -104,6 +104,8 @@ namespace QianShi.Music
             containerRegistry.RegisterSingleton<INavigationService, NavigationService>();
             containerRegistry.RegisterSingleton<IPreferenceService, JsonFilePreferenceService>();
 
+            containerRegistry.RegisterSingleton<ISnackbarMessageQueue, SnackbarMessageQueue>();
+
             containerRegistry.Register<VideoPlayWindow>();
 
             containerRegistry.RegisterForNavigation<DescriptionDialog, DescriptionDialogViewModel>();
