@@ -117,8 +117,6 @@
                         <materialDesign:PackIcon Kind="ThemeLightDark" />
                     </materialDesign:ToggleButtonAssist.OnContent>
                 </ToggleButton>
-
-                <!--<ToggleButton Margin="8,0,16,0" IsChecked="{Binding IsDark}" />-->
                 <TextBlock VerticalAlignment="Center" Text="Dark" />
             </StackPanel>
 
