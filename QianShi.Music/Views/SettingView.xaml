@@ -10,6 +10,7 @@
     xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ucs="clr-namespace:QianShi.Music.Common.UserControls"
+    d:Background="White"
     d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=SettingViewModel}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -101,7 +102,23 @@
         <StackPanel MaxWidth="1280" Margin="20">
             <StackPanel Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="Light" />
-                <ToggleButton Margin="8,0,16,0" IsChecked="{Binding IsDark}" />
+
+                <ToggleButton
+                    Margin="8,0,16,0"
+                    IsChecked="{Binding IsDark}"
+                    Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                    ToolTip="MaterialDesignSwitchToggleButton with Content and ToggleButtonAssist.OnContent">
+                    <materialDesign:PackIcon Kind="ThemeLightDark" RenderTransformOrigin=".5,.5">
+                        <materialDesign:PackIcon.RenderTransform>
+                            <RotateTransform Angle="45" />
+                        </materialDesign:PackIcon.RenderTransform>
+                    </materialDesign:PackIcon>
+                    <materialDesign:ToggleButtonAssist.OnContent>
+                        <materialDesign:PackIcon Kind="ThemeLightDark" />
+                    </materialDesign:ToggleButtonAssist.OnContent>
+                </ToggleButton>
+
+                <!--<ToggleButton Margin="8,0,16,0" IsChecked="{Binding IsDark}" />-->
                 <TextBlock VerticalAlignment="Center" Text="Dark" />
             </StackPanel>
 
