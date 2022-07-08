@@ -77,19 +77,22 @@ namespace QianShi.Music.ViewModels
             base.OnNavigatedTo(navigationContext);
 
             var parameters = navigationContext.Parameters;
-
-            _artistId = parameters.GetValue<long>(ArtistIdParameterName);
-            IsBusy = true;
-            try
+            var artistId = parameters.GetValue<long>(ArtistIdParameterName);
+            if (_artistId != artistId)
             {
-                await GetHotSongs();
-                await GetAlbums();
-                await GetMovieVideos();
-                await GetArtists();
-            }
-            finally
-            {
-                IsBusy = false;
+                _artistId = artistId;
+                IsBusy = true;
+                try
+                {
+                    await GetHotSongs();
+                    await GetAlbums();
+                    await GetMovieVideos();
+                    await GetArtists();
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
             }
         }
 

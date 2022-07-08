@@ -56,8 +56,6 @@ namespace QianShi.Music.ViewModels
             _playService.IsMutedChanged += (s, e) => IsMuted = e.NewValue;
             _playStoreService.CurrentChanged += (s, e) => CurrentSong = e.NewSong;
             _snackbarMessageQueue = snackbarMessageQueue;
-
-            _snackbarMessageQueue.Enqueue("Test", null, null, null, false, true, TimeSpan.FromSeconds(5));
         }
 
 

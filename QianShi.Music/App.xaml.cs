@@ -19,6 +19,7 @@ namespace QianShi.Music
         private readonly string _cookieSavePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cookie.json");
         private TaskbarIcon? _tbi = null;
         private IPlaylistService _playlistService = default!;
+        private ISnackbarMessageQueue _snackbarMessageQueue = default!;
 
         public new static App Current => (App)Application.Current;
 
@@ -50,12 +51,12 @@ namespace QianShi.Music
             {
                 sb.Append(e.ExceptionObject);
             }
-            MessageBox.Show(sb.ToString());
+            _snackbarMessageQueue.Enqueue(sb.ToString(), TimeSpan.FromSeconds(5));
         }
 
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            MessageBox.Show("Task线程异常：" + e.Exception.Message);
+            _snackbarMessageQueue.Enqueue("Task线程异常：" + e.Exception.Message, TimeSpan.FromSeconds(5));
             e.SetObserved();
         }
 
@@ -64,17 +65,18 @@ namespace QianShi.Music
             try
             {
                 e.Handled = true;
-                MessageBox.Show("UI线程异常：" + e.Exception.Message);
+                _snackbarMessageQueue.Enqueue("UI线程异常：" + e.Exception.Message, TimeSpan.FromSeconds(5));
             }
             catch
             {
-                MessageBox.Show("UI线程发生致命错误！");
+                _snackbarMessageQueue.Enqueue("UI线程发生致命错误！：" + e.Exception.Message, TimeSpan.FromSeconds(5));
             }
         }
 
         protected override Window CreateShell()
         {
             _playlistService = Container.Resolve<IPlaylistService>();
+            _snackbarMessageQueue = Container.Resolve<ISnackbarMessageQueue>();
             if (File.Exists(_cookieSavePath))
             {
                 var cookiesJson = File.ReadAllText(_cookieSavePath);
