@@ -1,6 +1,8 @@
 ﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
+using QianShi.Music.Data;
 using QianShi.Music.Extensions;
+using QianShi.Music.Models;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels;
 using QianShi.Music.ViewModels.Dialogs;
@@ -127,6 +129,8 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<FondPlaylistView, FondPlaylistViewModel>();
             containerRegistry.RegisterForNavigation<SettingView, SettingViewModel>();
             containerRegistry.RegisterForNavigation<NavigationBarView, NavigationBarViewModel>();
+
+            containerRegistry.RegisterSingleton<IDataProvider<ArtistModel, long>, ArtistDataProvider>();
         }
 
         protected override void OnExit(ExitEventArgs e)

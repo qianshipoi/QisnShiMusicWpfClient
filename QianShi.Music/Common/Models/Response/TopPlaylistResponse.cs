@@ -1,4 +1,6 @@
-﻿namespace QianShi.Music.Common.Models.Response
+﻿using QianShi.Music.Models;
+
+namespace QianShi.Music.Common.Models.Response
 {
     public class TopPlaylistResponse
     {
@@ -9,7 +11,7 @@
         public List<Playlist> Playlists { get; set; } = new List<Playlist>();
     }
 
-    public class Playlist : IPlaylist
+    public class Playlist : IPlaylist, IDataModel
     {
         public long Id { get; set; }
         public string Name { get; set; } = null!;

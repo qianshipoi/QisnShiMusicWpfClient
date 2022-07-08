@@ -1,6 +1,9 @@
-﻿namespace QianShi.Music.Common.Models
+﻿using QianShi.Music.Common.Models.Response;
+using QianShi.Music.Models;
+
+namespace QianShi.Music.Common.Models
 {
-    public class PlaylistDetail : BindableBase
+    public class PlaylistDetail : BindableBase, IDataModel
     {
         private long _id;
         public long Id { get => _id; set => SetProperty(ref _id, value); }
@@ -24,5 +27,12 @@
             get => _creatorId;
             set => SetProperty(ref _creatorId, value);
         }
+
+        public PlaylistDetail()
+        {
+            Songs = new List<Song>();
+        }
+
+        public List<Song> Songs { get; set; } 
     }
 }

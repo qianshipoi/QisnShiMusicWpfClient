@@ -1,5 +1,7 @@
 ﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models.Response;
+using QianShi.Music.Data;
+using QianShi.Music.Models;
 using QianShi.Music.Services;
 
 namespace QianShi.Music.ViewModels
@@ -10,6 +12,7 @@ namespace QianShi.Music.ViewModels
 
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
+        private readonly IDataProvider<ArtistModel, long> _dataProvider;
         private Album? _album;
         private Artist _artist = default!;
         private long _artistId;
@@ -19,11 +22,13 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<Album> _openPlaylistCommand = default!;
 
         public ArtistViewModel(
+            IDataProvider<ArtistModel, long> dataProvider,
             IContainerProvider containerProvider,
             IPlaylistService playlistService,
             INavigationService navigationService)
             : base(containerProvider)
         {
+            _dataProvider = dataProvider;
             _playlistService = playlistService;
             _navigationService = navigationService;
         }
@@ -84,87 +89,30 @@ namespace QianShi.Music.ViewModels
                 IsBusy = true;
                 try
                 {
-                    await GetHotSongs();
-                    await GetAlbums();
-                    await GetMovieVideos();
-                    await GetArtists();
+                    var result = await _dataProvider.GetDataAsync(_artistId);
+                    if (result == null)
+                    {
+                        navigationContext.NavigationService.Journal.GoBack();
+                        return;
+                    }
+
+                    Artist = result.Artist;
+                    Songs.AddRange(result.Songs ?? new());
+                    if (Albums.Count > 0)
+                    {
+                        Albums.AddRange(result.Albums);
+                        Album = Albums[0];
+                    }
+                    if (MovieVideos.Count > 0)
+                    {
+                        MovieVideos.AddRange(result.MovieVideos);
+                        MovieVideo = MovieVideos[0];
+                    }
+                    Artists.AddRange(result.Artists ?? new());
                 }
                 finally
                 {
                     IsBusy = false;
-                }
-            }
-        }
-
-        private async Task GetAlbums()
-        {
-            var response = await _playlistService.ArtistAlbum(new Common.Models.Request.ArtistAlbumRequest
-            {
-                Id = _artistId,
-                Limit = 20
-            });
-            if (response.Code == 200)
-            {
-                var albums = response.HotAlbums.Select(x =>
-                {
-                    x.CoverImgUrl += "?param=200y200";
-                    return x;
-                }).ToList();
-                if (albums.Any())
-                {
-                    Albums.AddRange(albums);
-                    Album = albums[0];
-                }
-            }
-        }
-
-        private async Task GetArtists()
-        {
-            var response = await _playlistService.SimiArtist(_artistId);
-            if (response.Code == 200)
-            {
-                Artists.AddRange(response.Artists.Take(12).Select(x =>
-                {
-                    x.CoverImgUrl += "?param=200y200";
-                    return x;
-                }));
-            }
-        }
-
-        private async Task GetHotSongs()
-        {
-            var response = await _playlistService.Artists(_artistId);
-            if (response.Code == 200)
-            {
-                Artist = response.Artist;
-
-                Songs.AddRange(response.HotSongs.Select(x =>
-                {
-                    x.Album.CoverImgUrl += "?param=48y48";
-                    return x;
-                }).Take(12));
-            }
-        }
-
-        private async Task GetMovieVideos()
-        {
-            var response = await _playlistService.ArtistMv(new Common.Models.Request.ArtistMvRequest
-            {
-                Id = _artistId,
-                Limit = 20
-            });
-            if (response.Code == 200)
-            {
-                var mvs = response.Mvs.Select(x =>
-                {
-                    x.CoverImgUrl += "?param=464y260";
-                    return x;
-                }).ToList();
-
-                if (mvs.Any())
-                {
-                    MovieVideos.AddRange(mvs);
-                    MovieVideo = mvs[0];
                 }
             }
         }
