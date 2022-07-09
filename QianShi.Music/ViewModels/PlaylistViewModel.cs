@@ -1,7 +1,7 @@
 ﻿using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Response;
+using QianShi.Music.Data;
 using QianShi.Music.Services;
-using QianShi.Music.Views.Dialogs;
 
 namespace QianShi.Music.ViewModels
 {
@@ -13,6 +13,7 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistStoreService _playlistStoreService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
+        private readonly IDataProvider<PlaylistDetail, long> _dataProvider;
         private DelegateCommand<Song?> _playCommand = default!;
         private long _playlistId;
 
@@ -20,7 +21,8 @@ namespace QianShi.Music.ViewModels
             IPlaylistService playlistService,
             IPlayService playService,
             IPlayStoreService playStoreService,
-            IPlaylistStoreService playlistStoreService)
+            IPlaylistStoreService playlistStoreService,
+            IDataProvider<PlaylistDetail, long> dataProvider)
             : base(containerProvider)
         {
             Title = "加载中...";
@@ -28,9 +30,11 @@ namespace QianShi.Music.ViewModels
             _playService = playService;
             _playStoreService = playStoreService;
             _playlistStoreService = playlistStoreService;
+            _dataProvider = dataProvider;
         }
 
-        public PlaylistDetail Detail { get; set; } = new();
+        private PlaylistDetail _detail = new PlaylistDetail();
+        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
 
         public DelegateCommand<Song?> PlayCommand =>
             _playCommand ??= new(Play);
@@ -57,46 +61,74 @@ namespace QianShi.Music.ViewModels
             if (Detail.Id != _playlistId)
             {
                 IsBusy = true;
-                var response = await _playlistService.GetPlaylistDetailAsync(_playlistId);
-                if (response.Code == 200)
+
+                var result = await _dataProvider.GetDataAsync(_playlistId);
+                if (result == null)
                 {
-                    Detail.Id = response.PlaylistDetail.Id;
-                    Detail.Name = response.PlaylistDetail.Name;
-                    Detail.Description = response.PlaylistDetail.Description ?? string.Empty;
-                    Detail.LastUpdateTime = response.PlaylistDetail.UpdateTime;
-                    Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
-                    Detail.Count = response.PlaylistDetail.TrackCount;
-                    Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
-                    Detail.CreatorId = response.PlaylistDetail.Creator?.UserId ?? 0;
-                    Songs.Clear();
+                    navigationContext.NavigationService.Journal.GoBack();
+                    return;
+                }
 
-                    // 获取所有歌曲
-                    if (response.PlaylistDetail.TrackIds.Count > 0)
+                Detail = result;
+                Songs.Clear();
+                int i = 0;
+                foreach (var song in Detail.Songs)
+                {
+                    song.Album.CoverImgUrl += "?param=48y48";
+                    song.IsLike = _playlistStoreService.HasLikedSong(song);
+                    Songs.Add(song);
+                    i++;
+                    if (i % 5 == 0)
                     {
-                        var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
-                        var songResponse = await _playlistService.SongDetail(ids);
-                        if (songResponse.Code == 200)
-                        {
-                            int i = 0;
-                            foreach (var song in songResponse.Songs)
-                            {
-                                song.Album.CoverImgUrl += "?param=48y48";
-                                song.IsLike = _playlistStoreService.HasLikedSong(song);
-                                Songs.Add(song);
-                                i++;
-                                if (i % 5 == 0)
-                                {
-                                    await Task.Delay(20);
-                                }
-                            }
-
-                            if ((_playStoreService.Current?.Id).HasValue)
-                            {
-                                CurrentChanged(null, new(_playStoreService.Current));
-                            }
-                        }
+                        await Task.Delay(20);
                     }
                 }
+
+                if ((_playStoreService.Current?.Id).HasValue)
+                {
+                    CurrentChanged(null, new(_playStoreService.Current));
+                }
+
+                //var response = await _playlistService.GetPlaylistDetailAsync(_playlistId);
+                //if (response.Code == 200)
+                //{
+                //    Detail.Id = response.PlaylistDetail.Id;
+                //    Detail.Name = response.PlaylistDetail.Name;
+                //    Detail.Description = response.PlaylistDetail.Description ?? string.Empty;
+                //    Detail.LastUpdateTime = response.PlaylistDetail.UpdateTime;
+                //    Detail.PicUrl = response.PlaylistDetail.CoverImgUrl;
+                //    Detail.Count = response.PlaylistDetail.TrackCount;
+                //    Detail.Creator = response.PlaylistDetail.Creator?.Nickname;
+                //    Detail.CreatorId = response.PlaylistDetail.Creator?.UserId ?? 0;
+                //    Songs.Clear();
+
+                //    // 获取所有歌曲
+                //    if (response.PlaylistDetail.TrackIds.Count > 0)
+                //    {
+                //        var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
+                //        var songResponse = await _playlistService.SongDetail(ids);
+                //        if (songResponse.Code == 200)
+                //        {
+                //            int i = 0;
+                //            foreach (var song in songResponse.Songs)
+                //            {
+                //                song.Album.CoverImgUrl += "?param=48y48";
+                //                song.IsLike = _playlistStoreService.HasLikedSong(song);
+                //                Songs.Add(song);
+                //                i++;
+                //                if (i % 5 == 0)
+                //                {
+                //                    await Task.Delay(20);
+                //                }
+                //            }
+
+                //            if ((_playStoreService.Current?.Id).HasValue)
+                //            {
+                //                CurrentChanged(null, new(_playStoreService.Current));
+                //            }
+                //        }
+                //    }
+                //}
                 IsBusy = false;
             }
 

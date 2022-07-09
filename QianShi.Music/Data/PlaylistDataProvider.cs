@@ -1,34 +1,26 @@
 ﻿using QianShi.Music.Common.Models;
-using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace QianShi.Music.Data
 {
-    public class PlaylistDataProvider : IDataProvider<PlaylistDetail, long>
+    public class PlaylistDataProvider : DataCaching<PlaylistDetail, long>
     {
         private readonly IPlaylistService _playlistService;
         private readonly IPlaylistStoreService _playlistStoreService;
 
-        public PlaylistDataProvider(IPlaylistService playlistService, IPlaylistStoreService playlistStoreService)
+        public PlaylistDataProvider(
+            IPlaylistService playlistService, 
+            IPlaylistStoreService playlistStoreService)
         {
             _playlistService = playlistService;
             _playlistStoreService = playlistStoreService;
         }
 
-        public async Task<PlaylistDetail?> GetDataAsync(long id)
+        protected override async Task<PlaylistDetail?> Source(long id)
         {
             var detail = new PlaylistDetail();
             var response = await _playlistService.GetPlaylistDetailAsync(id);
-            if(response.Code != 200)
+            if (response.Code != 200)
             {
                 return null;
             }
@@ -42,21 +34,33 @@ namespace QianShi.Music.Data
             detail.Creator = response.PlaylistDetail.Creator?.Nickname;
             detail.CreatorId = response.PlaylistDetail.Creator?.UserId ?? 0;
 
-            // 获取所有歌曲
-            if (response.PlaylistDetail.TrackIds.Count > 0)
+            if(response.PlaylistDetail.Tracks.Count > 0)
             {
-                var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
-                var songResponse = await _playlistService.SongDetail(ids);
-                if (songResponse.Code == 200)
+                foreach (var song in response.PlaylistDetail.Tracks)
                 {
-                    foreach (var song in songResponse.Songs)
-                    {
-                        song.Album.CoverImgUrl += "?param=48y48";
-                        song.IsLike = _playlistStoreService.HasLikedSong(song);
-                        detail.Songs.Add(song);
-                    }
+                    song.Album.CoverImgUrl += "?param=48y48";
+                    song.IsLike = _playlistStoreService.HasLikedSong(song);
+                    detail.Songs.Add(song);
                 }
             }
+
+
+            // 获取所有歌曲
+
+            //if (response.PlaylistDetail.TrackIds.Count > 0)
+            //{
+            //    var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
+            //    var songResponse = await _playlistService.SongDetail(ids);
+            //    if (songResponse.Code == 200)
+            //    {
+            //        foreach (var song in songResponse.Songs)
+            //        {
+            //            song.Album.CoverImgUrl += "?param=48y48";
+            //            song.IsLike = _playlistStoreService.HasLikedSong(song);
+            //            detail.Songs.Add(song);
+            //        }
+            //    }
+            //}
             return detail;
         }
     }

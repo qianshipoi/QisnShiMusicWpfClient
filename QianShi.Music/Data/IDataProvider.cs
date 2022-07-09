@@ -7,7 +7,7 @@ namespace QianShi.Music.Data
         Task<TResult?> GetDataAsync();
     }
 
-    public interface IDataProvider<TResult, TParam> where TResult : IDataModel
+    public interface IDataProvider<TResult, TParam> where TResult : IDataModel where TParam : notnull
     {
         Task<TResult?> GetDataAsync(TParam param);
     }

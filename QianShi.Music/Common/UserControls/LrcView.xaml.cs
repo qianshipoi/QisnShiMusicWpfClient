@@ -94,7 +94,7 @@ namespace QianShi.Music.Common.UserControls
                 textBlock.TextWrapping = TextWrapping.WrapWithOverflow;
 
                 double time = 0d;
-                if (timeStr == "99:00.00")
+                if (timeStr.StartsWith("99:"))
                 {
                     time = double.MaxValue;
                 }

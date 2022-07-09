@@ -8,23 +8,17 @@ using Artist = QianShi.Music.Common.Models.Response.Artist;
 namespace QianShi.Music.Data
 {
     /// <summary> Artist Data Provider </summary>
-    public class ArtistDataProvider : IDataProvider<ArtistModel, long>
+    public class ArtistDataProvider : DataCaching<ArtistModel, long>
     {
         private readonly IPlaylistService _playlistService;
-        private readonly Dictionary<long, ArtistModel> _cache = new Dictionary<long, ArtistModel>();
 
         public ArtistDataProvider(IPlaylistService playlistService)
         {
             _playlistService = playlistService;
         }
 
-        public async Task<ArtistModel?> GetDataAsync(long id)
+        protected override async Task<ArtistModel?> Source(long id)
         {
-            if (_cache.ContainsKey(id))
-            {
-                return _cache[id];
-            }
-
             var (artist, songs) = await GetHotSongsAsync(id);
             if (artist == null)
             {
@@ -39,9 +33,6 @@ namespace QianShi.Music.Data
             aristModel.Albums = await GetAlbumsAsync(id);
             aristModel.MovieVideos = await GetMovieVideosAsync(id);
             aristModel.Artists = await GetArtistsAsync(id);
-
-            _cache.Add(id, aristModel);
-
             return aristModel;
         }
 
