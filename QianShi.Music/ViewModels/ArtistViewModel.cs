@@ -98,12 +98,12 @@ namespace QianShi.Music.ViewModels
 
                     Artist = result.Artist;
                     Songs.AddRange(result.Songs ?? new());
-                    if (Albums.Count > 0)
+                    if (result.Albums?.Count > 0)
                     {
                         Albums.AddRange(result.Albums);
                         Album = Albums[0];
                     }
-                    if (MovieVideos.Count > 0)
+                    if (result.MovieVideos?.Count > 0)
                     {
                         MovieVideos.AddRange(result.MovieVideos);
                         MovieVideo = MovieVideos[0];
