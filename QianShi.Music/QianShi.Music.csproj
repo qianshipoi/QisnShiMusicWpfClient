@@ -19,10 +19,9 @@
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
-    <PackageReference Include="Metalama.Framework" Version="0.5.25-preview" />
     <PackageReference Include="Prism.DryIoc" Version="8.1.97" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
-    <PackageReference Include="RestSharp" Version="107.3.0" />
+    <PackageReference Include="RestSharp" Version="108.0.1" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 

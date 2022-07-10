@@ -193,7 +193,7 @@
                 x:Name="FullScreenRegionControl"
                 prism:RegionManager.RegionName="{x:Static ext:PrismManager.FullScreenRegionName}"
                 Visibility="Visible" />
-            <materialDesign:Snackbar MessageQueue="{Binding SnackbarMessageQueue}" />
+            <materialDesign:Snackbar Margin="0,0,0,40" MessageQueue="{Binding SnackbarMessageQueue}" />
         </Grid>
     </materialDesign:DialogHost>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using QianShi.Music.Common.Models.Response;
+using QianShi.Music.Extensions;
 
 namespace QianShi.Music.Services
 {
@@ -9,6 +10,7 @@ namespace QianShi.Music.Services
         private readonly List<Song> _source = new();
         private readonly List<Song> _playlist = new();
         private long _playlistId;
+        private readonly ISnackbarMessageQueue _snackbarMessageQueue;
         public ObservableCollection<Song> LaterPlaylist { get; } = new();
         public ObservableCollection<Song> JumpTheQueuePlaylist { get; } = new();
 
@@ -40,7 +42,7 @@ namespace QianShi.Music.Services
 
         public bool HasPrev => _playlist.Count > 0 && _currentIndex > 0;
 
-        public PlayStoreService(IPlaylistService playlistService, IPlayService playService)
+        public PlayStoreService(IPlaylistService playlistService, IPlayService playService, ISnackbarMessageQueue snackbarMessageQueue)
         {
             _playService = playService;
             _playService.PlayEnded += (s, e) =>
@@ -49,6 +51,7 @@ namespace QianShi.Music.Services
                 Next();
             };
             _playlistService = playlistService;
+            _snackbarMessageQueue = snackbarMessageQueue;
         }
 
         private async Task<IEnumerable<Song>?> GetSongUrl(IEnumerable<Song> songs)
@@ -92,7 +95,7 @@ namespace QianShi.Music.Services
 
             var playlistResponse = await _playlistService.GetPlaylistDetailAsync(playlistId);
 
-            if (playlistResponse.Code == 200)
+            if (playlistResponse.Code == 200 && playlistResponse.PlaylistDetail.TrackIds.Count > 0)
             {
                 var songs = new List<Song>();
                 if (playlistResponse.PlaylistDetail.TrackIds.Count > 20)
@@ -119,6 +122,10 @@ namespace QianShi.Music.Services
                 }
 
                 await AddPlaylistAsync(playlistId, songs);
+            }
+            else
+            {
+                throw new Exception("歌单歌曲获取异常");
             }
         }
 
