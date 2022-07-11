@@ -171,6 +171,7 @@
                         Command="{Binding MoreCommand}"
                         CommandParameter="{Binding ElementName=SongsControl}"
                         Content="加载更多"
+                        Cursor="Hand"
                         Visibility="{Binding Detail.HasMore, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </Border>
