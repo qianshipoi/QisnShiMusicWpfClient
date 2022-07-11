@@ -1,4 +1,5 @@
 ﻿using QianShi.Music.Common.Models;
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Services;
 
 namespace QianShi.Music.Data
@@ -45,8 +46,8 @@ namespace QianShi.Music.Data
                     {
                         song.Album.CoverImgUrl += "?param=48y48";
                         song.IsLike = _playlistStoreService.HasLikedSong(song);
-                        detail.Songs.Add(song);
                     }
+                    detail.AddSongs(songResponse.Songs);
                 }
                 detail.SongsIds.AddRange(response.PlaylistDetail.TrackIds.Select(x => x.Id));
             }

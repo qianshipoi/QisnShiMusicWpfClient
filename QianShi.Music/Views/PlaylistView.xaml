@@ -166,6 +166,8 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                     <Button
+                        Margin="0,10,0,0"
+                        HorizontalAlignment="Center"
                         Command="{Binding MoreCommand}"
                         CommandParameter="{Binding ElementName=SongsControl}"
                         Content="加载更多"
