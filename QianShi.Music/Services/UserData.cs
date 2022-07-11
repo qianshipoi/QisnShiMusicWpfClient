@@ -12,9 +12,7 @@
             if (File.Exists(settingPath))
             {
                 var jsonData = File.ReadAllText(settingPath);
-                return JsonSerializer.Deserialize<UserData>(jsonData, new JsonSerializerOptions()
-                {
-                }) ?? new UserData();
+                return JsonSerializer.Deserialize<UserData>(jsonData, new JsonSerializerOptions()) ?? new UserData();
             }
             return new UserData();
         }
