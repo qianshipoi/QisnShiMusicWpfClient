@@ -15,6 +15,8 @@ namespace QianShi.Music.ViewModels
         private readonly IPlayStoreService _playStoreService;
         private readonly IDataProvider<PlaylistDetail, long> _dataProvider;
         private DelegateCommand<Song?> _playCommand = default!;
+        private DelegateCommand<ItemsControl> _moreCommand = default!;
+        private PlaylistDetail _detail = default!;
         private long _playlistId;
 
         public PlaylistViewModel(IContainerProvider containerProvider,
@@ -25,7 +27,6 @@ namespace QianShi.Music.ViewModels
             IDataProvider<PlaylistDetail, long> dataProvider)
             : base(containerProvider)
         {
-            Title = "加载中...";
             _playlistService = playlistService;
             _playService = playService;
             _playStoreService = playStoreService;
@@ -33,13 +34,38 @@ namespace QianShi.Music.ViewModels
             _dataProvider = dataProvider;
         }
 
-        private PlaylistDetail _detail = new PlaylistDetail();
-        public PlaylistDetail Detail { get => _detail; set => SetProperty(ref _detail, value); }
+        public PlaylistDetail Detail
+        {
+            get => _detail;
+            set => SetProperty(ref _detail, value);
+        }
 
         public DelegateCommand<Song?> PlayCommand =>
             _playCommand ??= new(Play);
 
         public ObservableCollection<Song> Songs { get; set; } = new();
+
+        public DelegateCommand<ItemsControl> MoreCommand =>
+            _moreCommand ??= new(async (control) =>
+            {
+                control.Focus();
+                IsBusy = true;
+                try
+                {
+                    var ids = string.Join(',', Detail.SongsIds.Skip(Detail.Songs.Count).Take(20));
+                    var songsResponse = await _playlistService.SongDetail(ids);
+                    if (songsResponse.Code != 200)
+                    {
+                        return;
+                    }
+                    Detail.AddSongs(songsResponse.Songs);
+                    Songs.AddRange(songsResponse.Songs);
+                }
+                finally
+                {
+                    IsBusy = false;
+                }
+            });
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {
@@ -57,7 +83,6 @@ namespace QianShi.Music.ViewModels
         public override async void OnNavigatedTo(NavigationContext navigationContext)
         {
             _playlistId = navigationContext.Parameters.GetValue<long>(IdParameters);
-            Title = _playlistId.ToString();
             if (Detail.Id != _playlistId)
             {
                 IsBusy = true;

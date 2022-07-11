@@ -49,7 +49,6 @@ namespace QianShi.Music.Common.Models
             get => _creator;
             set => SetProperty(ref _creator, value);
         }
-
         public long CreatorId
         {
             get => _creatorId;
@@ -60,9 +59,18 @@ namespace QianShi.Music.Common.Models
 
         public PlaylistDetail()
         {
-            Songs = new List<Song>();
+            Songs = new();
+            SongsIds = new();
         }
 
-        public List<Song> Songs { get; set; }
+        public void AddSongs(IEnumerable<Song> songs)
+        {
+            Songs.AddRange(songs);
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(HasMore)));
+        }
+
+        public List<Song> Songs { get; private set; }
+
+        public List<long> SongsIds { get; set; }
     }
 }

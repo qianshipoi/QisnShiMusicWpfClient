@@ -158,13 +158,18 @@
                             </StackPanel>
                         </StackPanel>
                     </Grid>
-                    <ItemsControl ItemsSource="{Binding Songs}">
+                    <ItemsControl x:Name="SongsControl" ItemsSource="{Binding Songs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayCommand}" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
+                    <Button
+                        Command="{Binding MoreCommand}"
+                        CommandParameter="{Binding ElementName=SongsControl}"
+                        Content="加载更多"
+                        Visibility="{Binding Detail.HasMore, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </StackPanel>
             </Border>
         </uc:ScrollViewerAnimation>

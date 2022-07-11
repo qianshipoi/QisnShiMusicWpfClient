@@ -42,6 +42,7 @@ namespace QianShi.Music.Data
                     song.IsLike = _playlistStoreService.HasLikedSong(song);
                     detail.Songs.Add(song);
                 }
+                detail.SongsIds.AddRange(response.PlaylistDetail.TrackIds.Select(x => x.Id));
             }
 
 
