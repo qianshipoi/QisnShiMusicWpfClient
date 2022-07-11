@@ -11,6 +11,8 @@ using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 using QianShi.Music.Views.Navigation;
 
+using System.ComponentModel.Design;
+
 namespace QianShi.Music
 {
     /// <summary>
@@ -18,10 +20,11 @@ namespace QianShi.Music
     /// </summary>
     public partial class App
     {
-        private readonly string _cookieSavePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Cookie.json");
         private TaskbarIcon? _tbi = null;
         private IPlaylistService _playlistService = default!;
         private ISnackbarMessageQueue _snackbarMessageQueue = default!;
+        private IPreferenceService _preferenceService = default!;
+        private const string cookiesKey = "Cookies";
 
         public new static App Current => (App)Application.Current;
 
@@ -58,7 +61,7 @@ namespace QianShi.Music
 
         private void TaskScheduler_UnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
-            _snackbarMessageQueue.Enqueue("Task线程异常：" + e.Exception.Message, TimeSpan.FromSeconds(5));
+            _snackbarMessageQueue.Enqueue(e.Exception.Message, TimeSpan.FromSeconds(5));
             e.SetObserved();
         }
 
@@ -67,7 +70,7 @@ namespace QianShi.Music
             try
             {
                 e.Handled = true;
-                _snackbarMessageQueue.Enqueue("UI线程异常：" + e.Exception.Message, TimeSpan.FromSeconds(5));
+                _snackbarMessageQueue.Enqueue(e.Exception.Message, TimeSpan.FromSeconds(5));
             }
             catch
             {
@@ -79,10 +82,20 @@ namespace QianShi.Music
         {
             _playlistService = Container.Resolve<IPlaylistService>();
             _snackbarMessageQueue = Container.Resolve<ISnackbarMessageQueue>();
-            if (File.Exists(_cookieSavePath))
+            _preferenceService = Container.Resolve<IPreferenceService>();
+
+            if (_preferenceService.ContainsKey(cookiesKey))
             {
-                var cookiesJson = File.ReadAllText(_cookieSavePath);
-                JsonSerializer.Deserialize<List<CookieInfo>>(cookiesJson)?.ToList().ForEach(x => _playlistService.SetCookie(x.ToCookie()));
+                var cookiesJson = _preferenceService.Get(cookiesKey, string.Empty);
+                if (string.IsNullOrWhiteSpace(cookiesJson))
+                {
+                    _preferenceService.RemoveKey(cookiesKey);
+                }
+
+                JsonSerializer
+                    .Deserialize<List<CookieInfo>>(cookiesJson)?
+                    .ToList()
+                    .ForEach(x => _playlistService.SetCookie(x.ToCookie()));
             }
 
             _tbi = (TaskbarIcon)FindResource("NotifyIcon");
@@ -142,9 +155,9 @@ namespace QianShi.Music
             if (cookies != null)
             {
                 var cookiesData = JsonSerializer.Serialize(cookies.Select(i => new CookieInfo(i)));
-
-                File.WriteAllTextAsync(_cookieSavePath, cookiesData);
+                _preferenceService.Set(cookiesKey, cookiesData);
             }
+            _tbi?.Dispose();
             base.OnExit(e);
         }
     }
