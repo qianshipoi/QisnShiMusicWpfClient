@@ -9,7 +9,7 @@ namespace QianShi.Music.Data
         private readonly IPlaylistStoreService _playlistStoreService;
 
         public PlaylistDataProvider(
-            IPlaylistService playlistService, 
+            IPlaylistService playlistService,
             IPlaylistStoreService playlistStoreService)
         {
             _playlistService = playlistService;
@@ -34,35 +34,22 @@ namespace QianShi.Music.Data
             detail.Creator = response.PlaylistDetail.Creator?.Nickname;
             detail.CreatorId = response.PlaylistDetail.Creator?.UserId ?? 0;
 
-            if(response.PlaylistDetail.Tracks.Count > 0)
+            // 获取所有歌曲
+            if (response.PlaylistDetail.TrackIds.Count > 0)
             {
-                foreach (var song in response.PlaylistDetail.Tracks)
+                var ids = string.Join(',', response.PlaylistDetail.TrackIds.Take(20).Select(x => x.Id));
+                var songResponse = await _playlistService.SongDetail(ids);
+                if (songResponse.Code == 200)
                 {
-                    song.Album.CoverImgUrl += "?param=48y48";
-                    song.IsLike = _playlistStoreService.HasLikedSong(song);
-                    detail.Songs.Add(song);
+                    foreach (var song in songResponse.Songs)
+                    {
+                        song.Album.CoverImgUrl += "?param=48y48";
+                        song.IsLike = _playlistStoreService.HasLikedSong(song);
+                        detail.Songs.Add(song);
+                    }
                 }
                 detail.SongsIds.AddRange(response.PlaylistDetail.TrackIds.Select(x => x.Id));
             }
-
-
-            // 获取所有歌曲
-            // TODO: load more song.
-
-            //if (response.PlaylistDetail.TrackIds.Count > 0)
-            //{
-            //    var ids = string.Join(',', response.PlaylistDetail.TrackIds.Select(x => x.Id));
-            //    var songResponse = await _playlistService.SongDetail(ids);
-            //    if (songResponse.Code == 200)
-            //    {
-            //        foreach (var song in songResponse.Songs)
-            //        {
-            //            song.Album.CoverImgUrl += "?param=48y48";
-            //            song.IsLike = _playlistStoreService.HasLikedSong(song);
-            //            detail.Songs.Add(song);
-            //        }
-            //    }
-            //}
             return detail;
         }
     }
