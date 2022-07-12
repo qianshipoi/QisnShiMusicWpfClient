@@ -1,5 +1,9 @@
-﻿using QianShi.Music.Models;
+﻿using Microsoft.Extensions.Caching.Memory;
+
+using QianShi.Music.Models;
 using QianShi.Music.Services;
+
+using System.Diagnostics;
 
 namespace QianShi.Music.Data
 {
@@ -10,7 +14,9 @@ namespace QianShi.Music.Data
 
         public PlaylistDataProvider(
             IPlaylistService playlistService,
-            IPlaylistStoreService playlistStoreService)
+            IPlaylistStoreService playlistStoreService,
+            IMemoryCache memoryCache)
+            : base(memoryCache)
         {
             _playlistService = playlistService;
             _playlistStoreService = playlistStoreService;
@@ -18,6 +24,7 @@ namespace QianShi.Music.Data
 
         protected override async Task<PlaylistModel?> Source(long id)
         {
+            Debug.WriteLine($"playlist:{id}");
             var detail = new PlaylistModel();
             var response = await _playlistService.GetPlaylistDetailAsync(id);
             if (response.Code != 200)

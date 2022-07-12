@@ -25,7 +25,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<Cat> _switchMoreCatCommand = default!;
 
         public FoundViewModel(
-                                    IContainerProvider provider,
+            IContainerProvider provider,
             IPlaylistService playlistService,
             INavigationService navigationService,
             IPreferenceService preferenceService)

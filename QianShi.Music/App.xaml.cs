@@ -1,4 +1,6 @@
-﻿using QianShi.Music.Common;
+﻿using Microsoft.Extensions.Caching.Memory;
+
+using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Data;
 using QianShi.Music.Extensions;
@@ -147,6 +149,11 @@ namespace QianShi.Music
             containerRegistry.RegisterSingleton<IDataProvider<PlaylistModel, long>, PlaylistDataProvider>();
 
             containerRegistry.RegisterSingleton<ICachingService, MemoryCachingService>();
+
+            containerRegistry.Register<IMemoryCache>(() => new MemoryCache(new MemoryCacheOptions()
+            {
+                ExpirationScanFrequency = TimeSpan.FromSeconds(3)
+            }));
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -1,4 +1,6 @@
-﻿using QianShi.Music.Common.Models.Response;
+﻿using Microsoft.Extensions.Caching.Memory;
+
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Models;
 using QianShi.Music.Services;
 
@@ -12,7 +14,10 @@ namespace QianShi.Music.Data
     {
         private readonly IPlaylistService _playlistService;
 
-        public ArtistDataProvider(IPlaylistService playlistService)
+        public ArtistDataProvider(
+            IPlaylistService playlistService, 
+            IMemoryCache memoryCache) 
+            : base(memoryCache)
         {
             _playlistService = playlistService;
         }

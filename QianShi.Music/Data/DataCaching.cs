@@ -1,4 +1,6 @@
-﻿using QianShi.Music.Common.Helpers;
+﻿using Microsoft.Extensions.Caching.Memory;
+
+using QianShi.Music.Common.Helpers;
 using QianShi.Music.Models;
 
 namespace QianShi.Music.Data
@@ -9,10 +11,18 @@ namespace QianShi.Music.Data
     {
         private readonly ConcurrentFixedSizeCache<TParam, TResult> _cache = new(10, 1);
 
+        private readonly IMemoryCache _memoryCache;
+
+        public DataCaching(IMemoryCache memoryCache)
+        {
+            _memoryCache = memoryCache;
+        }
+
         public async Task<TResult?> GetDataAsync(TParam param)
         {
             if (_cache.ContainsKey(param))
             {
+                //return _memoryCache.Get<TResult?>(param);
                 return _cache[param];
             }
 
@@ -20,6 +30,7 @@ namespace QianShi.Music.Data
 
             if (result != null)
             {
+                //_memoryCache.Set(param, result,TimeSpan.FromMinutes(30));
                 _cache[param] = result;
             }
 
