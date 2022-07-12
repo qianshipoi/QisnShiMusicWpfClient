@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dialog="clr-namespace:QianShi.Music.Views.Dialogs"
     xmlns:ext="clr-namespace:QianShi.Music.Extensions"
+    xmlns:helpers="clr-namespace:QianShi.Music.Common.Helpers"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -26,6 +27,12 @@
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
         <uc:ScrollViewerAnimation>
+            <i:Interaction.Behaviors>
+                <helpers:ScrollToEndCallCommandBehavior
+                    Command="{Binding ToBottomCommand}"
+                    CommandParameter="11"
+                    ToBottom="120" />
+            </i:Interaction.Behaviors>
             <Border MaxWidth="1280" Padding="20">
                 <StackPanel>
                     <Grid Margin="0,0,0,72">
@@ -172,7 +179,13 @@
                         CommandParameter="{Binding ElementName=SongsControl}"
                         Content="加载更多"
                         Cursor="Hand"
-                        Visibility="{Binding Detail.HasMore, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding Detail.HasMore, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Click">
+                                <i:CallMethodAction MethodName="Focus" TargetObject="{Binding ElementName=SongsControl}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Button>
                 </StackPanel>
             </Border>
         </uc:ScrollViewerAnimation>

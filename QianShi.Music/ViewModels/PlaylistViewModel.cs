@@ -52,11 +52,11 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<ItemsControl> MoreCommand =>
             _moreCommand ??= new(async (control) =>
             {
-                if(Detail == null)
+                if (Detail == null)
                 {
                     return;
                 }
-                control.Focus();
+                //control.Focus();
                 IsBusy = true;
                 try
                 {
@@ -74,6 +74,42 @@ namespace QianShi.Music.ViewModels
                     IsBusy = false;
                 }
             });
+
+        private DelegateCommand<string?> _toBottomCommand;
+        public DelegateCommand<string?> ToBottomCommand =>
+            _toBottomCommand ?? (_toBottomCommand = new DelegateCommand<string?>(ExecuteToBottomCommand));
+
+        private readonly object locker = new();
+
+        async void ExecuteToBottomCommand(string? parameter)
+        {
+            if (IsBusy) return;
+            lock (locker)
+            {
+                if (IsBusy || Detail == null)
+                {
+                    return;
+                }
+                IsBusy = true;
+            }
+
+            try
+            {
+                var ids = string.Join(',', Detail.SongsIds.Skip(Detail.Songs.Count).Take(20));
+                var songsResponse = await _playlistService.SongDetail(ids);
+                if (songsResponse.Code != 200)
+                {
+                    return;
+                }
+                Detail.AddSongs(songsResponse.Songs);
+                Songs.AddRange(songsResponse.Songs);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+        }
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
         {

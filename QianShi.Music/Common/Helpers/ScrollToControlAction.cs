@@ -2,13 +2,6 @@
 
 using QianShi.Music.Extensions;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace QianShi.Music.Common.Helpers
 {
     public class ScrollToControlAction : TriggerAction<FrameworkElement>
