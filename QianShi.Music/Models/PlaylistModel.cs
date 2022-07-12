@@ -1,9 +1,8 @@
 ﻿using QianShi.Music.Common.Models.Response;
-using QianShi.Music.Models;
 
-namespace QianShi.Music.Common.Models
+namespace QianShi.Music.Models
 {
-    public class PlaylistDetail : BindableBase, IDataModel
+    public class PlaylistModel : BindableBase, IDataModel
     {
         private long _id;
         private string? _picUrl = "https://oss.kuriyama.top/static/background.png";
@@ -57,7 +56,7 @@ namespace QianShi.Music.Common.Models
 
         public bool HasMore => Songs.Count < Count;
 
-        public PlaylistDetail()
+        public PlaylistModel()
         {
             Songs = new();
             SongsIds = new();

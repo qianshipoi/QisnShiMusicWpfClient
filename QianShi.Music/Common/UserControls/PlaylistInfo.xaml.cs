@@ -1,4 +1,4 @@
-﻿using QianShi.Music.Common.Models;
+﻿using QianShi.Music.Models;
 
 namespace QianShi.Music.Common.UserControls
 {
@@ -7,14 +7,14 @@ namespace QianShi.Music.Common.UserControls
     /// </summary>
     public partial class PlaylistInfo : UserControl
     {
-        public PlaylistDetail Detail
+        public PlaylistModel Detail
         {
-            get { return (PlaylistDetail)GetValue(DetailProperty); }
+            get { return (PlaylistModel)GetValue(DetailProperty); }
             set { SetValue(DetailProperty, value); }
         }
 
         public static readonly DependencyProperty DetailProperty =
-            DependencyProperty.Register(nameof(Detail), typeof(PlaylistDetail), typeof(PlaylistInfo), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(Detail), typeof(PlaylistModel), typeof(PlaylistInfo), new PropertyMetadata(null));
 
         public ICommand ShowDescriptionCommand
         {

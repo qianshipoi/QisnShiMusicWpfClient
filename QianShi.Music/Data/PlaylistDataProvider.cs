@@ -1,10 +1,9 @@
-﻿using QianShi.Music.Common.Models;
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Models;
 using QianShi.Music.Services;
 
 namespace QianShi.Music.Data
 {
-    public class PlaylistDataProvider : DataCaching<PlaylistDetail, long>
+    public class PlaylistDataProvider : DataCaching<PlaylistModel, long>
     {
         private readonly IPlaylistService _playlistService;
         private readonly IPlaylistStoreService _playlistStoreService;
@@ -17,9 +16,9 @@ namespace QianShi.Music.Data
             _playlistStoreService = playlistStoreService;
         }
 
-        protected override async Task<PlaylistDetail?> Source(long id)
+        protected override async Task<PlaylistModel?> Source(long id)
         {
-            var detail = new PlaylistDetail();
+            var detail = new PlaylistModel();
             var response = await _playlistService.GetPlaylistDetailAsync(id);
             if (response.Code != 200)
             {

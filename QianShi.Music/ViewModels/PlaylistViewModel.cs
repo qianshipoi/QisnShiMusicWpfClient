@@ -1,6 +1,7 @@
-﻿using QianShi.Music.Common.Models;
-using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Data;
+using QianShi.Music.Extensions;
+using QianShi.Music.Models;
 using QianShi.Music.Services;
 
 namespace QianShi.Music.ViewModels
@@ -13,10 +14,11 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistStoreService _playlistStoreService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
-        private readonly IDataProvider<PlaylistDetail, long> _dataProvider;
+        private readonly IDataProvider<PlaylistModel, long> _dataProvider;
+        private readonly ISnackbarMessageQueue _snackbarMessageQueue;
         private DelegateCommand<Song?> _playCommand = default!;
         private DelegateCommand<ItemsControl> _moreCommand = default!;
-        private PlaylistDetail? _detail;
+        private PlaylistModel? _detail;
         private long _playlistId;
 
         public PlaylistViewModel(IContainerProvider containerProvider,
@@ -24,7 +26,8 @@ namespace QianShi.Music.ViewModels
             IPlayService playService,
             IPlayStoreService playStoreService,
             IPlaylistStoreService playlistStoreService,
-            IDataProvider<PlaylistDetail, long> dataProvider)
+            IDataProvider<PlaylistModel, long> dataProvider,
+            ISnackbarMessageQueue snackbarMessageQueue)
             : base(containerProvider)
         {
             _playlistService = playlistService;
@@ -32,9 +35,10 @@ namespace QianShi.Music.ViewModels
             _playStoreService = playStoreService;
             _playlistStoreService = playlistStoreService;
             _dataProvider = dataProvider;
+            _snackbarMessageQueue = snackbarMessageQueue;
         }
 
-        public PlaylistDetail? Detail
+        public PlaylistModel? Detail
         {
             get => _detail;
             set => SetProperty(ref _detail, value);
@@ -48,6 +52,10 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<ItemsControl> MoreCommand =>
             _moreCommand ??= new(async (control) =>
             {
+                if(Detail == null)
+                {
+                    return;
+                }
                 control.Focus();
                 IsBusy = true;
                 try
@@ -137,14 +145,20 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private async void Play(Song? playlist)
+        private async void Play(Song? song)
         {
-            if (playlist != null)
+            if (song != null)
             {
-                await _playStoreService.PlayAsync(playlist);
+                await _playStoreService.PlayAsync(song);
             }
             else
             {
+                if (Songs.Count == 0)
+                {
+                    _snackbarMessageQueue.Enqueue("该歌单没有歌曲", TimeSpan.FromSeconds(5));
+                    return;
+                }
+
                 await _playStoreService.AddPlaylistAsync(_playlistId, Songs);
                 _playStoreService.Pause();
                 if (!_playService.IsPlaying)

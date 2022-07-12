@@ -1,7 +1,7 @@
 ﻿using QianShi.Music.Common;
-using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
+using QianShi.Music.Models;
 using QianShi.Music.Services;
 using QianShi.Music.ViewModels.Dialogs;
 using QianShi.Music.Views.Dialogs;
@@ -33,7 +33,7 @@ namespace QianShi.Music.ViewModels
             _containerProvider = containerProvider;
         }
 
-        public PlaylistDetail Detail { get; } = new();
+        public PlaylistModel Detail { get; } = new();
 
         public bool KeepAlive => false;
 
