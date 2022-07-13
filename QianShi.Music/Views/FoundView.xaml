@@ -4,6 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:conver="clr-namespace:QianShi.Music.Common.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="clr-namespace:QianShi.Music.Common.Helpers"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -121,6 +123,9 @@
         </materialDesign:DialogHost.DialogContent>
         <Grid>
             <uc:ScrollViewerAnimation x:Name="ScrollViewerControl">
+                <i:Interaction.Behaviors>
+                    <helpers:ScrollToEndCallCommandBehavior Command="{Binding MorePlaylistCommand}" ToBottom="120" />
+                </i:Interaction.Behaviors>
                 <StackPanel MaxWidth="1280">
                     <TextBlock
                         Margin="20,10"
@@ -189,8 +194,22 @@
                         HorizontalAlignment="Center"
                         Command="{Binding MorePlaylistCommand}"
                         CommandParameter="{Binding ElementName=PlaylistControl}"
-                        Content="加载更多"
-                        Visibility="{Binding FoundPlaylist.HasMore, Converter={StaticResource Bool2VisibilityConverter}}" />
+                        Content="加载更多">
+                        <Button.Style>
+                            <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="Button">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding FoundPlaylist.HasMore}" Value="True" />
+                                            <Condition Binding="{Binding IsBusy}" Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </StackPanel>
             </uc:ScrollViewerAnimation>
             <Button

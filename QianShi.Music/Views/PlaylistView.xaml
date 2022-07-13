@@ -172,11 +172,10 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <Button
+                    <!--<Button
                         Margin="0,10,0,0"
                         HorizontalAlignment="Center"
                         Command="{Binding MoreCommand}"
-                        CommandParameter="{Binding ElementName=SongsControl}"
                         Content="加载更多"
                         Cursor="Hand"
                         Visibility="{Binding Detail.HasMore, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -185,7 +184,7 @@
                                 <i:CallMethodAction MethodName="Focus" TargetObject="{Binding ElementName=SongsControl}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
-                    </Button>
+                    </Button>-->
                 </StackPanel>
             </Border>
         </uc:ScrollViewerAnimation>

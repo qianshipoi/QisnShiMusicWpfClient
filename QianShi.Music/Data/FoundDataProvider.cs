@@ -30,13 +30,12 @@ namespace QianShi.Music.Data
 
         public BoutiquePlaylist(IPlaylistService playlistService)
         {
-            Debug.WriteLine(1);
             _playlistService = playlistService;
         }
 
         public async Task GetDataAsync()
         {
-            if (!HasMore)
+            if (!HasMore && Playlists.Count > 0)
             {
                 return;
             }
@@ -123,7 +122,7 @@ namespace QianShi.Music.Data
     {
         private readonly IPlaylistService _playlistService;
         private readonly string _catName;
-        private int? _offset = null;
+        private int _offset = 0;
         private bool _hasMore;
         public ObservableCollection<IPlaylist> Playlists { get; } = new();
 

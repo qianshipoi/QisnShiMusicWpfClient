@@ -16,12 +16,10 @@ namespace QianShi.Music.ViewModels
         private readonly IPreferenceService _preferenceService;
         private readonly IFoundDataProvider _foundDataProvider;
         private DelegateCommand<Cat> _addCatCommand = default!;
-        private long _before = 0;
         private Cat? _currentCat = null;
         private bool _more = false;
         private Visibility _moreCat = Visibility.Collapsed;
-        private DelegateCommand<ItemsControl> _morePlaylistCommand = default!;
-        private int _offset = 0;
+        private DelegateCommand _morePlaylistCommand = default!;
         private DelegateCommand<IPlaylist> _openPlaylistCommand = default!;
         private DelegateCommand<Cat> _selectedCatCommand = default!;
         private DelegateCommand<Cat> _switchMoreCatCommand = default!;
@@ -68,8 +66,8 @@ namespace QianShi.Music.ViewModels
         public DelegateCommand<Cat> AddCatCommand
             => _addCatCommand ??= new(AddCat);
 
-        public DelegateCommand<ItemsControl> MorePlaylistCommand
-            => _morePlaylistCommand ??= new(MorePlaylist);
+        public DelegateCommand MorePlaylistCommand
+            => _morePlaylistCommand ??= new(MorePlaylist, () => !IsBusy && FoundPlaylist is { } && FoundPlaylist.HasMore);
 
         public DelegateCommand<IPlaylist> OpenPlaylistCommand
             => _openPlaylistCommand ??= new(OpenPlaylist);
@@ -170,29 +168,15 @@ namespace QianShi.Music.ViewModels
             _preferenceService.Set(_catsKey, JsonSerializer.Serialize(Cats));
         }
 
-        private async Task CallApi(Cat cat, bool isClear = false)
+        /// <summary>
+        /// 更多歌单
+        /// </summary>
+        private async void MorePlaylist()
         {
             IsBusy = true;
             try
             {
-                switch (cat.Name)
-                {
-                    case "精品":
-                        await QuerySelectPlaylist(isClear);
-                        break;
-
-                    case "推荐":
-                        await QueryRecommendedPalylist();
-                        break;
-
-                    case "排行榜":
-                        await QueryToplist();
-                        break;
-
-                    default:
-                        await QueryCatPlaylist(cat.Name, isClear);
-                        break;
-                }
+                await FoundPlaylist!.GetDataAsync();
             }
             finally
             {
@@ -200,90 +184,9 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        /// <summary>
-        /// 更多歌单
-        /// </summary>
-        private async void MorePlaylist(ItemsControl el)
-        {
-            if (_currentCat != null)
-            {
-                el.Focus();
-                await CallApi(_currentCat);
-            }
-        }
-
         private void OpenPlaylist(IPlaylist obj)
         {
             _navigationService.NavigateToPlaylist(obj.Id);
-        }
-
-        /// <summary>
-        /// 获取类别歌单
-        /// </summary>
-        /// <param name="catName"></param>
-        /// <returns></returns>
-        private async Task QueryCatPlaylist(string catName, bool isClear = false)
-        {
-            var response = await _playlistService.GetTopPlaylistAsync(new TopPlaylistRequest
-            {
-                Cat = catName,
-                Offset = _offset
-            });
-            if (response != null)
-            {
-                await UpdatePalylist(response.Playlists, isClear);
-                More = response.More;
-                _offset += response.Playlists.Count;
-            }
-        }
-
-        /// <summary>
-        /// 获取推荐歌单
-        /// </summary>
-        /// <returns></returns>
-        private async Task QueryRecommendedPalylist()
-        {
-            var response = await _playlistService.GetPersonalizedAsync();
-            if (response != null)
-            {
-                More = false;
-                await UpdatePalylist(response.Result, true);
-                More = false;
-            }
-        }
-
-        /// <summary>
-        /// 获取精选歌单
-        /// </summary>
-        /// <returns></returns>
-        private async Task QuerySelectPlaylist(bool isClear = false)
-        {
-            var response = await _playlistService.GetTopPlaylistHighqualityAsnyc(new TopPlaylistHighqualityRequest
-            {
-                Limit = 100,
-                Before = _before == 0 ? null : _before,
-            });
-
-            if (response != null)
-            {
-                await UpdatePalylist(response.Playlists, isClear);
-                More = response.More;
-                _before = response.Lasttime;
-            }
-        }
-
-        /// <summary>
-        /// 获取排行榜列表
-        /// </summary>
-        /// <returns></returns>
-        private async Task QueryToplist()
-        {
-            var response = await _playlistService.GetToplistAsync();
-            if (response != null)
-            {
-                await UpdatePalylist(response.List, true);
-                More = false;
-            }
         }
 
         private async void SelectedCat(Cat cat)
@@ -294,14 +197,17 @@ namespace QianShi.Music.ViewModels
             cat.IsActivation = true;
             _currentCat = cat;
 
-            FoundPlaylist = _foundDataProvider.CreatePlaylist(cat.Name);
-            await FoundPlaylist.GetDataAsync();
-
-            //_offset = 0;
-            //_before = 0;
-            //More = false;
-
-            //await CallApi(cat, true);
+            IsBusy = true;
+            try
+            {
+                FoundPlaylist = _foundDataProvider.CreatePlaylist(cat.Name);
+                if (FoundPlaylist.Playlists.Count == 0)
+                    await FoundPlaylist.GetDataAsync();
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         private void SwitchMoreCat(Cat cat)
@@ -310,21 +216,6 @@ namespace QianShi.Music.ViewModels
             MoreCat = MoreCat == Visibility.Collapsed
                 ? MoreCat = Visibility.Visible
                 : MoreCat = Visibility.Collapsed;
-        }
-
-        private async Task UpdatePalylist(IEnumerable<IPlaylist> source, bool isClear = false)
-        {
-            if (isClear)
-                Playlists.Clear();
-            int i = 0;
-            foreach (var sourceItem in source.Where(x => !string.IsNullOrWhiteSpace(x.CoverImgUrl)))
-            {
-                sourceItem.CoverImgUrl += "?param=200y200";
-                Playlists.Add(sourceItem);
-                if (i % 5 == 0)
-                    await Task.Delay(20);
-                i++;
-            }
         }
     }
 }

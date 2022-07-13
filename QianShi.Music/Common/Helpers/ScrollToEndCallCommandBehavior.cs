@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xaml.Behaviors;
 
+using System.Diagnostics;
+
 namespace QianShi.Music.Common.Helpers
 {
     public class ScrollToEndCallCommandBehavior : Behavior<ScrollViewer>
@@ -33,12 +35,14 @@ namespace QianShi.Music.Common.Helpers
 
         private void AssociatedObject_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            if (sender is ScrollViewer scrollViewer && e.VerticalChange > 0)
+            if (sender is ScrollViewer scrollViewer && scrollViewer.Content is FrameworkElement frameworkElement && e.VerticalChange > 0)
             {
-                if (scrollViewer.ActualHeight - e.VerticalOffset <= ToBottom)
+                if (frameworkElement.ActualHeight - scrollViewer.ActualHeight - e.VerticalOffset <= ToBottom)
                 {
-                    //Debug.WriteLine($"height:{scrollViewer.ActualHeight}, vertical:{e.VerticalOffset}, change:{e.VerticalChange}");
-                    Command?.Execute(CommandParameter);
+                    if (Command?.CanExecute(CommandParameter) ?? false)
+                    {
+                        Command.Execute(CommandParameter);
+                    }
                 }
             }
         }

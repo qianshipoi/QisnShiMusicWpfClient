@@ -17,7 +17,7 @@ namespace QianShi.Music.ViewModels
         private readonly IDataProvider<PlaylistDetailModel, long> _dataProvider;
         private readonly ISnackbarMessageQueue _snackbarMessageQueue;
         private DelegateCommand<Song?> _playCommand = default!;
-        private DelegateCommand<ItemsControl> _moreCommand = default!;
+        //private DelegateCommand _moreCommand = default!;
         private PlaylistDetailModel? _detail;
         private long _playlistId;
 
@@ -49,44 +49,18 @@ namespace QianShi.Music.ViewModels
 
         public ObservableCollection<Song> Songs { get; set; } = new();
 
-        public DelegateCommand<ItemsControl> MoreCommand =>
-            _moreCommand ??= new(async (control) =>
-            {
-                if (Detail == null)
-                {
-                    return;
-                }
-                //control.Focus();
-                IsBusy = true;
-                try
-                {
-                    var ids = string.Join(',', Detail.SongsIds.Skip(Detail.Songs.Count).Take(20));
-                    var songsResponse = await _playlistService.SongDetail(ids);
-                    if (songsResponse.Code != 200)
-                    {
-                        return;
-                    }
-                    Detail.AddSongs(songsResponse.Songs);
-                    Songs.AddRange(songsResponse.Songs);
-                }
-                finally
-                {
-                    IsBusy = false;
-                }
-            });
-
-        private DelegateCommand<string?> _toBottomCommand;
+        private DelegateCommand<string?> _toBottomCommand = default!;
         public DelegateCommand<string?> ToBottomCommand =>
-            _toBottomCommand ?? (_toBottomCommand = new DelegateCommand<string?>(ExecuteToBottomCommand));
+            _toBottomCommand ?? (_toBottomCommand = new DelegateCommand<string?>(ExecuteToBottomCommand,(_) =>!IsBusy && Detail !=null && Detail.Songs.Count < Detail.SongsIds.Count));
 
         private readonly object locker = new();
 
         async void ExecuteToBottomCommand(string? parameter)
         {
-            if (IsBusy) return;
+            if (IsBusy || Detail == null || Detail.Songs.Count == Detail.SongsIds.Count) return;
             lock (locker)
             {
-                if (IsBusy || Detail == null)
+                if (IsBusy || Detail == null || Detail.Songs.Count == Detail.SongsIds.Count)
                 {
                     return;
                 }
