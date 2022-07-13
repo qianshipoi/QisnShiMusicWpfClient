@@ -7,12 +7,12 @@ using System.Diagnostics;
 
 namespace QianShi.Music.Data
 {
-    public class PlaylistDataProvider : DataCaching<PlaylistModel, long>
+    public class PlaylistDetailDataProvider : DataCaching<PlaylistDetailModel, long>
     {
         private readonly IPlaylistService _playlistService;
         private readonly IPlaylistStoreService _playlistStoreService;
 
-        public PlaylistDataProvider(
+        public PlaylistDetailDataProvider(
             IPlaylistService playlistService,
             IPlaylistStoreService playlistStoreService,
             IMemoryCache memoryCache)
@@ -22,10 +22,10 @@ namespace QianShi.Music.Data
             _playlistStoreService = playlistStoreService;
         }
 
-        protected override async Task<PlaylistModel?> Source(long id)
+        protected override async Task<PlaylistDetailModel?> Source(long id)
         {
             Debug.WriteLine($"playlist:{id}");
-            var detail = new PlaylistModel();
+            var detail = new PlaylistDetailModel();
             var response = await _playlistService.GetPlaylistDetailAsync(id);
             if (response.Code != 200)
             {

@@ -2,7 +2,7 @@
 
 namespace QianShi.Music.Models
 {
-    public class PlaylistModel : BindableBase, IDataModel
+    public class PlaylistDetailModel : BindableBase, IDataModel
     {
         private long _id;
         private string? _picUrl = "https://oss.kuriyama.top/static/background.png";
@@ -56,7 +56,7 @@ namespace QianShi.Music.Models
 
         public bool HasMore => Songs.Count < Count;
 
-        public PlaylistModel()
+        public PlaylistDetailModel()
         {
             Songs = new();
             SongsIds = new();

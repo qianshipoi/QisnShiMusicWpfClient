@@ -146,7 +146,7 @@ namespace QianShi.Music
             containerRegistry.RegisterForNavigation<NavigationBarView, NavigationBarViewModel>();
 
             containerRegistry.RegisterSingleton<IDataProvider<ArtistModel, long>, ArtistDataProvider>();
-            containerRegistry.RegisterSingleton<IDataProvider<PlaylistModel, long>, PlaylistDataProvider>();
+            containerRegistry.RegisterSingleton<IDataProvider<PlaylistDetailModel, long>, PlaylistDetailDataProvider>();
 
             containerRegistry.RegisterSingleton<ICachingService, MemoryCachingService>();
 

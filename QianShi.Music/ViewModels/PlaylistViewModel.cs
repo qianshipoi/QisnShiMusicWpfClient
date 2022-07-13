@@ -14,11 +14,11 @@ namespace QianShi.Music.ViewModels
         private readonly IPlaylistStoreService _playlistStoreService;
         private readonly IPlayService _playService;
         private readonly IPlayStoreService _playStoreService;
-        private readonly IDataProvider<PlaylistModel, long> _dataProvider;
+        private readonly IDataProvider<PlaylistDetailModel, long> _dataProvider;
         private readonly ISnackbarMessageQueue _snackbarMessageQueue;
         private DelegateCommand<Song?> _playCommand = default!;
         private DelegateCommand<ItemsControl> _moreCommand = default!;
-        private PlaylistModel? _detail;
+        private PlaylistDetailModel? _detail;
         private long _playlistId;
 
         public PlaylistViewModel(IContainerProvider containerProvider,
@@ -26,7 +26,7 @@ namespace QianShi.Music.ViewModels
             IPlayService playService,
             IPlayStoreService playStoreService,
             IPlaylistStoreService playlistStoreService,
-            IDataProvider<PlaylistModel, long> dataProvider,
+            IDataProvider<PlaylistDetailModel, long> dataProvider,
             ISnackbarMessageQueue snackbarMessageQueue)
             : base(containerProvider)
         {
@@ -38,7 +38,7 @@ namespace QianShi.Music.ViewModels
             _snackbarMessageQueue = snackbarMessageQueue;
         }
 
-        public PlaylistModel? Detail
+        public PlaylistDetailModel? Detail
         {
             get => _detail;
             set => SetProperty(ref _detail, value);

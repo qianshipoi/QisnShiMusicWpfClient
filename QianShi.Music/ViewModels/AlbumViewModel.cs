@@ -33,7 +33,7 @@ namespace QianShi.Music.ViewModels
             _containerProvider = containerProvider;
         }
 
-        public PlaylistModel Detail { get; } = new();
+        public PlaylistDetailModel Detail { get; } = new();
 
         public bool KeepAlive => false;
 
