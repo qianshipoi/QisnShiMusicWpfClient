@@ -179,7 +179,7 @@
                         HorizontalContentAlignment="Center"
                         ItemTemplateSelector="{StaticResource PlaylistDataTemplateSelector}"
                         ItemsPanel="{StaticResource UniformGridC5}"
-                        ItemsSource="{Binding Playlists}"
+                        ItemsSource="{Binding FoundPlaylist.Playlists}"
                         ScrollViewer.IsDeferredScrollingEnabled="True"
                         VirtualizingPanel.IsVirtualizing="True"
                         VirtualizingPanel.IsVirtualizingWhenGrouping="True"
@@ -190,7 +190,7 @@
                         Command="{Binding MorePlaylistCommand}"
                         CommandParameter="{Binding ElementName=PlaylistControl}"
                         Content="加载更多"
-                        Visibility="{Binding More, Converter={StaticResource Bool2VisibilityConverter}}" />
+                        Visibility="{Binding FoundPlaylist.HasMore, Converter={StaticResource Bool2VisibilityConverter}}" />
                 </StackPanel>
             </uc:ScrollViewerAnimation>
             <Button

@@ -1,6 +1,7 @@
 ﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
 using QianShi.Music.Common.Models.Request;
+using QianShi.Music.Data;
 using QianShi.Music.Services;
 
 namespace QianShi.Music.ViewModels
@@ -13,6 +14,7 @@ namespace QianShi.Music.ViewModels
         private readonly INavigationService _navigationService;
         private readonly IPlaylistService _playlistService;
         private readonly IPreferenceService _preferenceService;
+        private readonly IFoundDataProvider _foundDataProvider;
         private DelegateCommand<Cat> _addCatCommand = default!;
         private long _before = 0;
         private Cat? _currentCat = null;
@@ -23,17 +25,26 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<IPlaylist> _openPlaylistCommand = default!;
         private DelegateCommand<Cat> _selectedCatCommand = default!;
         private DelegateCommand<Cat> _switchMoreCatCommand = default!;
+        private IFoundPlaylist? _foundPlaylist;
 
         public FoundViewModel(
             IContainerProvider provider,
             IPlaylistService playlistService,
             INavigationService navigationService,
-            IPreferenceService preferenceService)
+            IPreferenceService preferenceService,
+            IFoundDataProvider foundDataProvider)
             : base(provider)
         {
             _playlistService = playlistService;
             _navigationService = navigationService;
             _preferenceService = preferenceService;
+            _foundDataProvider = foundDataProvider;
+        }
+
+        public IFoundPlaylist? FoundPlaylist
+        {
+            get => _foundPlaylist;
+            set => SetProperty(ref _foundPlaylist, value);
         }
 
         public ObservableCollection<CatOption> CatOptions { get; } = new();
@@ -164,7 +175,6 @@ namespace QianShi.Music.ViewModels
             IsBusy = true;
             try
             {
-                List<IPlaylist> playlists = new List<IPlaylist>();
                 switch (cat.Name)
                 {
                     case "精品":
@@ -283,11 +293,15 @@ namespace QianShi.Music.ViewModels
                 _currentCat.IsActivation = false;
             cat.IsActivation = true;
             _currentCat = cat;
-            _offset = 0;
-            _before = 0;
-            More = false;
 
-            await CallApi(cat, true);
+            FoundPlaylist = _foundDataProvider.CreatePlaylist(cat.Name);
+            await FoundPlaylist.GetDataAsync();
+
+            //_offset = 0;
+            //_before = 0;
+            //More = false;
+
+            //await CallApi(cat, true);
         }
 
         private void SwitchMoreCat(Cat cat)

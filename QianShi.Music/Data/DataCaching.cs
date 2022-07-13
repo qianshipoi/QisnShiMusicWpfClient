@@ -9,13 +9,13 @@ namespace QianShi.Music.Data
         where TResult : IDataModel
         where TParam : IEquatable<TParam>
     {
-        private readonly ConcurrentFixedSizeCache<TParam, TResult> _cache = new(10, 1);
-
+        private readonly ConcurrentFixedSizeCache<TParam, TResult> _cache;
         private readonly IMemoryCache _memoryCache;
 
-        public DataCaching(IMemoryCache memoryCache)
+        public DataCaching(IMemoryCache memoryCache, int capacity = 10, int removeCount = 1)
         {
             _memoryCache = memoryCache;
+            _cache = new(capacity, removeCount);
         }
 
         public async Task<TResult?> GetDataAsync(TParam param)

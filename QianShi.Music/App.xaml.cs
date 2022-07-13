@@ -125,6 +125,7 @@ namespace QianShi.Music
 
             containerRegistry.RegisterSingleton<ISnackbarMessageQueue, SnackbarMessageQueue>();
 
+
             containerRegistry.Register<VideoPlayWindow>();
 
             containerRegistry.RegisterForNavigation<DescriptionDialog, DescriptionDialogViewModel>();
@@ -147,6 +148,8 @@ namespace QianShi.Music
 
             containerRegistry.RegisterSingleton<IDataProvider<ArtistModel, long>, ArtistDataProvider>();
             containerRegistry.RegisterSingleton<IDataProvider<PlaylistDetailModel, long>, PlaylistDetailDataProvider>();
+
+            containerRegistry.RegisterSingleton<IFoundDataProvider, FoundDataProvider>();
 
             containerRegistry.RegisterSingleton<ICachingService, MemoryCachingService>();
 
