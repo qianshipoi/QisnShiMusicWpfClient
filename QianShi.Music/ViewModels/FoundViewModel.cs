@@ -1,6 +1,5 @@
 ﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
-using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Data;
 using QianShi.Music.Services;
 
@@ -70,7 +69,10 @@ namespace QianShi.Music.ViewModels
             => _morePlaylistCommand ??= new(MorePlaylist, () => !IsBusy && FoundPlaylist is { } && FoundPlaylist.HasMore);
 
         public DelegateCommand<IPlaylist> OpenPlaylistCommand
-            => _openPlaylistCommand ??= new(OpenPlaylist);
+            => _openPlaylistCommand ??= new((playlist) =>
+            {
+                _navigationService.NavigateToPlaylist(playlist.Id);
+            });
 
         public DelegateCommand<Cat> SelectedCatCommand
             => _selectedCatCommand ??= new(SelectedCat);
@@ -109,12 +111,10 @@ namespace QianShi.Music.ViewModels
             var type = "全部";
             if (parametes.ContainsKey(PlaylistTypeParameterName))
             {
-                var value = parametes.GetValue<string>("PlaylistType");
+                var value = parametes.GetValue<string>(PlaylistTypeParameterName);
                 type = string.IsNullOrWhiteSpace(value) ? "全部" : value;
 
-                var first = Cats.FirstOrDefault(x => x.Name == type);
-                if (first == null)
-                    first = Cats[0];
+                var first = Cats.FirstOrDefault(x => x.Name == type) ?? Cats.First();
 
                 if (_currentCat == null || _currentCat.Name != type)
                 {
@@ -124,7 +124,7 @@ namespace QianShi.Music.ViewModels
             else
             {
                 if (_currentCat == null)
-                    SelectedCat(Cats[0]);
+                    SelectedCat(Cats.First());
             }
 
             if (CatOptions.Count == 0)
@@ -182,11 +182,6 @@ namespace QianShi.Music.ViewModels
             {
                 IsBusy = false;
             }
-        }
-
-        private void OpenPlaylist(IPlaylist obj)
-        {
-            _navigationService.NavigateToPlaylist(obj.Id);
         }
 
         private async void SelectedCat(Cat cat)
