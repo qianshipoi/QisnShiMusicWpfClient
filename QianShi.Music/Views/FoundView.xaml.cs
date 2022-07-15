@@ -27,7 +27,8 @@ namespace QianShi.Music.Views
 
         private void BackTopButton_Click(object sender, RoutedEventArgs e)
         {
-            ScrollViewerControl.ScrollToTop();
+            //ScrollViewerControl.ScrollToTop();
+            ScrollViewerControl.GoBackTop();
         }
     }
 }
