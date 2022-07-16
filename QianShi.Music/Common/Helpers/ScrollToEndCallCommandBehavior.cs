@@ -1,7 +1,5 @@
 ﻿using Microsoft.Xaml.Behaviors;
 
-using System.Diagnostics;
-
 namespace QianShi.Music.Common.Helpers
 {
     public class ScrollToEndCallCommandBehavior : Behavior<ScrollViewer>
@@ -15,6 +13,7 @@ namespace QianShi.Music.Common.Helpers
             get => (double)GetValue(ToBottomProperty);
             set => SetValue(ToBottomProperty, value);
         }
+
         public ICommand Command
         {
             get => (ICommand)GetValue(CommandProperty);
@@ -26,6 +25,7 @@ namespace QianShi.Music.Common.Helpers
             get => GetValue(CommandParameterProperty);
             set => SetValue(CommandParameterProperty, value);
         }
+
         protected override void OnAttached()
         {
             base.OnAttached();

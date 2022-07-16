@@ -125,6 +125,7 @@
             <uc:ScrollViewerAnimation x:Name="ScrollViewerControl">
                 <i:Interaction.Behaviors>
                     <helpers:ScrollToEndCallCommandBehavior Command="{Binding MorePlaylistCommand}" ToBottom="120" />
+                    <helpers:ScrollDisplayGoBackTopButtonBehavior Element="{Binding ElementName=BackTopButton}" />
                 </i:Interaction.Behaviors>
                 <StackPanel MaxWidth="1280">
                     <TextBlock
@@ -215,10 +216,13 @@
             <Button
                 x:Name="BackTopButton"
                 Margin="20"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Click="BackTopButton_Click"
-                Style="{StaticResource MaterialDesignIconButton}">
+                HorizontalAlignment="Right" Style="{StaticResource MaterialDesignIconButton}"
+                VerticalAlignment="Bottom">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction TargetObject="{Binding ElementName=ScrollViewerControl}" MethodName="GoBackTop"  />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
                 <materialDesign:PackIcon
                     Width="32"
                     Height="32"

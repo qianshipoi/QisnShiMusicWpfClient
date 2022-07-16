@@ -44,6 +44,7 @@ namespace QianShi.Music.Common.UserControls
         public void GoBackTop()
         {
             AnimateScroll(0);
+            LastLocation = 0;
         }
     }
 }
