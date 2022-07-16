@@ -1,6 +1,5 @@
 ﻿using QianShi.Music.Common;
 using QianShi.Music.Common.Models;
-using QianShi.Music.Common.Models.Request;
 using QianShi.Music.Data;
 using QianShi.Music.Services;
 
@@ -17,8 +16,7 @@ namespace QianShi.Music.ViewModels
         private readonly IFoundDataProvider _foundDataProvider;
         private DelegateCommand<Cat> _addCatCommand = default!;
         private Cat? _currentCat = null;
-        private bool _more = false;
-        private Visibility _moreCat = Visibility.Collapsed;
+        private bool _moreCat = false;
         private DelegateCommand _morePlaylistCommand = default!;
         private DelegateCommand<IPlaylist> _openPlaylistCommand = default!;
         private DelegateCommand<Cat> _selectedCatCommand = default!;
@@ -51,13 +49,7 @@ namespace QianShi.Music.ViewModels
 
         public ObservableCollection<IPlaylist> Playlists { get; } = new();
 
-        public bool More
-        {
-            get => _more;
-            set => SetProperty(ref _more, value);
-        }
-
-        public Visibility MoreCat
+        public bool MoreCat
         {
             get => _moreCat;
             set => SetProperty(ref _moreCat, value);
@@ -70,7 +62,7 @@ namespace QianShi.Music.ViewModels
             => _morePlaylistCommand ??= new(MorePlaylist, () => !IsBusy && FoundPlaylist is { } && FoundPlaylist.HasMore);
 
         public DelegateCommand<IPlaylist> OpenPlaylistCommand
-            => _openPlaylistCommand ??= new(OpenPlaylist);
+            => _openPlaylistCommand ??= new(playlist => _navigationService.NavigateToPlaylist(playlist.Id));
 
         public DelegateCommand<Cat> SelectedCatCommand
             => _selectedCatCommand ??= new(SelectedCat);
@@ -184,11 +176,6 @@ namespace QianShi.Music.ViewModels
             }
         }
 
-        private void OpenPlaylist(IPlaylist obj)
-        {
-            _navigationService.NavigateToPlaylist(obj.Id);
-        }
-
         private async void SelectedCat(Cat cat)
         {
             if (_currentCat == cat) return;
@@ -213,9 +200,7 @@ namespace QianShi.Music.ViewModels
         private void SwitchMoreCat(Cat cat)
         {
             cat.IsActivation = !cat.IsActivation;
-            MoreCat = MoreCat == Visibility.Collapsed
-                ? MoreCat = Visibility.Visible
-                : MoreCat = Visibility.Collapsed;
+            MoreCat = !MoreCat;
         }
     }
 }

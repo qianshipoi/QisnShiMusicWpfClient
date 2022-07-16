@@ -141,7 +141,7 @@
                         Margin="10"
                         Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
                         CornerRadius="10"
-                        Visibility="{Binding MoreCat}">
+                        Visibility="{Binding MoreCat, Converter={StaticResource Bool2VisibilityConverter}}">
                         <ItemsControl ItemsPanel="{StaticResource StackPanel}" ItemsSource="{Binding CatOptions}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
