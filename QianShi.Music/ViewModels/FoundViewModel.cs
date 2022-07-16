@@ -101,12 +101,10 @@ namespace QianShi.Music.ViewModels
             var type = "全部";
             if (parametes.ContainsKey(PlaylistTypeParameterName))
             {
-                var value = parametes.GetValue<string>("PlaylistType");
+                var value = parametes.GetValue<string>(PlaylistTypeParameterName);
                 type = string.IsNullOrWhiteSpace(value) ? "全部" : value;
 
-                var first = Cats.FirstOrDefault(x => x.Name == type);
-                if (first == null)
-                    first = Cats[0];
+                var first = Cats.FirstOrDefault(x => x.Name == type) ?? Cats.First();
 
                 if (_currentCat == null || _currentCat.Name != type)
                 {
@@ -116,7 +114,7 @@ namespace QianShi.Music.ViewModels
             else
             {
                 if (_currentCat == null)
-                    SelectedCat(Cats[0]);
+                    SelectedCat(Cats.First());
             }
 
             if (CatOptions.Count == 0)

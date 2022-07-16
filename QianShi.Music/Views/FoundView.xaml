@@ -9,6 +9,7 @@
     xmlns:local="clr-namespace:QianShi.Music.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:response="clr-namespace:QianShi.Music.Common.Models.Response"
     xmlns:uc="clr-namespace:QianShi.Music.Common.UserControls"
     d:DataContext="{Binding Source={StaticResource ViewModelLocator}, Path=FoundViewModel}"
     d:DesignHeight="450"
@@ -61,12 +62,11 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
-            <conver:Bool2VisibilityConverter x:Key="Bool2VisibilityConverter" />
-            <conver:Bool2ReVisibilityConverter x:Key="Bool2ReVisibilityConverter" />
             <ItemsPanelTemplate x:Key="UniformGridC5">
                 <UniformGrid Columns="5" />
             </ItemsPanelTemplate>
-            <DataTemplate x:Key="PlaylistItemTemplate">
+
+            <DataTemplate x:Key="PlaylistItemTemplate" DataType="{x:Type response:Playlist}">
                 <uc:PlaylistCard
                     Title="{Binding Name}"
                     MinWidth="160"
@@ -78,7 +78,7 @@
                     OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType=local:FoundView}, Path=DataContext.OpenPlaylistCommand}"
                     Playlist="{Binding}" />
             </DataTemplate>
-            <DataTemplate x:Key="PersonalizedPlaylistItemTemplate">
+            <DataTemplate x:Key="PersonalizedPlaylistItemTemplate" DataType="{x:Type response:PersonalizedPlaylist}">
                 <uc:PlaylistCard
                     Title="{Binding Name}"
                     MinWidth="160"
@@ -91,7 +91,7 @@
                     OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType=local:FoundView}, Path=DataContext.OpenPlaylistCommand}"
                     Playlist="{Binding}" />
             </DataTemplate>
-            <DataTemplate x:Key="ToplistItemTemplate">
+            <DataTemplate x:Key="ToplistItemTemplate" DataType="{x:Type response:Toplist}">
                 <uc:PlaylistCard
                     Title="{Binding Name}"
                     MinWidth="160"

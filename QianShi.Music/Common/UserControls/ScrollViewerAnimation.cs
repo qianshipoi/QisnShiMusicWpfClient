@@ -4,10 +4,8 @@ namespace QianShi.Music.Common.UserControls
 {
     public class ScrollViewerAnimation : ScrollViewer
     {
-        //记录上一次的滚动位置
+        /// <summary> 记录上一次的滚动位置 </summary>
         private double LastLocation = 0;
-
-        //重写鼠标滚动事件
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             double WheelChange = e.Delta;
@@ -40,6 +38,12 @@ namespace QianShi.Music.Common.UserControls
             //考虑到性能，可以降低动画帧数
             //Timeline.SetDesiredFrameRate(Animation, 40);
             BeginAnimation(ScrollViewerBehavior.VerticalOffsetProperty, Animation);
+        }
+
+        /// <summary> 回到顶部 </summary>
+        public void GoBackTop()
+        {
+            AnimateScroll(0);
         }
     }
 }
