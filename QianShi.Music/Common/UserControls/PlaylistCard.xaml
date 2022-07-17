@@ -31,51 +31,57 @@
                 <materialDesign:PackIcon Kind="Play" />
                 <TextBlock FontSize="12" Text="{Binding AmountOfPlay, Converter={StaticResource NumberConverter}}" />
             </WrapPanel>
-            <TextBlock
-                MaxHeight="42"
+            <Button
+                x:Name="DescriptionButton"
                 Margin="2,0"
+                Click="FilletImage_ImageClick"
                 Cursor="Hand"
-                FontSize="{Binding TitleFontSize}"
-                FontWeight="Bold"
-                MouseLeftButtonUp="JumpToPlaylist"
-                Style="{StaticResource UnderlineTextBlock}"
-                Text="{Binding Title}"
-                TextWrapping="WrapWithOverflow">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding OpenPlaylistCommand}" CommandParameter="{Binding Playlist}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TextBlock>
-            <TextBlock
+                Style="{StaticResource NoneButtonStyle}">
+                <TextBlock
+                    MaxHeight="42"
+                    Cursor="Hand"
+                    FontSize="{Binding TitleFontSize}"
+                    FontWeight="Bold"
+                    Style="{StaticResource UnderlineTextBlock}"
+                    Text="{Binding Title}"
+                    TextWrapping="WrapWithOverflow" />
+            </Button>
+            <Button
                 x:Name="DescriptionControl"
-                MaxHeight="40"
                 Margin="2,2,0,0"
-                FontSize="12px"
-                Opacity=".68"
-                Text="{Binding Description}"
-                TextTrimming="CharacterEllipsis"
+                Command="{Binding DescriptionCommand}"
+                CommandParameter="{Binding DescriptionCommandParameter}"
+                Style="{StaticResource NoneButtonStyle}"
                 Visibility="Collapsed">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsMouseOver}" Value="True" />
-                                    <Condition Binding="{Binding DescriptionCanClick}" Value="True" />
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="TextDecorations" Value="Underline" />
-                                <Setter Property="Cursor" Value="Hand" />
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding DescriptionCommand}" CommandParameter="{Binding DescriptionCommandParameter}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TextBlock>
+                <TextBlock
+                    MaxHeight="40"
+                    Margin="2,2,0,0"
+                    FontSize="12px"
+                    Opacity=".68"
+                    Text="{Binding Description}"
+                    TextTrimming="CharacterEllipsis">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Cursor" Value="Arrow" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=IsMouseOver}" Value="True" />
+                                        <Condition Binding="{Binding DescriptionCanClick}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Cursor" Value="Hand" />
+                                    <Setter Property="TextDecorations" Value="Underline" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                    <!--<i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding DescriptionCommand}" CommandParameter="{Binding DescriptionCommandParameter}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>-->
+                </TextBlock>
+            </Button>
         </StackPanel>
     </Border>
 </UserControl>

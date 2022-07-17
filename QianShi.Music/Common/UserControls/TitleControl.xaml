@@ -18,25 +18,19 @@
             FontSize="{Binding TitleFontSize}"
             FontWeight="Bold"
             Text="{Binding Title}" />
-        <TextBlock
+        <Button
             VerticalAlignment="Bottom"
+            Command="{Binding LookAllCammand}"
             Cursor="Hand"
             DockPanel.Dock="Right"
-            FontSize="13"
-            FontWeight="Bold"
-            MouseLeftButtonUp="TextBlock_MouseLeftButtonUp"
-            Opacity=".68"
-            Text="查看全部"
-            Visibility="{Binding ShowLookAll, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="TextDecorations" Value="Underline" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
+            Style="{StaticResource NoneButtonStyle}">
+            <TextBlock
+                FontSize="13"
+                FontWeight="Bold"
+                Opacity=".68"
+                Style="{StaticResource UnderlineTextBlock}"
+                Text="查看全部"
+                Visibility="{Binding ShowLookAll, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </Button>
     </DockPanel>
 </UserControl>

@@ -121,7 +121,7 @@ namespace QianShi.Music.Common.UserControls
         {
             if (OpenPlaylistCommand != null && OpenPlaylistCommand.CanExecute(Playlist))
                 OpenPlaylistCommand.Execute(Playlist);
-            JumpToPlaylist(sender, null);
+            _navigationService.NavigateToPlaylist(Playlist.Id);
         }
 
         private DelegateCommand _playCommand = default!;
@@ -141,11 +141,6 @@ namespace QianShi.Music.Common.UserControls
                 await _playStoreService.AddPlaylistAsync(playlist.Id);
                 _playStoreService.Play();
             }
-        }
-
-        private void JumpToPlaylist(object sender, MouseButtonEventArgs e)
-        {
-            _navigationService.NavigateToPlaylist(Playlist.Id);
         }
     }
 }
