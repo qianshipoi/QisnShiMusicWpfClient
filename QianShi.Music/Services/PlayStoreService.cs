@@ -1,5 +1,4 @@
 ﻿using QianShi.Music.Common.Models.Response;
-using QianShi.Music.Extensions;
 
 namespace QianShi.Music.Services
 {
@@ -11,6 +10,7 @@ namespace QianShi.Music.Services
         private readonly List<Song> _playlist = new();
         private long _playlistId;
         private readonly ISnackbarMessageQueue _snackbarMessageQueue;
+
         public ObservableCollection<Song> LaterPlaylist { get; } = new();
         public ObservableCollection<Song> JumpTheQueuePlaylist { get; } = new();
 
@@ -100,10 +100,11 @@ namespace QianShi.Music.Services
                 var songs = new List<Song>();
                 if (playlistResponse.PlaylistDetail.TrackIds.Count > 20)
                 {
-                    var requestCount = (int)Math.Ceiling(playlistResponse.PlaylistDetail.TrackIds.Count * 0.1 / 20);
-                    for (int i = 0; i < requestCount; i++)
+                    var idsChunks = playlistResponse.PlaylistDetail.TrackIds.Chunk(20);
+
+                    foreach (var idsChunk in idsChunks)
                     {
-                        var ids = string.Join(',', playlistResponse.PlaylistDetail.TrackIds.Skip(i).Take(20).Select(x => x.Id));
+                        var ids = string.Join(',', idsChunk.Select(x => x.Id));
                         var songsResponse = await _playlistService.SongDetail(ids);
                         if (songsResponse.Code == 200)
                         {

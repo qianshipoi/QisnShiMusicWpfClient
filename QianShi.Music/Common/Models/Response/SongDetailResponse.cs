@@ -5,6 +5,7 @@ namespace QianShi.Music.Common.Models.Response
     public class SongDetailResponse
     {
         public int Code { get; set; }
+        public string? Msg { get; set; }
         public List<Song> Songs { get; set; } = new List<Song>();
     }
 

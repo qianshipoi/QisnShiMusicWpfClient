@@ -16,8 +16,10 @@ namespace QianShi.Music.ViewModels
         private readonly IPlayStoreService _playStoreService;
         private readonly IDataProvider<PlaylistDetailModel, long> _dataProvider;
         private readonly ISnackbarMessageQueue _snackbarMessageQueue;
+        private readonly INavigationService _navigationService;
+        private readonly object _locker = new();
         private DelegateCommand<Song?> _playCommand = default!;
-        //private DelegateCommand _moreCommand = default!;
+        private DelegateCommand<string?> _toBottomCommand = default!;
         private PlaylistDetailModel? _detail;
         private long _playlistId;
 
@@ -27,7 +29,8 @@ namespace QianShi.Music.ViewModels
             IPlayStoreService playStoreService,
             IPlaylistStoreService playlistStoreService,
             IDataProvider<PlaylistDetailModel, long> dataProvider,
-            ISnackbarMessageQueue snackbarMessageQueue)
+            ISnackbarMessageQueue snackbarMessageQueue,
+            INavigationService navigationService)
             : base(containerProvider)
         {
             _playlistService = playlistService;
@@ -36,6 +39,7 @@ namespace QianShi.Music.ViewModels
             _playlistStoreService = playlistStoreService;
             _dataProvider = dataProvider;
             _snackbarMessageQueue = snackbarMessageQueue;
+            _navigationService = navigationService;
         }
 
         public PlaylistDetailModel? Detail
@@ -49,16 +53,14 @@ namespace QianShi.Music.ViewModels
 
         public ObservableCollection<Song> Songs { get; set; } = new();
 
-        private DelegateCommand<string?> _toBottomCommand = default!;
         public DelegateCommand<string?> ToBottomCommand =>
-            _toBottomCommand ?? (_toBottomCommand = new DelegateCommand<string?>(ExecuteToBottomCommand,(_) =>!IsBusy && Detail !=null && Detail.Songs.Count < Detail.SongsIds.Count));
+            _toBottomCommand ?? (_toBottomCommand = new DelegateCommand<string?>(ExecuteToBottomCommand, (_) => !IsBusy && Detail != null && Detail.Songs.Count < Detail.SongsIds.Count));
 
-        private readonly object locker = new();
 
         async void ExecuteToBottomCommand(string? parameter)
         {
             if (IsBusy || Detail == null || Detail.Songs.Count == Detail.SongsIds.Count) return;
-            lock (locker)
+            lock (_locker)
             {
                 if (IsBusy || Detail == null || Detail.Songs.Count == Detail.SongsIds.Count)
                 {
@@ -69,20 +71,44 @@ namespace QianShi.Music.ViewModels
 
             try
             {
-                var ids = string.Join(',', Detail.SongsIds.Skip(Detail.Songs.Count).Take(20));
+                var ids = string.Join(',', Detail.SongsIds.Skip(Detail.Songs.Count).Take(40));
                 var songsResponse = await _playlistService.SongDetail(ids);
                 if (songsResponse.Code != 200)
                 {
+                    _snackbarMessageQueue.Enqueue(songsResponse.Msg!, TimeSpan.FromSeconds(5));
                     return;
                 }
                 Detail.AddSongs(songsResponse.Songs);
-                Songs.AddRange(songsResponse.Songs);
+                await PushAsync(songsResponse.Songs);
             }
             finally
             {
                 IsBusy = false;
             }
 
+        }
+
+        private async Task PushAsync(IEnumerable<Song> songs)
+        {
+            songs.ToList().ForEach(song =>
+            {
+                song.Album.CoverImgUrl += "?param=48y48";
+                song.IsLike = _playlistStoreService.HasLikedSong(song);
+            });
+
+            var i = 0;
+            var songChunks = songs.Chunk(5);
+            var chunkLength = songChunks.Count();
+
+            foreach (var songChunk in songChunks)
+            {
+                Songs.AddRange(songChunk);
+                if (i < chunkLength - 1)
+                {
+                    await Task.Delay(200);
+                }
+                i++;
+            }
         }
 
         public override void OnNavigatedFrom(NavigationContext navigationContext)
@@ -105,33 +131,35 @@ namespace QianShi.Music.ViewModels
             {
                 IsBusy = true;
 
-                var result = await _dataProvider.GetDataAsync(_playlistId);
-                if (result == null)
+                try
                 {
-                    navigationContext.NavigationService.Journal.GoBack();
+                    var result = await _dataProvider.GetDataAsync(_playlistId);
+                    if (result == null)
+                    {
+                        navigationContext.NavigationService.Journal.GoBack();
+                        return;
+                    }
+
+                    Detail = result;
+                    Songs.Clear();
+
+                    await PushAsync(Detail.Songs);
+                }
+                catch (Exception ex)
+                {
+                    _snackbarMessageQueue.Enqueue(ex.Message, TimeSpan.FromSeconds(5));
+                    _navigationService.GoBack();
                     return;
                 }
-
-                Detail = result;
-                Songs.Clear();
-                int i = 0;
-                foreach (var song in Detail.Songs)
+                finally
                 {
-                    song.Album.CoverImgUrl += "?param=48y48";
-                    song.IsLike = _playlistStoreService.HasLikedSong(song);
-                    Songs.Add(song);
-                    i++;
-                    if (i % 5 == 0)
-                    {
-                        await Task.Delay(20);
-                    }
+                    IsBusy = false;
                 }
 
                 if ((_playStoreService.Current?.Id).HasValue)
                 {
                     CurrentChanged(null, new(_playStoreService.Current));
                 }
-                IsBusy = false;
             }
 
             _playStoreService.CurrentChanged -= CurrentChanged;
