@@ -16,7 +16,7 @@ namespace QianShi.Music.Services
 
         private RestClient Client => new(new RestClientOptions("http://150.158.194.185:3001")
         {
-            Timeout = -1,
+            MaxTimeout = -1,
             CookieContainer = _cookieContainer
         });
 

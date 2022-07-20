@@ -26,167 +26,171 @@
         <materialDesign:DialogHost.DialogContent>
             <dialog:LoadingDialog />
         </materialDesign:DialogHost.DialogContent>
-        <uc:ScrollViewerAnimation>
-            <i:Interaction.Behaviors>
-                <helpers:ScrollToEndCallCommandBehavior
-                    Command="{Binding ToBottomCommand}"
-                    CommandParameter="11"
-                    ToBottom="120" />
-            </i:Interaction.Behaviors>
-            <Border MaxWidth="1280" Padding="20">
-                <StackPanel>
-                    <Grid Margin="0,0,0,72">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="288" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Border
-                            Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
-                            Margin="0,0,0,10"
-                            BorderThickness="0"
-                            CornerRadius="10"
-                            Cursor="Hand">
-                            <Border.Background>
-                                <ImageBrush ImageSource="{Binding Path=Detail.PicUrl}" />
-                            </Border.Background>
-                        </Border>
+        <Grid>
+            <uc:ScrollViewerAnimation x:Name="ScrollViewerControl">
+                <i:Interaction.Behaviors>
+                    <helpers:ScrollToEndCallCommandBehavior Command="{Binding ToBottomCommand}" ToBottom="120" />
+                    <helpers:ScrollDisplayGoBackTopButtonBehavior Element="{Binding ElementName=BackTopButton}" />
+                </i:Interaction.Behaviors>
+                <Border MaxWidth="1280" Padding="20">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,72">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="288" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Border
+                                Height="{Binding RelativeSource={RelativeSource Self}, Path=ActualWidth}"
+                                Margin="0,0,0,10"
+                                BorderThickness="0"
+                                CornerRadius="10"
+                                Cursor="Hand">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="{Binding Path=Detail.PicUrl}" />
+                                </Border.Background>
+                            </Border>
 
-                        <StackPanel
-                            Grid.Column="1"
-                            Margin="56,0,0,0"
-                            VerticalAlignment="Center">
-                            <TextBlock
-                                FontSize="36"
-                                FontWeight="Bold"
-                                Text="{Binding Detail.Name}"
-                                TextWrapping="WrapWithOverflow" />
                             <StackPanel
-                                Margin="0,24,0,0"
-                                Opacity=".68"
-                                Orientation="Horizontal">
+                                Grid.Column="1"
+                                Margin="56,0,0,0"
+                                VerticalAlignment="Center">
                                 <TextBlock
-                                    FontSize="18"
+                                    FontSize="36"
                                     FontWeight="Bold"
-                                    Text="Playlist by" />
-                                <TextBlock
-                                    Margin="8,0,0,0"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp"
-                                    Style="{StaticResource UnderlineTextBlock}"
-                                    Text="{Binding Detail.Creator}" />
-                                <TextBlock
-                                    x:Name="CreatorUrlControl"
-                                    Text="{Binding Detail.CreatorId, StringFormat='{}https://music.163.com/#/user/home?id={0}'}"
-                                    Visibility="Collapsed" />
-                            </StackPanel>
-                            <StackPanel
-                                Margin="0,2,0,0"
-                                Opacity=".68"
-                                Orientation="Horizontal">
-                                <TextBlock FontSize="14" Text="{Binding Detail.LastUpdateTime, Converter={StaticResource TimestampConverter}, StringFormat=最后更新于 {0:yyyy年MM月dd日} ·}" />
-                                <TextBlock FontSize="14" Text="{Binding Detail.Count, StringFormat={} {0} 首歌}" />
-                            </StackPanel>
+                                    Text="{Binding Detail.Name}"
+                                    TextWrapping="WrapWithOverflow" />
+                                <StackPanel
+                                    Margin="0,24,0,0"
+                                    Opacity=".68"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        Text="Playlist by" />
+                                    <TextBlock
+                                        Margin="8,0,0,0"
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        MouseLeftButtonUp="UIElement_OnMouseLeftButtonUp"
+                                        Style="{StaticResource UnderlineTextBlock}"
+                                        Text="{Binding Detail.Creator}" />
+                                    <TextBlock
+                                        x:Name="CreatorUrlControl"
+                                        Text="{Binding Detail.CreatorId, StringFormat='{}https://music.163.com/#/user/home?id={0}'}"
+                                        Visibility="Collapsed" />
+                                </StackPanel>
+                                <StackPanel
+                                    Margin="0,2,0,0"
+                                    Opacity=".68"
+                                    Orientation="Horizontal">
+                                    <TextBlock FontSize="14" Text="{Binding Detail.LastUpdateTime, Converter={StaticResource TimestampConverter}, StringFormat=最后更新于 {0:yyyy年MM月dd日} ·}" />
+                                    <TextBlock FontSize="14" Text="{Binding Detail.Count, StringFormat={} {0} 首歌}" />
+                                </StackPanel>
 
-                            <TextBlock
-                                Height="60"
-                                Margin="0,24,0,0"
-                                Cursor="Hand"
-                                FontSize="14"
-                                Opacity=".68"
-                                Text="{Binding Detail.Description, Converter={StaticResource NewlineFilterConverter}}"
-                                TextTrimming="CharacterEllipsis"
-                                TextWrapping="WrapWithOverflow">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                                        <i:InvokeCommandAction Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
-                                            <i:InvokeCommandAction.CommandParameter>
-                                                <Grid
-                                                    MaxWidth="1000"
-                                                    MaxHeight="500"
-                                                    Margin="16">
-                                                    <Grid.RowDefinitions>
-                                                        <RowDefinition />
-                                                        <RowDefinition Height="46" />
-                                                    </Grid.RowDefinitions>
-                                                    <uc:ScrollViewerAnimation>
-                                                        <TextBlock Text="{Binding Detail.Description}" TextWrapping="WrapWithOverflow" />
-                                                    </uc:ScrollViewerAnimation>
-                                                    <Button
-                                                        Grid.Row="1"
-                                                        HorizontalAlignment="Center"
-                                                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                                                        CommandParameter="Sample2Cancel"
-                                                        Content="CANCEL"
-                                                        IsCancel="True"
-                                                        Style="{StaticResource MaterialDesignFlatButton}" />
-                                                </Grid>
-                                            </i:InvokeCommandAction.CommandParameter>
-                                        </i:InvokeCommandAction>
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </TextBlock>
+                                <TextBlock
+                                    Height="60"
+                                    Margin="0,24,0,0"
+                                    Cursor="Hand"
+                                    FontSize="14"
+                                    Opacity=".68"
+                                    Text="{Binding Detail.Description, Converter={StaticResource NewlineFilterConverter}}"
+                                    TextTrimming="CharacterEllipsis"
+                                    TextWrapping="WrapWithOverflow">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                                            <i:InvokeCommandAction Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}">
+                                                <i:InvokeCommandAction.CommandParameter>
+                                                    <Grid
+                                                        MaxWidth="1000"
+                                                        MaxHeight="500"
+                                                        Margin="16">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition />
+                                                            <RowDefinition Height="46" />
+                                                        </Grid.RowDefinitions>
+                                                        <uc:ScrollViewerAnimation>
+                                                            <TextBlock Text="{Binding Detail.Description}" TextWrapping="WrapWithOverflow" />
+                                                        </uc:ScrollViewerAnimation>
+                                                        <Button
+                                                            Grid.Row="1"
+                                                            HorizontalAlignment="Center"
+                                                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                                                            CommandParameter="Sample2Cancel"
+                                                            Content="CANCEL"
+                                                            IsCancel="True"
+                                                            Style="{StaticResource MaterialDesignFlatButton}" />
+                                                    </Grid>
+                                                </i:InvokeCommandAction.CommandParameter>
+                                            </i:InvokeCommandAction>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </TextBlock>
 
-                            <StackPanel Margin="0,32,0,0" Orientation="Horizontal">
-                                <Button
-                                    Height="Auto"
-                                    Margin="0,0,16,0"
-                                    Padding="16,8"
-                                    Command="{Binding PlayCommand}">
-                                    <Button.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon
-                                                Width="24"
-                                                Height="24"
-                                                VerticalAlignment="Center"
-                                                Kind="Play" />
-                                            <TextBlock
-                                                Margin="4,0,0,0"
-                                                FontSize="18"
-                                                Text="播放" />
-                                        </StackPanel>
-                                    </Button.Content>
-                                </Button>
-                                <Button
-                                    Height="Auto"
-                                    Margin="0,0,16,0"
-                                    Padding="8">
-                                    <materialDesign:PackIcon
-                                        Width="24"
-                                        Height="24"
-                                        Kind="CardsHeartOutline" />
-                                </Button>
-                                <Button Height="Auto" Padding="8">
-                                    <materialDesign:PackIcon
-                                        Width="24"
-                                        Height="24"
-                                        Kind="DotsHorizontal" />
-                                </Button>
+                                <StackPanel Margin="0,32,0,0" Orientation="Horizontal">
+                                    <Button
+                                        Height="Auto"
+                                        Margin="0,0,16,0"
+                                        Padding="16,8"
+                                        Command="{Binding PlayCommand}">
+                                        <Button.Content>
+                                            <StackPanel Orientation="Horizontal">
+                                                <materialDesign:PackIcon
+                                                    Width="24"
+                                                    Height="24"
+                                                    VerticalAlignment="Center"
+                                                    Kind="Play" />
+                                                <TextBlock
+                                                    Margin="4,0,0,0"
+                                                    FontSize="18"
+                                                    Text="播放" />
+                                            </StackPanel>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button
+                                        Height="Auto"
+                                        Margin="0,0,16,0"
+                                        Padding="8">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="CardsHeartOutline" />
+                                    </Button>
+                                    <Button Height="Auto" Padding="8">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            Kind="DotsHorizontal" />
+                                    </Button>
+                                </StackPanel>
                             </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                    <ItemsControl x:Name="SongsControl" ItemsSource="{Binding Songs}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayCommand}" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                    <!--<Button
-                        Margin="0,10,0,0"
-                        HorizontalAlignment="Center"
-                        Command="{Binding MoreCommand}"
-                        Content="加载更多"
-                        Cursor="Hand"
-                        Visibility="{Binding Detail.HasMore, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Click">
-                                <i:CallMethodAction MethodName="Focus" TargetObject="{Binding ElementName=SongsControl}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Button>-->
-                </StackPanel>
-            </Border>
-        </uc:ScrollViewerAnimation>
+                        </Grid>
+                        <ItemsControl x:Name="SongsControl" ItemsSource="{Binding Songs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <uc:SongItem Item="{Binding}" PlayImmediatelyCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PlaylistView}}, Path=DataContext.PlayCommand}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </uc:ScrollViewerAnimation>
+            <Button
+                x:Name="BackTopButton"
+                Margin="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource MaterialDesignIconButton}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Click">
+                        <i:CallMethodAction MethodName="GoBackTop" TargetObject="{Binding ElementName=ScrollViewerControl}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <materialDesign:PackIcon
+                    Width="32"
+                    Height="32"
+                    FontSize="32"
+                    Kind="ArrowUpBoldBox" />
+            </Button>
+        </Grid>
     </materialDesign:DialogHost>
 </UserControl>
