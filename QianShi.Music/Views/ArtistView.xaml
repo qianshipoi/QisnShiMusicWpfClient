@@ -141,18 +141,18 @@
                                 OpenPlaylistCommand="{Binding OpenPlaylistCommand}"
                                 OpenPlaylistCommandParameter="{Binding Album}" />
                             <StackPanel Margin="24,0" VerticalAlignment="Center">
-                                <TextBlock
-                                    Margin="0,0,0,8"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Style="{StaticResource UnderlineTextBlock}"
-                                    Text="{Binding Album.Name}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseLeftButtonUp">
-                                            <i:InvokeCommandAction Command="{Binding OpenPlaylistCommand}" CommandParameter="{Binding Album}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </TextBlock>
+                                <Button
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding OpenPlaylistCommand}"
+                                    CommandParameter="{Binding Album}"
+                                    Style="{StaticResource NoneButtonStyle}">
+                                    <TextBlock
+                                        Margin="0,0,0,8"
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        Style="{StaticResource UnderlineTextBlock}"
+                                        Text="{Binding Album.Name}" />
+                                </Button>
                                 <TextBlock
                                     FontSize="14"
                                     Opacity=".68"
@@ -175,27 +175,31 @@
                                     </Style.Triggers>
                                 </Style>
                             </DockPanel.Style>
-                            <uc:FilletImage
-                                Width="230"
-                                Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
-                                CornerRadius="12"
-                                Cursor="Hand"
-                                DockPanel.Dock="Left"
-                                ImageSource="{Binding MovieVideo.CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseLeftButtonUp">
-                                        <i:InvokeCommandAction Command="{Binding JumpToMvPageCommand}" CommandParameter="{Binding MovieVideo}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
-                            </uc:FilletImage>
+                            <Button
+                                Command="{Binding JumpToMvPageCommand}"
+                                CommandParameter="{Binding MovieVideo}"
+                                Style="{StaticResource NoneButtonStyle}">
+                                <uc:FilletImage
+                                    Width="230"
+                                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
+                                    CornerRadius="12"
+                                    Cursor="Hand"
+                                    DockPanel.Dock="Left"
+                                    ImageSource="{Binding MovieVideo.CoverImgUrl, TargetNullValue=https://oss.kuriyama.top/static/background.png}" />
+                            </Button>
                             <StackPanel Margin="24,0" VerticalAlignment="Center">
-                                <TextBlock
+                                <Button
                                     Margin="0,0,0,8"
-                                    FontSize="18"
-                                    FontWeight="Bold"
-                                    Style="{StaticResource UnderlineTextBlock}"
-                                    Text="{Binding MovieVideo.Name}"
-                                    TextTrimming="WordEllipsis" />
+                                    Command="{Binding JumpToMvPageCommand}"
+                                    CommandParameter="{Binding MovieVideo}"
+                                    Style="{StaticResource NoneButtonStyle}">
+                                    <TextBlock
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        Style="{StaticResource UnderlineTextBlock}"
+                                        Text="{Binding MovieVideo.Name}"
+                                        TextTrimming="WordEllipsis" />
+                                </Button>
                                 <TextBlock
                                     FontSize="14"
                                     Opacity=".68"
@@ -260,27 +264,31 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="10">
-                                <uc:FilletImage
-                                    x:Name="ImageControl"
-                                    Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
-                                    CornerRadius="12"
-                                    Cursor="Hand"
-                                    ImageSource="{Binding CoverImgUrl}">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseLeftButtonUp">
-                                            <i:InvokeCommandAction Command="{Binding DataContext.JumpToMvPageCommand, RelativeSource={RelativeSource AncestorType=local:ArtistView}}" CommandParameter="{Binding}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
-                                </uc:FilletImage>
-                                <TextBlock
-                                    MaxHeight="48"
+                                <Button
+                                    Command="{Binding DataContext.JumpToMvPageCommand, RelativeSource={RelativeSource AncestorType=local:ArtistView}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource NoneButtonStyle}">
+                                    <uc:FilletImage
+                                        x:Name="ImageControl"
+                                        Height="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=ActualWidth, Converter={StaticResource MathConverter}, ConverterParameter=(@VALUE/16*10)}"
+                                        CornerRadius="12"
+                                        Cursor="Hand"
+                                        ImageSource="{Binding CoverImgUrl}" />
+                                </Button>
+                                <Button
                                     Margin="0,6,0,0"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Style="{StaticResource UnderlineTextBlock}"
-                                    Text="{Binding Name}"
-                                    TextTrimming="WordEllipsis"
-                                    TextWrapping="Wrap" />
+                                    Command="{Binding DataContext.JumpToMvPageCommand, RelativeSource={RelativeSource AncestorType=local:ArtistView}}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource NoneButtonStyle}">
+                                    <TextBlock
+                                        MaxHeight="48"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Style="{StaticResource UnderlineTextBlock}"
+                                        Text="{Binding Name}"
+                                        TextTrimming="WordEllipsis"
+                                        TextWrapping="Wrap" />
+                                </Button>
                                 <TextBlock
                                     FontSize="12"
                                     Opacity=".68"
@@ -331,14 +339,20 @@
                                     ImageSource="{Binding CoverImgUrl}"
                                     OpenPlaylistCommand="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtistView}}, Path=DataContext.OpenArtistCommand}"
                                     OpenPlaylistCommandParameter="{Binding}" />
-                                <TextBlock
+                                <Button
                                     Margin="0,10,0,0"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Opacity=".65"
-                                    Text="{Binding Name}" />
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtistView}}, Path=DataContext.OpenArtistCommand}"
+                                    CommandParameter="{Binding}"
+                                    Style="{StaticResource NoneButtonStyle}">
+                                    <TextBlock
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Opacity=".65"
+                                        Style="{StaticResource UnderlineTextBlock}"
+                                        Text="{Binding Name}" />
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

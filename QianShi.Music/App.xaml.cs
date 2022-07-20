@@ -13,8 +13,6 @@ using QianShi.Music.Views;
 using QianShi.Music.Views.Dialogs;
 using QianShi.Music.Views.Navigation;
 
-using System.ComponentModel.Design;
-
 namespace QianShi.Music
 {
     /// <summary>
