@@ -45,6 +45,7 @@ namespace QianShi.Music.Common.Helpers
                     }
                 }
             }
+            e.Handled = true;
         }
 
         protected override void OnDetaching()
