@@ -12,7 +12,6 @@
     d:DesignHeight="720"
     d:DesignWidth="1280"
     mc:Ignorable="d">
-    <!--  Visibility="{Binding Display, Converter={StaticResource BooleanToVisibilityConverter}}"  -->
     <UserControl.Resources>
         <converters:MillisecondToTimeSpanConverter x:Key="MillisecondToTimeSpanConverter" />
     </UserControl.Resources>
@@ -219,9 +218,21 @@
             VerticalAlignment="Top"
             Command="{Binding CloseCommand}"
             Style="{StaticResource MaterialDesignIconButton}"
-            ToolTip="MaterialDesignIconButton"
             WindowChrome.IsHitTestVisibleInChrome="True">
             <materialDesign:PackIcon FontWeight="Bold" Kind="ChevronDown" />
+        </Button>
+        <Button
+            Grid.Row="1"
+            Grid.Column="1"
+            Width="40"
+            Height="40"
+            Margin="0,0,80,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Command="{Binding FullScreenCommand}"
+            Style="{StaticResource MaterialDesignIconButton}"
+            WindowChrome.IsHitTestVisibleInChrome="True">
+            <materialDesign:PackIcon FontWeight="Bold" Kind="Fullscreen" />
         </Button>
     </Grid>
 </UserControl>

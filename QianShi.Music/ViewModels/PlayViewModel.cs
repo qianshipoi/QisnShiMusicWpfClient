@@ -1,4 +1,5 @@
-﻿using QianShi.Music.Common.Models.Response;
+﻿using QianShi.Music.Common.Helpers;
+using QianShi.Music.Common.Models.Response;
 using QianShi.Music.Extensions;
 using QianShi.Music.Services;
 using QianShi.Music.Views;
@@ -28,6 +29,7 @@ namespace QianShi.Music.ViewModels
         private DelegateCommand<double?> _setPositionCommand = default!;
         private bool _settingUp = false;
         private DelegateCommand<double?> _startSetPositionCommand = default!;
+        private DelegateCommand _fullScreenCommand = default!;
 
         public PlayViewModel(
             IContainerProvider provider,
@@ -57,6 +59,14 @@ namespace QianShi.Music.ViewModels
             };
         }
 
+
+        public DelegateCommand FullScreenCommand =>
+            _fullScreenCommand ??= new DelegateCommand(() =>
+            {
+                var mainWindow = App.Current.MainWindow;
+                FullScreenHelper.StartFullScreen(mainWindow);
+            });
+
         public DelegateCommand CloseCommand =>
             _closeCommand ??= new(() => Display = false);
 
@@ -80,12 +90,20 @@ namespace QianShi.Music.ViewModels
                         SetProperty(ref _display, value);
                         marginAnimation.From = new Thickness(0, window.ActualHeight, 0, 0);
                         marginAnimation.To = new Thickness(0);
+                        marginAnimation.EasingFunction = new CubicEase()
+                        {
+                            EasingMode = EasingMode.EaseIn,
+                        };
                         _playView.Visibility = Visibility.Visible;
                     }
                     else
                     {
                         marginAnimation.From = new Thickness(0);
                         marginAnimation.To = new Thickness(0, window.ActualHeight, 0, 0);
+                        marginAnimation.EasingFunction = new CubicEase()
+                        {
+                            EasingMode = EasingMode.EaseOut,
+                        };
                         marginAnimation.Completed += (s, e) =>
                         {
                             SetProperty(ref _display, value);
@@ -130,6 +148,7 @@ namespace QianShi.Music.ViewModels
 
         public DelegateCommand PlayCommand =>
             _playCommand ??= new(_playStoreService.Play);
+
 
         public double Position
         {
